@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Velira — сайти, Telegram-боти та автоматизації для бізнесу</title>
+<meta name="description" content="Velira створює сайти, Telegram-боти та автоматизації, які допомагають бізнесу не втрачати клієнтів після кліку.">
+<meta name="theme-color" content="#000000">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:site_name" content="Velira">
+<meta property="og:title" content="Velira — сайти, Telegram-боти та автоматизації">
+<meta property="og:description" content="Один маршрут від першого кліку до заявки без втрат.">
+<link rel="icon" type="image/svg+xml" href="brand/velira-mark-clean.svg">
+<link rel="preload" href="assets/fonts/onest-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/onest-latin.woff2" as="font" type="font/woff2" crossorigin><script>
+  /* Стартові стани ховаємо лише з JS і лише коли рух дозволено; якщо скрипт руху не завівся — знімаємо клас на load. */
+  (function (d) {
+    if (!window.matchMedia || !matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+    d.classList.add('js-motion');
+    addEventListener('load', function () { if (!window.__motionReady) d.classList.remove('js-motion'); });
+  })(document.documentElement);
+</script>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">До головного вмісту</a>
+
+<!-- X06: смуга на всю ширину → плаваюча пігулка -->
+<header class="nav" id="nav">
+  <div class="nav__shadow" aria-hidden="true"></div>
+  <div class="nav__edge" aria-hidden="true"></div>
+  <div class="nav__fill" aria-hidden="true"></div>
+  <div class="nav__in">
+    <a class="brand" href="#top" aria-label="Velira — на початок">
+      <svg class="brand__mark" viewBox="430 340 390 438" aria-hidden="true"><path d="M435 346H480L625 587L770 347H815L560 771H514Z"/><path d="M608 731H780L751 771H581Z"/></svg>
+      <span>Velira</span>
+    </a>
+    <nav class="nlinks" aria-label="Розділи сторінки">
+      <span class="nlinks__hl" aria-hidden="true"></span><span class="nlinks__dot" aria-hidden="true"></span>
+      <a href="#route">Маршрут</a><a href="#formats">Формати</a><a href="#process">Процес</a><a href="#contact">Написати</a>
+    </nav>
+    <div class="nav__end">
+      <a class="btn btn-light" href="#contact">Почати проєкт</a>
+      <button class="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Відкрити меню">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="sheet" id="menu" aria-hidden="true" inert>
+  <a href="#route">Маршрут заявки</a><a href="#formats">Формати й ціни</a><a href="#process">Як ми працюємо</a><a href="#contact">Написати</a>
+</div>
+
+<!-- T06 / T01: фіксоване паперове поле позаду сторінки (розкривається колом, знімається шторкою) -->
+<div class="field" aria-hidden="true"><div class="field__paper"></div></div>
+
+<main id="main">
+  <!-- HERO: X08 сітка + блиск, X01, X02 ротатор, пролог фірмового моменту (знак V) -->
+  <section class="hero scene" id="top">
+    <div class="bg" aria-hidden="true"><div class="glow-a"></div><div class="glow-b"></div><div class="grid-bg"></div></div>
+    <div class="wrap hero-in">
+      <div class="hero-copy">
+        <p class="hero-kicker"><span class="hero-kicker__line" aria-hidden="true"></span>Сайти, які працюють на вас</p>
+        <h1 class="glow-text">
+          <span class="l1"><span class="l1__t">Один маршрут від першого кліку до заявки без втрат:</span><span class="shine" aria-hidden="true"><span class="shine__in">Один маршрут від першого кліку до заявки без втрат:</span></span></span>
+          <span class="rot" data-rotate data-align="start" data-hold="2.6" aria-hidden="true">
+            <span class="rot-pool"></span><span class="rot-flash"></span>
+            <span class="rot-w">сайт пояснює</span>
+            <span class="rot-w">бот уточнює</span>
+            <span class="rot-w">автоматизація передає</span>
+            <span class="rot-w">команда відповідає</span>
+            <span class="rot-frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></span>
+          </span>
+          <span class="sr-only">сайт пояснює, бот уточнює, автоматизація передає, команда відповідає</span>
+        </h1>
+        <p class="lede">Людина має за кілька секунд зрозуміти, хто ви, чому вам довіряти й що робити далі. Ми збираємо це в одну виразну цифрову систему: сайт, Telegram-бот і автоматизацію.</p>
+        <div class="cta">
+          <a class="btn btn-light" href="#contact">Обговорити сайт
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn-text" href="#formats">Формати й ціни
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+      <figure class="vmark" aria-hidden="true">
+        <svg viewBox="420 330 410 458">
+          <defs>
+            <linearGradient id="vfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#141416"/><stop offset="1" stop-color="#060607"/></linearGradient>
+            <pattern id="vgrid" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/></pattern>
+            <filter id="vglow" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="9"/></filter>
+          </defs>
+          <path class="v-body" d="M435 346H480L625 587L770 347H815L560 771H514Z" fill="url(#vfill)"/>
+          <path class="v-grid" d="M435 346H480L625 587L770 347H815L560 771H514Z" fill="url(#vgrid)"/>
+          <path class="v-edge" d="M435 346H480L625 587L770 347H815L560 771H514Z" fill="none" stroke="rgba(255,255,255,.24)" stroke-width="1.2"/>
+          <path class="v-trace" pathLength="100" d="M435 346H480L625 587L770 347H815L560 771H514Z" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <path class="v-bar-glow" d="M608 731H780L751 771H581Z" fill="#fff" filter="url(#vglow)"/>
+          <path class="v-bar" d="M608 731H780L751 771H581Z" fill="#bdbdb9"/>
+        </svg>
+        <figcaption class="vmark__cap">Від першого враження — до першої заявки</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ЦІНА ВІДСУТНОСТІ: одна плита з внутрішнім розділювачем, обірвані лінії -->
+  <section class="sec absence" id="absence" aria-labelledby="absence-title">
+    <div class="wrap">
+      <div class="plate">
+        <div class="plate__q">
+          <p class="kicker">Ціна відсутності</p>
+          <p class="plate__pre" data-blur>Ви знаєте, скільки коштує створити сайт.</p>
+          <h2 id="absence-title" class="glow-text" data-blur>А скільки коштує його відсутність?</h2>
+        </div>
+        <ol class="losses">
+          <li data-blur><svg class="cut" viewBox="0 0 120 8" aria-hidden="true"><path class="cut__a" d="M0 4H52"/><path class="cut__b" d="M68 4H120"/></svg><p>Кожен клієнт, який не знайшов вас.</p></li>
+          <li data-blur><svg class="cut" viewBox="0 0 120 8" aria-hidden="true"><path class="cut__a" d="M0 4H70"/><path class="cut__b" d="M86 4H120"/></svg><p>Кожна заявка, яку ви пропустили.</p></li>
+          <li data-blur><svg class="cut" viewBox="0 0 120 8" aria-hidden="true"><path class="cut__a" d="M0 4H34"/><path class="cut__b" d="M50 4H120"/></svg><p>Кожен конкурент, якого обрали замість вас.</p></li>
+        </ol>
+        <p class="plate__note">Візуальний характер привертає увагу. Структура, текст і сценарій сторінки перетворюють увагу на дію.</p>
+      </div>
+    </div>
+    <svg class="wire wire--a" aria-hidden="true"><path/></svg>
+  </section>
+
+  <!-- МАРШРУТ: фірмовий момент — лінія від риски V крізь чотири картки -->
+  <section class="route" id="route" aria-labelledby="route-title">
+    <div class="route-stage">
+      <svg class="wire wire--b" aria-hidden="true"><path/></svg>
+      <div class="wrap route-wrap">
+        <header class="route-head">
+          <div class="route-head__t">
+            <p class="kicker"><svg class="mini-v" viewBox="430 340 390 438" aria-hidden="true"><path d="M435 346H480L625 587L770 347H815L560 771H514Z"/><path id="route-origin" d="M608 731H780L751 771H581Z"/></svg>Маршрут заявки</p>
+            <h2 id="route-title" class="glow-text" data-blur>Шлях однієї заявки від сайту до вашої команди</h2>
+          </div>
+          <p class="lede route-head__l">Сайт привертає увагу. Бот продовжує розмову. Автоматизація передає все вашій команді. Прокрутіть — і пройдіть шлях однієї заявки.</p>
+        </header>
+
+        <div class="route-grid">
+          <div class="cell" data-node="site">
+            <article class="card rcard">
+              <div class="rcard__t">
+                <h3>Сайт <em>пояснює</em></h3>
+                <p>Клієнт розуміє цінність і готовий звернутися.</p>
+                <p class="tags">Структура під вашу пропозицію · Дизайн, що запам’ятовується · Зручна заявка з телефона</p>
+              </div>
+              <div class="well">
+                <div class="rise">
+                  <div class="win win--site" aria-hidden="true">
+                    <div class="win__bar"><span class="tl3"><i></i><i></i><i></i></span><b>ваш сайт</b><span class="demo">демо</span></div>
+                    <div class="win__body site-wire">
+                      <i class="w1"></i><i class="w2"></i><i class="w3"></i>
+                      <span class="site-wire__btn">Обговорити</span>
+                      <span class="site-wire__row"><i></i><i></i><i></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+            <div class="bm-ring" aria-hidden="true"><i class="beam"></i></div><div class="bm-edge" aria-hidden="true"><i></i></div><div class="bm-halo" aria-hidden="true"><i class="beam"></i></div>
+          </div>
+
+          <div class="cell" data-node="bot">
+            <article class="card rcard">
+              <div class="rcard__t">
+                <h3>Бот <em>уточнює</em></h3>
+                <p>Ви отримуєте запит, у якому вже є суть.</p>
+                <p class="tags">Сценарій під ваші послуги · Потрібні питання без довгого брифу · Передача розмови людині</p>
+              </div>
+              <div class="well">
+                <div class="rise">
+                  <div class="win win--chat" aria-hidden="true">
+                    <div class="win__bar"><span class="chat-av">V</span><b>Velira Bot</b><span class="demo">приклад діалогу</span></div>
+                    <div class="win__body chat">
+                      <p class="msg">Вітаю! Допоможу уточнити вашу задачу. Що хочете створити?</p>
+                      <p class="msg msg--me">Сайт для мого бізнесу.</p>
+                      <p class="msg">Чудово. Зберемо деталі та передамо їх команді.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+            <div class="bm-ring" aria-hidden="true"><i class="beam"></i></div><div class="bm-edge" aria-hidden="true"><i></i></div><div class="bm-halo" aria-hidden="true"><i class="beam"></i></div>
+          </div>
+
+          <div class="cell" data-node="auto">
+            <article class="card rcard">
+              <div class="rcard__t">
+                <h3>Автоматизація <em>передає</em></h3>
+                <p>Дані не потрібно переносити вручну.</p>
+                <p class="tags">Форма й бот в одному маршруті · Передача в таблицю або CRM</p>
+              </div>
+              <div class="well">
+                <div class="rise">
+                  <div class="win win--lead" aria-hidden="true">
+                    <div class="win__bar"><b>Заявка з контекстом</b><span class="demo">V—01 · приклад</span></div>
+                    <dl class="win__body lead">
+                      <div><dt>Контакт</dt><dd>Дані клієнта</dd></div>
+                      <div><dt>Задача</dt><dd>Сайт для бізнесу</dd></div>
+                      <div><dt>Джерело</dt><dd>Сайт → Telegram-бот</dd></div>
+                      <div class="lead__to"><dt>Куди</dt><dd>Таблиця або CRM</dd></div>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </article>
+            <div class="bm-ring" aria-hidden="true"><i class="beam"></i></div><div class="bm-edge" aria-hidden="true"><i></i></div><div class="bm-halo" aria-hidden="true"><i class="beam"></i></div>
+          </div>
+
+          <div class="cell" data-node="team">
+            <article class="card rcard">
+              <div class="rcard__t">
+                <h3>Команда <em>відповідає</em></h3>
+                <p>Команда бачить, кому відповісти та з чого почати.</p>
+                <p class="tags">Сповіщення відповідальній людині · Інтеграції під ваші інструменти</p>
+              </div>
+              <div class="well">
+                <div class="rise">
+                  <div class="win win--note" aria-hidden="true">
+                    <div class="note">
+                      <span class="note__ic"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span>
+                      <span class="note__t"><b>Нова заявка V—01</b><small>Сайт для бізнесу · сайт → бот</small></span>
+                      <span class="demo">демо</span>
+                    </div>
+                    <div class="note-next"><small>Наступний крок</small><b>Обговорення</b><span class="note-btn">Відповісти</span></div>
+                  </div>
+                </div>
+              </div>
+            </article>
+            <div class="bm-ring" aria-hidden="true"><i class="beam"></i></div><div class="bm-edge" aria-hidden="true"><i></i></div><div class="bm-halo" aria-hidden="true"><i class="beam"></i></div>
+          </div>
+
+          <svg class="route-line" aria-hidden="true">
+            <path class="rl-base"/>
+            <path class="rl-glow"/>
+            <path class="rl-trail"/>
+            <path class="rl-comet"/>
+            <path class="rl-stub"/>
+            <path class="rl-stub"/>
+            <g class="rl-nodes"></g>
+          </svg>
+          <span class="rl-head" aria-hidden="true"></span>
+        </div>
+        <p class="route-foot">Почнемо із сайту. Бота й автоматизацію додамо, коли вони потрібні вашому бізнесу. <a class="tlink" href="#contact">Зібрати мій маршрут</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ФОРМАТИ: паперова глава (T06 bloom) -->
+  <section class="sec formats paper" id="formats" aria-labelledby="formats-title">
+    <div class="wrap">
+      <header class="sec-head">
+        <div>
+          <p class="kicker" data-blur>Формати й ціни</p>
+          <h2 id="formats-title" data-blur>Від $150 за лендинг до $7500 за систему</h2>
+        </div>
+        <div class="sec-head__side">
+          <p class="lede" data-blur>Кожен формат включає адаптив і допомогу з підключенням власного домену .com.</p>
+          <div class="cur" role="group" aria-label="Валюта цін" data-blur>
+            <button type="button" class="cur__b" data-cur="usd" aria-pressed="true">$</button>
+            <button type="button" class="cur__b" data-cur="uah" aria-pressed="false">₴</button>
+            <span class="cur__note">₴ — орієнтовно, 41,5 ₴/$ за вихідним прайсом</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="fgrid">
+        <div class="plist">
+          <table>
+            <caption class="sr-only">Формати сайтів: назва, ціна, що входить, раунди правок</caption>
+            <thead><tr><th scope="col">Формат</th><th scope="col">Ціна</th><th scope="col">Що це</th><th scope="col">Що входить</th><th scope="col">Правки</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Spark</th><td class="plist__p">від <span class="pv" data-usd="150">$150</span></td><td>Стильний односторінковий лендинг.</td><td>Адаптив: телефон · планшет · ПК; базові анімації та форма заявки</td><td>1 раунд</td></tr>
+              <tr><th scope="row">Orbit</th><td class="plist__p">від <span class="pv" data-usd="250">$250</span></td><td>Багатосекційний бізнес-сайт з характером: до 5–7 секцій або сторінок.</td><td>Преміальні анімації; форми та інтеграція з Telegram</td><td>2 раунди</td></tr>
+              <tr><th scope="row">Supernova</th><td class="plist__p">від <span class="pv" data-usd="500">$500</span></td><td>Інтернет-магазин або складний кастом.</td><td>Максимум 3D та інтерактиву; оплати, CRM або каталог</td><td>3 раунди</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <article class="tier tier--premium">
+          <div class="tier__grid" aria-hidden="true"></div>
+          <div class="tier__top"><h3>Premium</h3><p class="price">від <span class="pv" data-usd="5000">$5000</span></p></div>
+          <p class="tier__lead">Авторський сайт найвищого рівня.</p>
+          <ul class="tags-row"><li>Повністю авторський дизайн</li><li>Кастомні 3D-сцени та складні анімації</li><li>Тонка типографіка й артдирекшн</li><li>Пріоритетна підтримка</li></ul>
+          <p class="tier__foot">Premium — за індивідуальним графіком.</p>
+        </article>
+
+        <article class="systems">
+          <h3>Системи: сайт, розмова й автоматизація</h3>
+          <div class="sys">
+            <p class="sys__name">Standard System <span class="price"><span class="pv" data-usd="1000">$1000</span></span></p>
+            <p>Сайт, канал розмови з клієнтами та автоматизація одного повторюваного процесу — як єдиний маршрут.</p>
+          </div>
+          <div class="sys">
+            <p class="sys__name">Premium System <span class="price"><span class="pv" data-usd="7500">$7500</span></span></p>
+            <p>Авторський дизайн, глибша автоматизація кількох процесів, продуктова перевірка й аналітика.</p>
+          </div>
+          <p class="tier__foot">Фіксована вартість. Остаточний scope фіксуємо до старту.</p>
+        </article>
+
+        <article class="pay">
+          <div class="pay__bar" aria-hidden="true"><i class="pay__a"></i><i class="pay__b"></i></div>
+          <div class="pay__cols">
+            <p><b>30%</b> передоплати — стартуємо</p>
+            <p><b>70%</b> після погодженого прев’ю</p>
+          </div>
+          <ul class="pay__notes">
+            <li>Стандарт або терміново: 48 год ×1.5 — можливість термінового запуску погоджуємо до старту.</li>
+            <li>Домен оплачується окремо у реєстратора.</li>
+            <li>Складніша задача? Зробимо індивідуальний прорахунок. <a class="tlink" href="#contact">Описати проєкт</a></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ПРОЦЕС: T05 стопка карток -->
+  <section class="sec process paper" id="process" aria-labelledby="process-title">
+    <div class="wrap">
+      <header class="sec-head">
+        <div>
+          <p class="kicker">Як ми працюємо</p>
+          <h2 id="process-title" data-blur>Від брифу до запуску</h2>
+        </div>
+        <div class="sec-head__side">
+          <p class="lede">Спочатку логіка, потім дизайн і код. Ви бачите рішення до запуску.</p>
+          <p class="todo">TODO власнику: типові терміни кожного формату в днях — на чинному сайті їх немає.<br>TODO власнику: добірка робіт — після дозволу клієнтів (приклади прибрано з чинного сайту 26.09).</p>
+        </div>
+      </header>
+    </div>
+    <div class="deck" style="--n:4">
+      <div class="slot" style="--i:0">
+        <div class="pcard" data-card>
+          <div class="pcard__t">
+            <p class="pcard__k">Етап 1 з 4</p>
+            <h3>Бриф і фокус</h3>
+            <p>Уточнюємо бізнес, аудиторію, ціль та одну головну дію сайту.</p>
+            <p class="pcard__out"><small>Для вас</small><span>30% передоплати — стартуємо; scope фіксуємо до старту</span></p>
+          </div>
+          <div class="pw pw--brief" aria-hidden="true">
+            <div class="pw__bar"><b>Коротка задача</b><span class="demo">демо</span></div>
+            <ul class="brief">
+              <li><b>Ціль</b><span>одна головна дія сайту</span></li>
+              <li><b>Аудиторія</b><span>хто приходить і звідки</span></li>
+              <li><b>Факти</b><span>ціни, контакти — лише з джерелом</span></li>
+              <li class="brief__todo"><b>TODO</b><span>чого бракує — питаємо, не вигадуємо</span></li>
+            </ul>
+          </div>
+          <div class="card__shade" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="slot" style="--i:1">
+        <div class="pcard" data-card data-deal="-3" data-deal-x="-4" data-push="1.6">
+          <div class="pcard__t">
+            <p class="pcard__k">Етап 2 з 4</p>
+            <h3>Структура й напрям</h3>
+            <p>Будуємо сценарій сторінок і погоджуємо візуальну систему.</p>
+            <p class="pcard__out"><small>Для вас</small><span>три напрями на вибір — далі працюємо в одному</span></p>
+          </div>
+          <div class="pw pw--dirs" aria-hidden="true">
+            <div class="pw__bar"><b>Три напрями цього сайту</b><span class="demo">демо</span></div>
+            <div class="dirs">
+              <span class="dir dir--on"><b>A</b><em>Лінія, що не обривається</em><small>обрано</small></span>
+              <span class="dir"><b>B</b><em>Диспетчерська заявок</em><small>відкинуто</small></span>
+              <span class="dir"><b>C</b><em>Чорнило й папір</em><small>відкинуто</small></span>
+            </div>
+            <p class="dirs__note">Кожен напрям починається з концепту сторінки й живих референсів.</p>
+          </div>
+          <div class="card__shade" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="slot" style="--i:2">
+        <div class="pcard" data-card data-deal="2.5" data-deal-x="4" data-push="-1.2">
+          <div class="pcard__t">
+            <p class="pcard__k">Етап 3 з 4</p>
+            <h3>Дизайн і код</h3>
+            <p>Збираємо адаптив, анімації, форми й потрібні інтеграції.</p>
+            <p class="pcard__out"><small>Для вас</small><span>телефон · планшет · ПК — у кожному форматі</span></p>
+          </div>
+          <div class="pw pw--tl" aria-hidden="true">
+            <div class="pw__bar"><b>Перший екран цієї сторінки · 2,6 с</b><span class="demo">справжні таймінги</span></div>
+            <div class="tl">
+              <span class="tl__row"><small>Сітка й тло</small><i style="--s:0;--w:.615"></i></span>
+              <span class="tl__row"><small>Заголовок</small><i style="--s:.038;--w:.423"></i></span>
+              <span class="tl__row"><small>Знак V</small><i style="--s:.077;--w:.462"></i></span>
+              <span class="tl__row"><small>Кнопки</small><i style="--s:.246;--w:.327"></i></span>
+              <span class="tl__row"><small>Світло по V</small><i style="--s:.346;--w:.538"></i></span>
+              <span class="tl__row"><small>Риска V</small><i style="--s:.673;--w:.173"></i></span>
+              <span class="tl__row tl__axis"><small>секунди</small><i><b style="--x:0">0</b><b style="--x:.385">1</b><b style="--x:.769">2</b></i></span>
+              <span class="tl__head"></span>
+            </div>
+          </div>
+          <div class="card__shade" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="slot" style="--i:3">
+        <div class="pcard" data-card data-push="0">
+          <div class="pcard__t">
+            <p class="pcard__k">Етап 4 з 4</p>
+            <h3>Прев’ю і запуск</h3>
+            <p>Показуємо живе прев’ю, вносимо погоджені правки й допомагаємо з доменом.</p>
+            <p class="pcard__out"><small>Для вас</small><span>70% — після погодженого прев’ю; 1–3 раунди правок за форматом</span></p>
+          </div>
+          <div class="pw pw--log">
+            <div class="pw__bar"><b>Журнал одного проєкту</b><span class="demo">демо</span></div>
+            <p class="sr-only">Демонстрація: етапи конвеєра студії — бриф, референси, концепт сторінки, режисура руху, незалежний критик, ворота якості, прев’ю на погодження.</p>
+            <ol class="log" aria-hidden="true">
+              <li class="log__row" style="--i:0"><span>Прев’ю на погодження</span><small>вам</small></li>
+              <li class="log__row" style="--i:1"><span>Ворота якості</span><small>кожна з 11 оцінок ≥ 8</small></li>
+              <li class="log__row" style="--i:2"><span>Незалежний критик</span><small>бачить кадри руху</small></li>
+              <li class="log__row" style="--i:3"><span>Режисура руху</span><small>переходи між секціями</small></li>
+              <li class="log__row" style="--i:4"><span>Концепт сторінки</span><small>3 напрями</small></li>
+            </ol>
+          </div>
+          <div class="card__shade" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- НАПИСАТИ: T01 шторка поля, лінія замикається на формі (X05) -->
+  <section class="sec contact" id="contact" aria-labelledby="contact-title">
+    <div class="wrap contact-in">
+      <div class="contact-copy">
+        <p class="kicker">Почнімо з вашої ідеї</p>
+        <h2 id="contact-title" data-blur>Напишіть у Telegram або залиште задачу тут</h2>
+        <p class="lede">Опишіть задачу — запропонуємо найкоротше рішення, а не список зайвих послуг.</p>
+        <a class="tg" href="https://t.me/madbod_77" target="_blank" rel="noopener"><span>Telegram</span><b>@madbod_77</b>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+        <p class="micro">Без довгих брифів. Почнемо з реальної проблеми.</p>
+      </div>
+      <div class="cell" data-form>
+        <form class="card form" id="lead-form" novalidate>
+          <p class="form__preview">Це прев’ю нового сайту: форма тут перевіряє поля, але заявку не надсилає. Напишіть у Telegram <a href="https://t.me/madbod_77">@madbod_77</a>.</p>
+          <div class="form__row">
+            <label><span>Ім’я / бренд</span><input type="text" name="name" autocomplete="name" required maxlength="200" placeholder="Як до вас звертатись"></label>
+            <label><span>Telegram, email або телефон</span><input type="text" name="contact" autocomplete="off" required maxlength="200" placeholder="@username / email / +380…"></label>
+          </div>
+          <label><span>Що потрібно виправити?</span><textarea name="brief" rows="3" required maxlength="2000" placeholder="Одним-двома реченнями"></textarea></label>
+          <p class="form__privacy">Надсилаючи форму, ви просите Velira зв’язатися щодо проєкту. Якщо проєкт не почнеться, заявку зберігаємо до 90 днів. Не надсилайте паролі, платіжні дані, документи чи іншу чутливу інформацію.</p>
+          <label class="consent"><input type="checkbox" name="privacyAcknowledged" required><span>Підтверджую, що прочитав(ла) <a href="privacy.html">повідомлення про приватність</a>.</span></label>
+          <label class="consent"><input type="checkbox" name="telegramDeliveryConsent" required><span>Окремо погоджуюсь на доставку цієї заявки через Telegram Bot API, включно з можливою обробкою за межами України. Це не згода на маркетинг.</span></label>
+          <div class="form__foot"><button class="btn btn-light" type="submit">Надіслати задачу</button><p class="form__status" role="status" aria-live="polite"></p></div>
+        </form>
+        <div class="bm-ring" aria-hidden="true"><i class="beam"></i></div><div class="bm-edge" aria-hidden="true"><i></i></div><div class="bm-halo" aria-hidden="true"><i class="beam"></i></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <a class="brand" href="#top" aria-label="Velira — нагору">
+      <svg class="brand__mark" viewBox="430 340 390 438" aria-hidden="true"><path d="M435 346H480L625 587L770 347H815L560 771H514Z"/><path d="M608 731H780L751 771H581Z"/></svg>
+      <span>Velira</span>
+    </a>
+    <p class="foot__line">Зв’язок із клієнтом не має обриватися.</p>
+    <nav aria-label="Документи"><a href="privacy.html">Приватність</a><a href="terms.html">Умови</a><a href="rights.html">Права та IP</a></nav>
+    <p class="foot__copy">© 2026 Velira · Київ · сайт-прев’ю, ще не опублікований</p>
+  </div>
+</footer>
+
+<script defer src="assets/vendor/gsap.min.js"></script>
+<script defer src="assets/vendor/ScrollTrigger.min.js"></script>
+<script defer src="assets/js/rotate.js"></script>
+<script defer src="assets/js/site.js"></script>
+</body>
+</html>
