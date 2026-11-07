@@ -421,21 +421,31 @@
     var paper = $('.field__paper'), field = $('.field');
     soon(function () {
       var foot = $('.route-foot'), fmt = $('#formats');
+      // центр кола — там, де закінчилась лінія маршруту: у мить старту вона щойно пішла за верхній край разом із рядком
+      // «Почнемо із сайту…», тож папір розливається згори вниз — з тієї ж точки, де починається чорнильна лінія прайсу
       var originAt = function () {
-        var x = Math.max(0, Math.min(100, geo.end.x / innerWidth * 100)), y = 92;
-        if (!desktopRoute() && foot) {
-          // телефон (критик ц.3): центр кола — під рядком «Почнемо із сайту…» у момент старту (верх «Форматів» на 90 %),
-          // тож край кола проходить рядок знизу вгору, а не розтинає слова навскіс
-          x = 50;
-          y = Math.min(100, ((foot.getBoundingClientRect().bottom - fmt.getBoundingClientRect().top + 24) / innerHeight + .9) * 100);
-        }
-        return x.toFixed(1) + '% ' + y.toFixed(1) + '%';
+        var x = Math.max(0, Math.min(100, geo.end.x / innerWidth * 100));
+        return x.toFixed(1) + '% 0%';
       };
+      // ц.7, «спершу дочитати»: коло стартує лише тоді, коли останній рядок маршруту («Почнемо із сайту…») уже пішов
+      // за верхній край екрана (і не раніше, ніж верх «Форматів» на 90 %), — край кола ніколи не розтинає й не накриває його.
+      // На ПК рядок у липкій сцені: його кінцеве положення рахуємо від низу секції, без getBoundingClientRect під sticky.
+      var footGone = function () {
+        var fb;
+        if (getComputedStyle(stage).position === 'sticky') {
+          var rs = routeSec.getBoundingClientRect(), pb = parseFloat(getComputedStyle(routeSec).paddingBottom) || 0, fo = offsetIn(foot, stage);
+          fb = rs.bottom - pb - stage.offsetHeight + (fo ? fo.y + foot.offsetHeight : stage.offsetHeight);
+        } else fb = foot.getBoundingClientRect().bottom;
+        return Math.max(fmt.getBoundingClientRect().top - innerHeight * .9, fb) + scrollY;
+      };
+      var BLOOM = .6;    // довжина розкриття — 60 % екрана прокрутки: «Формати» недовго на чорному
       // до початку переходу папір невидимий: при стрибку нагору (Home, логотип) диск не «доїжджає» за scrub-затримкою
       var showPaper = function (st) { paper.style.visibility = st.scroll() > st.start ? '' : 'hidden'; };
+      var bloomStart = 0;
       gsap.fromTo(paper, { clipPath: function () { return 'circle(0% at ' + originAt() + ')'; } },
         { clipPath: function () { return 'circle(150% at ' + originAt() + ')'; }, ease: 'none', immediateRender: false,
-          scrollTrigger: { trigger: '#formats', start: 'top 90%', end: 'top 15%', scrub: .6, invalidateOnRefresh: true,
+          scrollTrigger: { trigger: '#formats', start: function () { return (bloomStart = Math.round(footGone())); },
+            end: function () { return bloomStart + Math.round(innerHeight * BLOOM); }, scrub: .6, invalidateOnRefresh: true,
             onRefresh: showPaper, onEnter: showPaper, onLeaveBack: showPaper, onEnterBack: showPaper,
             onToggle: function (st) { paper.style.willChange = st.isActive ? 'clip-path' : ''; } } });
       killers.push(function () { paper.style.visibility = ''; });
@@ -508,8 +518,13 @@
       inkBuild();
       ScrollTrigger.addEventListener('refreshInit', inkBuild);
       // desktop: старт, коли таблиця вже на екрані (критик ц.5 р.2) — гачок не висить у порожньому папері
-      ScrollTrigger.create({ trigger: plist, start: function () { return desktopRoute() ? 'top 80%' : 'top 92%'; },
-        end: function () { var el = desktopRoute() ? sysCard : plist; return el.getBoundingClientRect().bottom + scrollY - innerHeight * .62; }, scrub: .5, invalidateOnRefresh: true,
+      // ц.7: чорнило не малюється по чорному — не раніше, ніж коло T06 (тепер пізніше) пройде третину екрана
+      var inkStart = 0;
+      ScrollTrigger.create({ trigger: plist, start: function () {
+          var own = plist.getBoundingClientRect().top + scrollY - innerHeight * (desktopRoute() ? .8 : .92);
+          return (inkStart = Math.round(Math.max(own, bloomStart + innerHeight * .3)));
+        },
+        end: function () { var el = desktopRoute() ? sysCard : plist; return Math.max(inkStart + innerHeight * .5, el.getBoundingClientRect().bottom + scrollY - innerHeight * .62); }, scrub: .5, invalidateOnRefresh: true,
         onRefresh: inkBuild, onUpdate: function (st) { inkDraw(st.progress); } });
       killers.push(function () { ScrollTrigger.removeEventListener('refreshInit', inkBuild); ink.remove(); fgrid.removeAttribute('data-ink'); });
 
@@ -542,20 +557,36 @@
 
     /* ---------- процес: таймлайн руху з «головкою» і журнал конвеєра (X03) ---------- */
     soon(function () {
-      // головка ходить лише колонкою смуг: старт і хід — від справжньої смуги, підписи вона не перетинає
-      var tlHead = $('.tl__head'), tlBox = tlHead.parentNode, tlBar = $('.tl__row i', tlBox);
-      var tlSpan = function () {
-        var a = tlBox.getBoundingClientRect(), b = tlBar.getBoundingClientRect();
-        tlHead.style.left = (b.left - a.left) + 'px';
-        return Math.max(0, b.width - 2);
+      // головка ходить лише колонкою ВИДИМИХ смуг (на телефоні першу приховано), підписи вона не перетинає.
+      // Вимір — у нетрансформованих координатах .tl (offsetLeft/offsetWidth): картка стопки буває зменшена й нахилена.
+      var tlHead = $('.tl__head'), tlBox = tlHead.parentNode, tlCard = tlBox.closest('[data-card]');
+      var tlTracks = $$('.tl__row:not(.tl__axis) i', tlBox), tlRun = 0, tlOn = false, headLoop = null;
+      var tlMeasure = function () {
+        var vis = tlTracks.filter(function (i) { return i.offsetWidth > 0; });
+        if (!vis.length) { tlRun = 0; return; }
+        var l = Math.min.apply(null, vis.map(function (i) { return i.offsetLeft; }));
+        var r = Math.max.apply(null, vis.map(function (i) { return i.offsetLeft + i.offsetWidth; }));
+        tlHead.style.left = l + 'px'; tlRun = Math.max(0, r - l - 2);
       };
-      var headLoop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: .5 })
-        .fromTo(tlHead, { opacity: 0, x: 0 }, { opacity: 1, duration: .2 }, 0)
-        .to(tlHead, { x: tlSpan, duration: 2.6, ease: 'none' }, 0)
-        .to(tlHead, { opacity: 0, duration: .25 }, 2.4);
-      ScrollTrigger.create({ trigger: tlBox, start: 'top bottom', end: 'bottom top', onToggle: function (s) { if (s.isActive) headLoop.play(); else headLoop.pause(); } });
-      var reHead = function () { headLoop.invalidate(); };
-      ScrollTrigger.addEventListener('refresh', reHead);
+      var tlBuild = function () {
+        if (headLoop) headLoop.kill();
+        tlMeasure();
+        headLoop = gsap.timeline({ paused: !tlOn, repeat: -1, repeatDelay: .5 })
+          .fromTo(tlHead, { opacity: 0, x: 0 }, { opacity: 1, duration: .2 }, 0)
+          .to(tlHead, { x: tlRun, duration: 2.6, ease: 'none' }, 0)
+          .to(tlHead, { opacity: 0, duration: .25 }, 2.4);
+      };
+      tlBuild();
+      // грає, поки картка на екрані; поза ним — пауза. IntersectionObserver бачить справжню (трансформовану) картку —
+      // ScrollTrigger усередині липкої картки рахував позиції не там і ставив петлю на паузу на видноті
+      var tlIO = new IntersectionObserver(function (es) {
+        tlOn = es[es.length - 1].isIntersecting;
+        if (tlOn) headLoop.play(); else headLoop.pause();
+      });
+      tlIO.observe(tlCard);
+      // зміна розміру колонки (resize, поворот телефона) — міряємо заново й починаємо прохід спочатку
+      var tlW = -1, tlRO = new ResizeObserver(function () { if (tlBox.offsetWidth !== tlW) { tlW = tlBox.offsetWidth; tlBuild(); } });
+      tlRO.observe(tlBox);
 
       var log = $('.log'), STAGES = [['Бриф', 'факти з джерелами'], ['Референси', 'справжні сайти'], ['Концепт сторінки', '3 напрями'],
         ['Режисура руху', 'переходи між секціями'], ['Незалежний критик', 'бачить кадри руху'], ['Ворота якості', 'кожна з 11 оцінок ≥ 8'],
@@ -580,7 +611,7 @@
       var logTimer = gsap.delayedCall(2.4, function next() { if (logOn) tick(); logTimer = gsap.delayedCall(2.4, next); });
       ScrollTrigger.create({ trigger: log, start: 'top bottom', end: 'bottom top', onToggle: function (s) { logOn = s.isActive; } });
       killers.push(function () {
-        ScrollTrigger.removeEventListener('refresh', reHead);
+        tlIO.disconnect(); tlRO.disconnect();
         headLoop.kill(); logTimer.kill(); gsap.set(tlHead, { clearProps: 'all' }); tlHead.style.left = '';
       });
     });
@@ -590,8 +621,8 @@
 
   /* ---------- T05: стопка етапів — цикл 4: короткий вхід аркуша ----------
      Правило «спершу дочитати»: кожна картка, зокрема остання, стоїть цілою й нерухомою не менше D.hold екрана прокрутки,
-     і її останній рядок лежить у смузі 20–80 % вікна. Наступна картка не їде з-під цілого екрана: вона прилипає
-     невидимою на своєму місці, а тоді за D.enter екрана прокрутки «лягає на стос» — з відстані D.from екрана,
+     і її останній рядок лежить у смузі 20–80 % вікна. Наступна картка чекає непрозорою за нижнім краєм екрана й
+     за D.enter екрана прокрутки «лягає на стос» (ц.7: без напівпрозорості — тексти карток не змішуються),
      з масштабу D.inScale і нахилу D.inTilt (низ аркуша до глядача), разом із ±3° «кинутого» повороту.
      Крок слота: U_k = (вхід картки k) + пауза + (різниця верхів прилипання сусідів).
      Невидимий стан ставимо лише після першої справжньої прокрутки: повний скриншот без прокрутки бачить усі картки. */
@@ -613,11 +644,19 @@
       var U = hs.map(function (h, k) {
         return k === last ? E + H + Math.round(D.tail * vh) + h : (k ? E : 0) + H + tops[k + 1] - tops[k];
       });
-      // картка, що відходить, вища за наступну: низ, який визирав би з-під неї, ховаємо clip-path (лишається смужка «Етап N з 4» згори)
+      // картка позаду не визирає з-під жодної з карток, що лягають на неї (ц.7: не лише з-під наступної) —
+      // низ ховаємо clip-path, лишається смужка «Етап N з 4» згори. Для кожного рівня l: зсув −peek·l, масштаб 1 − scale·l
+      // і нахил tilt із перспективою (низ до глядача — проєкція довша); беремо найбільшу потрібну обрізку
+      var th = D.tilt * Math.PI / 180, cos = Math.cos(th), sin = Math.sin(th), P = D.persp;
       cuts = hs.map(function (h, k) {
-        if (k === last) return 0;
-        var over = (tops[k] - vh * D.peek + h * (1 - D.scale)) - (tops[k + 1] + hs[k + 1]);
-        return over > -2 ? Math.ceil((over + 8) / (1 - D.scale)) : 0;
+        var need = 0;
+        for (var l = 1; l <= D.depth && k + l < hs.length; l++) {
+          var s = 1 - D.scale * l;
+          var Z = (tops[k + l] + hs[k + l] - 10) - (tops[k] - vh * D.peek * l);   // дозволена висота на екрані
+          var Y = Z * P / (P * cos + Z * sin);                                       // та сама висота до нахилу
+          need = Math.max(need, h - Y / s);
+        }
+        return need > 0 ? Math.ceil(need) : 0;
       });
       cards.forEach(function (c, k) { if (tops[k] !== T) c.style.top = tops[k] + 'px'; });
       slots.forEach(function (s, k) {
@@ -640,11 +679,11 @@
       cards.forEach(function (card, k) {
         if (k) {
           var deal = +(card.dataset.deal || 0) * D.deal, dealX = +(card.dataset.dealX || 0) * D.deal;
+          // ц.7: аркуш завжди непрозорий і чекає ЗА нижнім краєм екрана (а не на третині екрана з opacity 0) —
+          // жодного кадру, де текст двох карток змішується, ні вниз, ні вгору (тоді він так само йде за край)
           gsap.timeline({ scrollTrigger: range(k) })
-            .fromTo(card, { y: function () { return innerHeight * D.from; }, scale: D.inScale, rotationX: -D.inTilt, rotation: deal, xPercent: dealX },
-              { y: 0, scale: 1, rotationX: 0, rotation: 0, xPercent: 0, duration: 1, ease: 'power2.out' }, 0)
-            // непрозорість — лише на перших ~4 % екрана прокрутки: аркуш не «просвічує» текстом крізь попередню картку
-            .fromTo(card, { opacity: 0 }, { opacity: 1, duration: .13, ease: 'power1.out' }, 0);
+            .fromTo(card, { y: function () { return innerHeight - topOf(k) + 48; }, scale: D.inScale, rotationX: -D.inTilt, rotation: deal, xPercent: dealX },
+              { y: 0, scale: 1, rotationX: 0, rotation: 0, xPercent: 0, duration: 1, ease: 'power2.out' }, 0);
         }
         if (k < cards.length - 1) gsap.fromTo(card, { clipPath: 'inset(0px 0px 0px 0px)' },
           { clipPath: function () { return 'inset(0px 0px ' + (cuts[k] || 0) + 'px 0px)'; }, ease: 'none', immediateRender: false, scrollTrigger: range(k + 1) });
@@ -684,10 +723,10 @@
   };
   mm.add('(prefers-reduced-motion: no-preference) and (min-width: 768px)',
     deckIn({ peek: .026, scale: .055, tilt: 6, persp: 1500, depth: 3, shade: [0, .34, .6, .82], scrub: .6, deal: 1,
-             hold: .75, enter: .32, from: .36, inScale: .9, inTilt: 9, tail: .06 }));
+             hold: .75, enter: .32, inScale: .9, inTilt: 9, tail: .06 }));
   mm.add('(prefers-reduced-motion: no-preference) and (max-width: 767px)',
     deckIn({ peek: .02, scale: .05, tilt: 4, persp: 1100, depth: 3, shade: [0, .45, .7, .85], scrub: .4, deal: .6,
-             hold: .75, enter: .3, from: .32, inScale: .92, inTilt: 7, tail: .04 }));
+             hold: .75, enter: .3, inScale: .92, inTilt: 7, tail: .04 }));
 
   /* ---------- X05 світло курсора по рамках (лише точний курсор; підсилення, не момент) ---------- */
   mm.add('(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)', function () {

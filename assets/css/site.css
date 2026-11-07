@@ -88,7 +88,8 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 .nlinks a { position: relative; z-index: 1; height: 40px; line-height: 40px; padding: 0 14px; border-radius: 10px; opacity: .66; }
 .nlinks a[aria-current="true"], .nlinks a:hover { opacity: 1; }
 .nlinks__hl { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: rgba(255, 255, 255, .085);
-              box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .07); clip-path: inset(0 var(--hl-b, 100%) 0 var(--hl-a, 0px) round 10px); }
+              box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .07); clip-path: inset(0 var(--hl-b, 100%) 0 var(--hl-a, 0px) round 10px);
+              opacity: var(--hl-o, 0); }   /* ц.7: плашка ховається й з'являється разом із крапкою */
 .nlinks__dot { position: absolute; left: 0; bottom: -5px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: #fff;
                box-shadow: 0 0 8px 1px rgba(255, 255, 255, .9); transform: translateX(var(--hl-c, 0px)); opacity: var(--hl-o, 0); }
 .burger { display: none; width: 44px; height: 44px; border: 0; border-radius: 12px; background: rgba(255, 255, 255, .06); color: var(--tx);
@@ -106,7 +107,7 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
   .nav.is-pill .nav__edge, .nav.is-pill .nav__fill { transition-duration: .62s; }
   .nav.is-pill .brand, .nav.is-pill .nav__end { transition-duration: .62s; transition-delay: .03s; }
   .nav.is-pill .nav__shadow { transition: opacity .4s linear .22s; }
-  .nlinks__hl { transition: clip-path .5s var(--ease-move); }
+  .nlinks__hl { transition: clip-path .5s var(--ease-move), opacity .3s linear; }
   .nlinks__dot { transition: transform .5s var(--ease-move), opacity .3s linear; }
   .nlinks a { transition: opacity .3s linear; }
   .sheet { transition: opacity .2s linear, transform .28s var(--ease-move), visibility 0s linear .28s; }
