@@ -482,7 +482,7 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
   .burger { display: grid; }
   .nav { --pill-w: calc(100cqw - 20px); }
   .hero { min-height: 0; padding-block: 112px 48px; }
-  .hero-in { grid-template-columns: 1fr; }
+  .hero-in { grid-template-columns: minmax(0, 1fr); }   /* ц.6: nowrap-слово ротатора не розпирає колонку ширше екрана */
   .vmark { width: 180px; justify-self: start; grid-row: 1; margin-bottom: -8px; }
   .vmark__cap { display: none; }
   .plate { grid-template-columns: 1fr; }
@@ -521,7 +521,9 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 }
 @media (max-width: 520px) {
   :root { --T: 80px; --hold: 55vh; --h: auto; --U: calc(78vh + var(--hold)); }
-  .hero h1 { font-size: 29px; letter-spacing: -.035em; }
+  /* ц.6: найдовше слово ротатора («автоматизація передає», nowrap, ≈10.8em) вміщається від 300 px (при 320 — із запасом ≈9 px);
+     ≥358 px — рівно 29 px, як у ц.5; висота ротатора однакова для всіх слів (спільна клітинка grid) */
+  .hero h1 { font-size: clamp(24px, 8.1vw, 29px); letter-spacing: -.035em; }
   .grid-bg { --g: 44px; }
   .glow-a { width: 620px; margin-left: -310px; height: 520px; left: 50%; }
   .glow-b { width: 440px; margin-left: -220px; left: 50%; }
