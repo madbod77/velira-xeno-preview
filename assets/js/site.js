@@ -307,6 +307,10 @@
     // хвиля: «Ціна відсутності», що вже в першому екрані, проявляється після Lead hero, а не стоїть різкою з 0 мс
     var foldAbs = $$('#absence .kicker, #absence [data-blur], #absence .plate__note').filter(function (el) { return el.getBoundingClientRect().top < innerHeight; });
     if (foldAbs.length) hero.fromTo(foldAbs, from(10, 14), to(.9, { stagger: .08 }), .7);
+    // ц.8: до цієї миті CSS тримає ці елементи прихованими з першого малювання (html.js-motion:not(.fold-set));
+    // fromTo вище вже поставив інлайн-стан «до» тим, що в першому екрані, — тепер CSS відпускає решту (вони нижче краю).
+    // Той самий синхронний шматок — між ними немає малювання, тож жодного «видно → сховано → видно».
+    root.classList.add('fold-set');
     if (rot) { hero.add(rot.enter(), .3); rot.start(2.7); } else gsap.set('.hero .rot', { opacity: 1 });
     var fine = matchMedia('(hover: hover) and (pointer: fine)').matches, busy = null;
     var replay = function () { if (busy && busy.isActive()) return; busy = sweep(); };
@@ -594,7 +598,7 @@
       var pitch = function () { return parseFloat(getComputedStyle(log).getPropertyValue('--pitch')) || 50; };
       var rows = $$('.log__row', log), P = pitch();
       rows.forEach(function (r, i) { gsap.set(r, { y: i * P }); });
-      var si = 0, logOn = false;
+      var si = 0;
       function tick() {
         var s = STAGES[si++ % STAGES.length], li = document.createElement('li'), p = pitch();
         li.className = 'log__row'; li.setAttribute('data-new', '');
@@ -608,11 +612,18 @@
         });
         while (rows.length > 6) { var gone = rows.pop(); gone.remove(); }
       }
-      var logTimer = gsap.delayedCall(2.4, function next() { if (logOn) tick(); logTimer = gsap.delayedCall(2.4, next); });
-      ScrollTrigger.create({ trigger: log, start: 'top bottom', end: 'bottom top', onToggle: function (s) { logOn = s.isActive; } });
+      // ц.8: рядок кожні 2,4 с, поки картка журналу на екрані; поза екраном таймера немає зовсім.
+      // Видимість — IntersectionObserver на самій (липкій, трансформованій) картці, як у головки таймлайну:
+      // ScrollTrigger із тригером усередині sticky-картки рахував вікно не там (на ПК журнал стояв на видноті й тікав поза ним)
+      var logTimer = null, logLoop = function () { tick(); logTimer = gsap.delayedCall(2.4, logLoop); };
+      var logIO = new IntersectionObserver(function (es) {
+        if (es[es.length - 1].isIntersecting) { if (!logTimer) logTimer = gsap.delayedCall(2.4, logLoop); }
+        else if (logTimer) { logTimer.kill(); logTimer = null; }
+      });
+      logIO.observe(log.closest('[data-card]') || log);
       killers.push(function () {
-        tlIO.disconnect(); tlRO.disconnect();
-        headLoop.kill(); logTimer.kill(); gsap.set(tlHead, { clearProps: 'all' }); tlHead.style.left = '';
+        tlIO.disconnect(); tlRO.disconnect(); logIO.disconnect();
+        headLoop.kill(); if (logTimer) logTimer.kill(); logTimer = null; gsap.set(tlHead, { clearProps: 'all' }); tlHead.style.left = '';
       });
     });
 

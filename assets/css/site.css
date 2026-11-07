@@ -464,6 +464,10 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 @keyframes v-drift-b { from { transform: translate(120px, 30px); } to { transform: translate(-140px, -30px); } }
 .js-motion .hero .hero-kicker, .js-motion .hero .l1, .js-motion .hero .rot, .js-motion .hero .lede, .js-motion .hero .cta,
 .js-motion .grid-bg, .js-motion .glow-a, .js-motion .glow-b, .js-motion .vmark svg, .js-motion .vmark__cap { opacity: 0; }
+/* ц.8: «Ціна відсутності» в першому екрані прихована з першого малювання, доки site.js не поставить їй інлайн-стан
+   і клас .fold-set (той самий синхронний шматок). Без JS / reduced motion класу .js-motion немає — усе видно. */
+.js-motion:not(.fold-set) #absence .kicker, .js-motion:not(.fold-set) #absence [data-blur],
+.js-motion:not(.fold-set) #absence .plate__note { opacity: 0; }
 .js-motion .v-bar-glow { opacity: .3; }   /* спокійний стан — за замовчуванням; GSAP лише спалахує й повертає */
 
 /* ============ планшет / телефон ============ */
