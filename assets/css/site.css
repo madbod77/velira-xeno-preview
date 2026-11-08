@@ -16,6 +16,8 @@
   --gutter: clamp(16px, 4vw, 40px);
   --glow: 0 0 18px rgba(255, 255, 255, .24), 0 0 54px rgba(255, 255, 255, .1);
   --ease: cubic-bezier(.16, 1, .3, 1); --ease-move: cubic-bezier(.2, .8, .2, 1);
+  /* ц.10 — граматика SYNTHESIS §3: кольори 150 мс, зсуви 300 мс, панелі 320 мс */
+  --e-std: cubic-bezier(.4, 0, .2, 1); --e-mv: cubic-bezier(.23, 1, .32, 1); --e-pop: cubic-bezier(.22, 1, .36, 1); --e-in: cubic-bezier(.4, 0, 1, 1);
   --T: 104px; --b: 3vh; --hold: 24vh; --h: min(56vh, 520px); --U: calc(var(--h) + var(--hold));
 }
 @supports (height: 100svh) { :root { --h: min(56svh, 520px); } }
@@ -50,8 +52,9 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 20px; border-radius: 12px;
        font: 600 15px/1 var(--sans); letter-spacing: -.005em; white-space: nowrap; cursor: pointer; border: 0;
-       transition: transform .18s var(--ease), background-color .2s; }
-.btn:active { transform: scale(.97); }
+       transition: transform .3s var(--e-mv), background-color .15s var(--e-std), border-color .15s var(--e-std); }
+@media (hover: hover) and (pointer: fine) { .btn-light:hover, .btn-ghost:hover { transform: translateY(-2px); } }
+.btn:active { transform: scale(.98); transition-duration: .12s; }
 .btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .btn-light { background: var(--paper); color: #050505; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .3); }
 .btn-light:hover { background: #fff; }
@@ -59,8 +62,9 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 .btn-ghost:hover { background: rgba(255, 255, 255, .07); }
 /* другорядна дія hero — текстове посилання зі стрілкою (критик ц.3: біла кнопка — єдина заповнена форма) */
 .btn-text { padding: 0 6px; background: none; color: var(--tx); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .35); text-underline-offset: 6px; }
+.btn-text { transition: text-decoration-color .15s var(--e-std); }
 .btn-text:hover { text-decoration-color: currentColor; }
-.btn-text svg { transition: transform .2s var(--ease); }
+.btn-text svg { transition: transform .3s var(--e-mv); }
 .btn-text:hover svg { transform: translateX(3px); }
 
 /* ============ X06 шапка: смуга → пігулка ============ */
@@ -96,8 +100,11 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
           box-shadow: inset 0 0 0 1px var(--line-2); cursor: pointer; place-items: center; }
 .burger svg { width: 18px; height: 18px; }
 .sheet { position: fixed; top: 66px; left: 10px; right: 10px; z-index: 49; padding: 8px; border-radius: 22px; background: #0c0c0d;
-         box-shadow: inset 0 0 0 1px var(--line-2), 0 30px 60px -20px rgba(0, 0, 0, .9); visibility: hidden; opacity: 0; transform: translateY(-6px); }
+         box-shadow: inset 0 0 0 1px var(--line-2), 0 30px 60px -20px rgba(0, 0, 0, .9); visibility: hidden; opacity: 0;
+         transform: translateY(-12px) scale(.96); transform-origin: 50% 0; }
 .sheet.is-open { visibility: visible; opacity: 1; transform: none; }
+.scrim { position: fixed; inset: 0; z-index: 48; background: #000; opacity: 0; visibility: hidden; }
+.scrim.is-open { opacity: .6; visibility: visible; }
 .sheet a { display: flex; align-items: center; height: 52px; padding: 0 16px; border-radius: 14px; font-size: 17px; }
 .sheet a:hover, .sheet a[aria-current] { background: rgba(255, 255, 255, .06); }
 @media (prefers-reduced-motion: no-preference) {
@@ -107,12 +114,17 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
   .nav.is-pill .nav__edge, .nav.is-pill .nav__fill { transition-duration: .62s; }
   .nav.is-pill .brand, .nav.is-pill .nav__end { transition-duration: .62s; transition-delay: .03s; }
   .nav.is-pill .nav__shadow { transition: opacity .4s linear .22s; }
-  .nlinks__hl { transition: clip-path .5s var(--ease-move), opacity .3s linear; }
-  .nlinks__dot { transition: transform .5s var(--ease-move), opacity .3s linear; }
-  .nlinks a { transition: opacity .3s linear; }
-  .sheet { transition: opacity .2s linear, transform .28s var(--ease-move), visibility 0s linear .28s; }
-  .sheet.is-open { transition: opacity .2s linear, transform .28s var(--ease-move), visibility 0s; }
-  .js-motion .nav__in { animation: v-fade .6s linear .05s both; }
+  /* ц.10: плашка активного пункту — зсув 300 мс, поява/зникнення — 150 мс (колір/непрозорість) */
+  .nlinks__hl { transition: clip-path .3s var(--e-mv), opacity .15s var(--e-std); }
+  .nlinks__dot { transition: transform .3s var(--e-mv), opacity .15s var(--e-std); }
+  .nlinks a { transition: opacity .15s var(--e-std); }
+  .sheet a { transition: background-color .15s var(--e-std); }
+  /* меню: відкриття — панель Y −12 / scale .96 → 1 за 320 мс (TH), підкладка 0 → .6 за 240 мс; закриття коротше — 200 мс */
+  .sheet { transition: opacity .2s var(--e-std), transform .2s var(--e-in), visibility 0s linear .2s; }
+  .sheet.is-open { transition: opacity .24s var(--e-std), transform .32s var(--e-pop), visibility 0s; }
+  .scrim { transition: opacity .2s var(--e-std), visibility 0s linear .2s; }
+  .scrim.is-open { transition: opacity .24s var(--e-std), visibility 0s; }
+  .js-motion .nav__in { animation: v-fade .5s var(--e-std) .04s both; }
 }
 @keyframes v-fade { from { opacity: 0; } to { opacity: 1; } }
 
@@ -247,8 +259,15 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 .beam { position: absolute; left: 50%; top: 50%; width: var(--d); height: var(--d); translate: -50% -50%; will-change: transform;
         background: conic-gradient(from 0deg, rgb(255 255 255 / 0) 0deg 220deg, rgb(255 255 255 / .2) 296deg, rgb(255 255 255 / .85) 349deg, #fff 356deg, rgb(255 255 255 / 0) 360deg); }
 .bm-halo .beam { background: conic-gradient(from 0deg, rgb(255 255 255 / 0) 0deg 306deg, rgb(255 255 255 / .4) 334deg, #fff 349deg, #fff 357deg, rgb(255 255 255 / 0) 360deg); }
-.bm-edge i { position: absolute; left: 0; top: 0; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 50%;
-             background: radial-gradient(closest-side, rgba(255, 255, 255, .7), transparent); }
+/* ц.10 — V02 group spotlight (замість курсорного X05 edge): одне світло в координатах сітки маршруту.
+   Кільце 2 px: «гаряча» біла пляма r100 + холодно-біла r150; монохром бренду — без зсуву відтінку. */
+@property --on { syntax: '<number>'; inherits: true; initial-value: 0; }
+.bm-edge i { display: none; }
+.route-grid .cell { --lx: calc((var(--gx, -999) - var(--ox, 0)) * 1px); --ly: calc((var(--gy, -999) - var(--oy, 0)) * 1px); }
+.route-grid .bm-edge { inset: -1px; padding: 2px; border-radius: calc(var(--r-xl) + 1px);
+  background: radial-gradient(100px circle at calc(var(--lx) + 1px) calc(var(--ly) + 1px), rgba(255, 255, 255, .95), rgba(255, 255, 255, .38) 45%, rgba(255, 255, 255, 0)),
+              radial-gradient(150px circle at calc(var(--lx) + 1px) calc(var(--ly) + 1px), rgba(226, 232, 240, .55), rgba(226, 232, 240, .2) 50%, transparent);
+  opacity: var(--on); transition: opacity .2s var(--e-std); }
 
 .rcard { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 18px; padding: 22px; }
 .rcard__t { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
@@ -431,7 +450,7 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 .contact-copy { display: grid; gap: 20px; justify-items: start; position: sticky; top: 120px; }
 .contact-copy .kicker { margin: 0; }
 .tg { display: inline-flex; align-items: center; gap: 14px; min-height: 64px; padding: 0 20px; border-radius: 16px; border: 1px solid var(--line-3);
-      background: rgba(255, 255, 255, .03); font-size: 15px; transition: background-color .2s; }
+      background: rgba(255, 255, 255, .03); font-size: 15px; transition: background-color .15s var(--e-std); }
 .tg span { color: var(--tx-3); }
 .tg b { font-size: clamp(20px, 2vw, 26px); font-weight: 620; letter-spacing: -.02em; }
 .tg svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
@@ -459,7 +478,7 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 /* маршрут чорнилом у прайсі (лише з рухом; без JS його немає) */
 .ink { position: absolute; left: 0; top: 0; width: 100%; pointer-events: none; overflow: visible; z-index: 1; }
 .ink__line { fill: none; stroke: #0a0a0a; stroke-width: 1.5; stroke-linejoin: round; }
-.ink circle, .ink__bar { fill: #0a0a0a; transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); transition: transform .45s var(--ease); }
+.ink circle, .ink__bar { fill: #0a0a0a; transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); transition: transform .3s var(--e-mv); }
 .ink circle[data-on], .ink__bar[data-on] { transform: scale(1); }
 @media (min-width: 900px) { .fgrid[data-ink] .sys:last-of-type .sys__name { margin-bottom: 16px; } }   /* місце для риски під $7500 */
 .foot { border-top: 1px solid var(--line); background: var(--bg-1); color: var(--tx-3); font-size: 14px; }
@@ -468,6 +487,7 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 .foot__line { margin: 0; color: var(--tx-2); }
 .foot nav { display: flex; flex-wrap: wrap; gap: 4px 22px; }
 .foot nav a { display: inline-flex; align-items: center; min-height: 44px; }
+.foot nav a { transition: color .15s var(--e-std); }
 .foot nav a:hover { color: var(--tx); }
 .foot__copy { grid-column: 1 / -1; margin: 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; }
 
@@ -479,8 +499,10 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 }
 @keyframes v-drift-a { from { transform: translate(-90px, -10px) scale(1); } to { transform: translate(110px, 50px) scale(1.08); } }
 @keyframes v-drift-b { from { transform: translate(120px, 30px); } to { transform: translate(-140px, -30px); } }
-.js-motion .hero .hero-kicker, .js-motion .hero .l1, .js-motion .hero .rot, .js-motion .hero .lede, .js-motion .hero .cta,
+.js-motion .hero .hero-kicker, .js-motion .hero .rot,
 .js-motion .grid-bg, .js-motion .glow-a, .js-motion .glow-b, .js-motion .vmark svg, .js-motion .vmark__cap { opacity: 0; }
+/* ц.10: H1, лід і перша дія видимі з першого кадру — лише проступають від .15 (SYNTHESIS §3, XA .12–.16) */
+.js-motion .hero .l1, .js-motion .hero .lede, .js-motion .hero .cta { opacity: .15; }
 /* ц.8: «Ціна відсутності» в першому екрані прихована з першого малювання, доки site.js не поставить їй інлайн-стан
    і клас .fold-set (той самий синхронний шматок). Без JS / reduced motion класу .js-motion немає — усе видно. */
 .js-motion:not(.fold-set) #absence .kicker, .js-motion:not(.fold-set) #absence [data-blur],

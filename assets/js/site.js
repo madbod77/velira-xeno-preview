@@ -37,9 +37,15 @@
   new ResizeObserver(function () { place(current); }).observe(bar);
 
   var burger = nav.querySelector('.burger'), sheet = $('#menu');
+  // ц.10: підкладка під аркушем меню (0 → .6 за 240 мс, TH/XE); дотик по ній закриває меню
+  var scrim = document.createElement('div');
+  scrim.className = 'scrim'; scrim.setAttribute('aria-hidden', 'true');
+  sheet.after(scrim);
+  scrim.addEventListener('click', function () { setOpen(false); });
   function setOpen(open) {
     burger.setAttribute('aria-expanded', String(open)); burger.setAttribute('aria-label', open ? 'Закрити меню' : 'Відкрити меню');
-    sheet.classList.toggle('is-open', open); sheet.setAttribute('aria-hidden', String(!open)); sheet.inert = !open;
+    sheet.classList.toggle('is-open', open); scrim.classList.toggle('is-open', open);
+    sheet.setAttribute('aria-hidden', String(!open)); sheet.inert = !open;
   }
   burger.addEventListener('click', function () { setOpen(burger.getAttribute('aria-expanded') !== 'true'); });
   sheet.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false); });
@@ -141,7 +147,8 @@
       });
       cum += seg;
     }
-    geo.L = cum; geo.lens = lens; geo.pts = pts;
+    geo.L = cum; geo.lens = lens; geo.pts = pts; geo.nodes = nodes;
+    if (spotPark) spotPark();
     // ПК: у перетині центрального проводу з проміжком між рядами — два короткі відгалуження вздовж країв нижнього ряду;
     // малюються, щойно голова проходить перетин
     geo.stub = null;
@@ -188,12 +195,14 @@
     (geo.lens || []).forEach(function (l, k) { if (l !== null && len >= l - 1) lightCell(k, circles[k]); });
   }
   var onLight = null;   // рух підставляє анімацію запалювання
+  var spotPark = null, spotLit = null, spotOff = null;   // V02 (нижче): світло осідає на вузлі, до якого дійшла лінія
   function lightCell(k, circle) {
     if (circle && !circle.hasAttribute('data-lit')) circle.setAttribute('data-lit', '');
     var c = routeCells[k];
     if (c.hasAttribute('data-lit')) return;
     c.setAttribute('data-lit', '');
     if (onLight) onLight(k, c);
+    if (spotLit) spotLit(k);
   }
   /* ================= провід: від останнього зрощеного обриву «Ціни відсутності» до риски міні-знака V =================
      Дві частини: A — у секції #absence (до її нижнього краю), B — у сцені маршруту (від її верху до риски);
@@ -246,13 +255,34 @@
   gsap.registerPlugin(ScrollTrigger);
   window.__motionReady = true;
 
-  var IN = 'expo.out';
-  var from = function (blur, y) { return { opacity: 0, y: y, filter: 'blur(' + blur + 'px)' }; };
+  /* ц.10 — граматика руху за knowledge/SYNTHESIS.md §3 (виміри xeno.now і 21st.dev; див. motion.md, таблиця «було → стало»).
+     GSAP не розбирає рядок cubic-bezier() без CustomEase — тож крива рахується тут (Ньютон по x, 6 кроків). */
+  var bez = function (x1, y1, x2, y2) {
+    var cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+    return function (x) {
+      if (x <= 0) return 0; if (x >= 1) return 1;
+      var t = x;
+      for (var i = 0; i < 6; i++) {
+        var fx = ((ax * t + bx) * t + cx) * t - x, d = (3 * ax * t + 2 * bx) * t + cx;
+        if (Math.abs(fx) < 1e-5 || Math.abs(d) < 1e-6) break;
+        t = Math.min(1, Math.max(0, t - fx / d));
+      }
+      return ((ay * t + by) * t + cy) * t;
+    };
+  };
+  var REVEAL = bez(.2, .7, .2, 1);   // проява блоків — TH ×10
+  var STD = bez(.4, 0, .2, 1);       // кольори/непрозорість — TH ×119, XH ×16
+  var MOVE = bez(.23, 1, .32, 1);    // дрібні зсуви — BP/SC ×32
+  var G = { d: .7, y: 18, start: 'top 80%', step: .08, max: 6, blurH: 8 };
+  var IN = 'expo.out';               // лишається лише у фірмовому моменті (вставки маршруту) і ротаторі X02
+  var from = function (blur, y) { return { opacity: 0, y: y, filter: blur ? 'blur(' + blur + 'px)' : 'none' }; };
   var to = function (d, extra) {
-    var v = { opacity: 1, y: 0, filter: 'blur(0px)', duration: d, ease: IN, clearProps: 'filter,transform' };
+    var v = { opacity: 1, y: 0, filter: 'blur(0px)', duration: d, ease: REVEAL, clearProps: 'filter,transform' };
     for (var k in extra) v[k] = extra[k];
     return v;
   };
+  // стагер групи: 80 мс, не більше 6 кроків (далі — разом)
+  var stag = function (i) { return Math.min(i, G.max - 1) * G.step; };
   var t0 = performance.now();
   var since = function () { return (performance.now() - t0) / 1000; };
 
@@ -288,12 +318,14 @@
     var hero = gsap.timeline()
       .fromTo('.hero .grid-bg', { opacity: 0 }, { opacity: 1, duration: 1.6, ease: 'power1.out' }, 0)
       .fromTo('.hero .glow-a, .hero .glow-b', { opacity: 0 }, { opacity: 1, duration: 2.2, ease: 'power1.out' }, .1)
-      .fromTo('.hero .hero-kicker', { opacity: 0 }, { opacity: 1, duration: .6, ease: 'power1.out' }, .04)
-      .fromTo(l1, from(14, 20), to(1.1), .1)
+      .fromTo('.hero .hero-kicker', { opacity: 0 }, { opacity: 1, duration: .5, ease: STD }, .04)
+      // ц.10: H1 і перша дія видимі з першого кадру — лише проступання .15 → 1 за 500 мс, без зсуву й розмиття (SYNTHESIS §3, TH/XA)
+      .fromTo(l1, { opacity: .15 }, { opacity: 1, duration: .5, ease: STD }, .04)
       .set('.hero .rot', { opacity: 1 }, .3)
-      .fromTo('.vmark svg', { opacity: 0, scale: .96, filter: 'blur(16px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.2, ease: IN, clearProps: 'filter' }, .2)
-      .fromTo('.hero .lede', from(10, 16), to(.95), .52)
-      .fromTo('.hero .cta', from(8, 14), to(.85), .64)
+      // головний доказ першого екрана — знак V: фокусування blur 10 → 0, scale .94 → 1, 600 мс (XH скриншот, масштаб пом'якшено)
+      .fromTo('.vmark svg', { opacity: 0, scale: .94, filter: 'blur(10px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: .6, ease: REVEAL, clearProps: 'filter' }, .1)
+      .fromTo('.hero .lede', { opacity: .15 }, { opacity: 1, duration: .5, ease: STD }, .12)
+      .fromTo('.hero .cta', { opacity: .15 }, { opacity: 1, duration: .5, ease: STD }, .2)
       .fromTo('.vmark__cap', { opacity: 0 }, { opacity: 1, duration: .6, ease: 'power1.out' }, .9)
       .fromTo(trace, { opacity: 0, strokeDashoffset: 0 }, { opacity: 1, duration: .25, ease: 'power1.out' }, .8)
       .to(trace, { strokeDashoffset: -100, duration: 1.0, ease: 'sine.inOut' }, .8)
@@ -306,7 +338,7 @@
       .add(sweep(), .95);
     // хвиля: «Ціна відсутності», що вже в першому екрані, проявляється після Lead hero, а не стоїть різкою з 0 мс
     var foldAbs = $$('#absence .kicker, #absence [data-blur], #absence .plate__note').filter(function (el) { return el.getBoundingClientRect().top < innerHeight; });
-    if (foldAbs.length) hero.fromTo(foldAbs, from(10, 14), to(.9, { stagger: .08 }), .7);
+    if (foldAbs.length) hero.fromTo(foldAbs, from(0, G.y), to(G.d, { stagger: stag }), .7);
     // ц.8: до цієї миті CSS тримає ці елементи прихованими з першого малювання (html.js-motion:not(.fold-set));
     // fromTo вище вже поставив інлайн-стан «до» тим, що в першому екрані, — тепер CSS відпускає решту (вони нижче краю).
     // Той самий синхронний шматок — між ними немає малювання, тож жодного «видно → сховано → видно».
@@ -319,21 +351,30 @@
 
     /* ---------- X01: заголовки й рядки з розмиття (лише нижче першого екрана, після першої прокрутки) ---------- */
     armers.push(function () {
-      $$('[data-blur]').forEach(function (h) {
-        if (!below(h)) return;
-        gsap.set(h, from(12, 18));
-        var inF = !!h.closest('#formats'), phone = !desktopRoute();
-        // телефон (критик ц.5 р.1–2, дослівно: 'top 95%' і 0,6 с): заголовок «Форматів» осідає раніше й коротше — до того, як перший рядок цін дійде до середини
-        // ц.9: на ПК шапка «Форматів» уже на папері диска T06 — осідає так само, як інші заголовки
-        ScrollTrigger.create({ trigger: h, start: inF && phone ? 'top 95%' : 'top 88%', once: true, onEnter: function () { gsap.to(h, to(inF && phone ? .6 : 1.0)); } });
-      });
+      // ц.10: opacity 0 → 1, Y +18, 700 мс cubic-bezier(.2,.7,.2,1), верх елемента на 80 % екрана, один раз; група, що
+      // входить разом, — стагер 80 мс (до 6 кроків). Розмиття 8 px лишається тільки на дисплейних h2 (фактура Xeno, XH 9 px);
+      // рядки, підписи й лід — без розмиття (SYNTHESIS §3: не для тексту абзаців)
+      var phone = !desktopRoute(), shown = [];
+      var blurOf = function (h) { return h.tagName === 'H2' ? G.blurH : 0; };
+      var ups = $$('[data-blur]').filter(function (h) { return below(h); });
+      // телефон (критик ц.5 р.1–2, дослівно: 'top 95%' і 0,6 с): шапка «Форматів» осідає раніше й коротше — до того, як перший рядок цін дійде до середини
+      var early = ups.filter(function (h) { return phone && h.closest('#formats'); });
+      ups.forEach(function (h) { gsap.set(h, from(blurOf(h), G.y)); });
+      var reveal = function (list, d) {
+        list = list.filter(function (h) { return shown.indexOf(h) < 0; }); if (!list.length) return;
+        shown = shown.concat(list);
+        list.forEach(function (h, i) { gsap.to(h, to(d, { delay: stag(i) })); });
+      };
+      var rest = ups.filter(function (h) { return early.indexOf(h) < 0; });
+      if (rest.length) ScrollTrigger.batch(rest, { start: G.start, once: true, interval: .1, onEnter: function (b) { reveal(b, G.d); } });
+      if (early.length) ScrollTrigger.batch(early, { start: 'top 95%', once: true, interval: .1, onEnter: function (b) { reveal(b, .6); } });
       // смуга 30 / 70 заповнюється
       var pay = $('.pay');
       if (below(pay)) {
         gsap.set(['.pay__a', '.pay__b'], { scaleX: 0 });
-        ScrollTrigger.create({ trigger: pay, start: 'top 85%', once: true, onEnter: function () {
-          gsap.to('.pay__a', { scaleX: 1, duration: .9, ease: IN });
-          gsap.to('.pay__b', { scaleX: 1, duration: 1.1, ease: IN, delay: .25 });
+        ScrollTrigger.create({ trigger: pay, start: G.start, once: true, onEnter: function () {
+          gsap.to('.pay__a', { scaleX: 1, duration: G.d, ease: REVEAL });
+          gsap.to('.pay__b', { scaleX: 1, duration: G.d, ease: REVEAL, delay: G.step });
         } });
       }
     });
@@ -385,6 +426,7 @@
       if (below(routeSec)) {
         routeCells.forEach(function (c) { c.removeAttribute('data-lit'); });
         $$('circle', gNodes).forEach(function (c) { c.removeAttribute('data-lit'); });
+        if (spotOff) spotOff();
         drawRoute(0); prog.v = 0;
       }
       if (routeSec.getBoundingClientRect().top > innerHeight * .85) { drawWire(0); wireProg.v = 0; }
@@ -577,8 +619,9 @@
 
     /* ---------- перемикач $ / ₴: числа котяться ---------- */
     rollPrices = function () {
-      gsap.fromTo(prices, { yPercent: 60, opacity: 0, filter: 'blur(6px)' },
-        { yPercent: 0, opacity: 1, filter: 'blur(0px)', duration: .45, ease: IN, stagger: .03, clearProps: 'filter,transform' });
+      // ц.10: перемикач — дрібний зсув 300 мс cubic-bezier(.23,1,.32,1); цін більше 6 — котяться разом, без розмиття
+      gsap.fromTo(prices, { yPercent: 60, opacity: 0 },
+        { yPercent: 0, opacity: 1, duration: .3, ease: MOVE, clearProps: 'transform' });
     };
     killers.push(function () { rollPrices = null; });
 
@@ -627,11 +670,12 @@
         li.className = 'log__row'; li.setAttribute('data-new', '');
         li.innerHTML = '<span></span><small></small>'; li.firstChild.textContent = s[0]; li.lastChild.textContent = s[1];
         log.prepend(li); rows.unshift(li);
-        gsap.fromTo(li, { y: -p * .6, opacity: 0, scale: .96 }, { y: 0, opacity: 1, scale: 1, duration: .7, ease: IN });
+        // ц.10: масштаб «від» .975 (TH), 700 мс, крива проявлення
+        gsap.fromTo(li, { y: -p * .6, opacity: 0, scale: .975 }, { y: 0, opacity: 1, scale: 1, duration: G.d, ease: REVEAL });
         rows.forEach(function (r, i) {
           if (i === 0) return;
           if (i === 1) r.removeAttribute('data-new');
-          gsap.to(r, { y: i * p, duration: .7, ease: IN });
+          gsap.to(r, { y: i * p, duration: G.d, ease: REVEAL });
         });
         while (rows.length > 6) { var gone = rows.pop(); gone.remove(); }
       }
@@ -762,25 +806,68 @@
     deckIn({ peek: .02, scale: .05, tilt: 4, persp: 1100, depth: 3, shade: [0, .45, .7, .85], scrub: .4, deal: .6,
              hold: .75, enter: .3, inScale: .92, inTilt: 7, tail: .04 }));
 
-  /* ---------- X05 світло курсора по рамках (лише точний курсор; підсилення, не момент) ---------- */
-  mm.add('(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)', function () {
-    var zones = $$('.route-grid, .contact-in');
-    var edges = cells.map(function (c) { return c.querySelector('.bm-edge'); });
-    var movers = cells.map(function (c) {
-      var d = c.querySelector('.bm-edge i');
-      return { x: gsap.quickTo(d, 'x', { duration: .5, ease: 'power3' }), y: gsap.quickTo(d, 'y', { duration: .5, ease: 'power3' }) };
-    });
-    var rects = null;
-    var measure = function () { rects = cells.map(function (c) { return c.getBoundingClientRect(); }); };
-    var drop = function () { rects = null; };
-    var enter = function () { measure(); gsap.to(edges, { opacity: 1, duration: .35, overwrite: 'auto' }); };
-    var leave = function () { gsap.to(edges, { opacity: 0, duration: .6, overwrite: 'auto' }); };
-    var move = function (e) { if (!rects) measure(); movers.forEach(function (m, i) { m.x(e.clientX - rects[i].left); m.y(e.clientY - rects[i].top); }); };
-    zones.forEach(function (z) { z.addEventListener('pointerenter', enter); z.addEventListener('pointerleave', leave); z.addEventListener('pointermove', move); });
-    addEventListener('scroll', drop, { passive: true });
+  /* ---------- V02 group spotlight: одне світло на чотири картки маршруту (ц.10, замінює курсорне X05 edge) ----------
+     Світло живе в координатах сітки (--gx/--gy на .route-grid), кожна картка віднімає свій зсув (--ox/--oy), тож у проміжку
+     світяться краї обох сусідів. Без курсора світло не зникає: воно «відпочиває» (.6) на вузлі, до якого вже дійшла лінія
+     маршруту, — перший прохід робить сама лінія (фірмовий момент), окремого проходу немає. Курсор: lerp 0.18 за кадр 60 Гц;
+     дотик — світло пливе до вузла торкнутої картки (.85). Монохром: біла пляма r100 + холодно-біла r150, без зсуву відтінку. */
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var LERP = .18, REST = .6, HELD = 1, TAP = .85, REACH = 150;
+    var cur = { x: 0, y: 0 }, tgt = { x: 0, y: 0 }, raf = 0, last = 0, pointer = null, home = -1, placed = false;
+    var setOn = function (v) { grid.style.setProperty('--on', v); };
+    var layout = function () { routeCells.forEach(function (c) { c.style.setProperty('--ox', c.offsetLeft); c.style.setProperty('--oy', c.offsetTop); }); };
+    var write = function () { grid.style.setProperty('--gx', cur.x.toFixed(1)); grid.style.setProperty('--gy', cur.y.toFixed(1)); };
+    var tick = function (now) {
+      raf = 0;
+      var dt = last ? Math.min(now - last, 64) : 16.667; last = now;
+      var k = 1 - Math.pow(1 - LERP, dt / 16.667);
+      cur.x += (tgt.x - cur.x) * k; cur.y += (tgt.y - cur.y) * k;
+      if (Math.abs(tgt.x - cur.x) < .3 && Math.abs(tgt.y - cur.y) < .3) { cur.x = tgt.x; cur.y = tgt.y; last = 0; write(); return; }
+      write(); raf = requestAnimationFrame(tick);
+    };
+    var go = function () { if (!raf) raf = requestAnimationFrame(tick); };
+    // точка відпочинку — вузол лінії на краю картки k (координати сітки, без transform)
+    var nodeOf = function (k) { var n = geo.nodes && geo.nodes[k]; return n ? { x: n[0], y: n[1] } : null; };
+    var rest = function (k, strength) {
+      var p = nodeOf(k); if (!p) return;
+      home = k; tgt.x = p.x; tgt.y = p.y;
+      if (!placed) { cur.x = p.x; cur.y = p.y; write(); placed = true; }
+      setOn(strength); go();
+    };
+    spotLit = function (k) { if (!pointer) rest(k, REST); };
+    spotOff = function () { home = -1; placed = false; if (!pointer) setOn(0); };
+    spotPark = function () { layout(); if (!pointer && home >= 0) { var p = nodeOf(home); if (p) { cur.x = tgt.x = p.x; cur.y = tgt.y = p.y; write(); } } };
+    var near = function (x, y) { var r = grid.getBoundingClientRect(); return x > r.left - REACH && x < r.right + REACH && y > r.top - REACH && y < r.bottom + REACH; };
+    var aim = function (x, y) { var r = grid.getBoundingClientRect(); tgt.x = x - r.left; tgt.y = y - r.top; if (!placed) { cur.x = tgt.x; cur.y = tgt.y; placed = true; } go(); };
+    var release = function () { pointer = null; if (home >= 0) rest(home, REST); else setOn(0); };
+    var onMove = function (e) {
+      if (e.pointerType === 'touch') return;
+      if (!near(e.clientX, e.clientY)) { if (pointer) release(); return; }
+      pointer = { x: e.clientX, y: e.clientY }; setOn(HELD); aim(e.clientX, e.clientY);
+    };
+    var onLeave = function (e) { if (e.pointerType !== 'touch' && pointer) release(); };
+    var onDown = function (e) {
+      if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+      var c = e.target.closest && e.target.closest('.route-grid .cell'); if (!c) return;
+      pointer = null; rest(routeCells.indexOf(c), TAP);
+    };
+    var onScroll = function () { if (pointer) { if (near(pointer.x, pointer.y)) aim(pointer.x, pointer.y); else release(); } };
+    var zone = $('#route');
+    layout();
+    // картки, вже запалені до старту (статичний варіант / повернення), — світло стоїть на останній
+    routeCells.forEach(function (c, k) { if (c.hasAttribute('data-lit')) home = k; });
+    if (home >= 0 && geo.nodes) rest(home, REST);
+    var spotRO = new ResizeObserver(function () { spotPark(); });
+    spotRO.observe(grid);
+    zone.addEventListener('pointermove', onMove, { passive: true });
+    zone.addEventListener('pointerleave', onLeave);
+    zone.addEventListener('pointerdown', onDown, { passive: true });
+    addEventListener('scroll', onScroll, { passive: true });
     return function () {
-      zones.forEach(function (z) { z.removeEventListener('pointerenter', enter); z.removeEventListener('pointerleave', leave); z.removeEventListener('pointermove', move); });
-      removeEventListener('scroll', drop);
+      spotLit = spotPark = spotOff = null; if (raf) cancelAnimationFrame(raf); raf = 0; spotRO.disconnect();
+      zone.removeEventListener('pointermove', onMove); zone.removeEventListener('pointerleave', onLeave);
+      zone.removeEventListener('pointerdown', onDown); removeEventListener('scroll', onScroll);
+      ['--on', '--gx', '--gy'].forEach(function (p) { grid.style.removeProperty(p); });
     };
   });
 
