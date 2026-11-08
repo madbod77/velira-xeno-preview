@@ -74,7 +74,10 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 .nav__edge, .nav__fill, .nav__shadow { position: absolute; inset: 0; pointer-events: none; }
 .nav__edge { background: rgba(255, 255, 255, .12); clip-path: inset(0 0 0 0 round 0px); }
 /* ц.12 (критик ц.11, дослівно): заливка щільніша й розмиття сильніше — під час морфу смуга → пігулка текст під нею не читається */
-.nav__fill { background: rgba(0, 0, 0, .88); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+/* ц.14 (критик ц.13, дослівно): над папером пігулка суцільна — .92, а не напівпрозора; знак і «Velira» — повний #f4f4f1.
+   Виміряно (tools/c14_pill.py, 390 px, 17 зупинок): «Velira» над папером 15,5 : 1 до і 17,0 : 1 після; у стрічках motion.py
+   «сірість» дає підпис кадру «y=…px», який лягає поверх лого, а не сама пігулка. */
+.nav__fill { background: rgba(0, 0, 0, .92); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
              clip-path: inset(0 0 1px 0 round 0px); }
 .nav__shadow { inset: 10px var(--px) 10px var(--px); border-radius: 26px; opacity: 0;
                box-shadow: 0 18px 40px -12px rgba(0, 0, 0, .9), 0 0 34px rgba(255, 255, 255, .05); }
@@ -85,7 +88,7 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
 .brand { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 650; font-size: 18px; letter-spacing: -.01em; }
 .brand__mark { width: 20px; height: 23px; fill: var(--paper); }
-.nav .brand { justify-self: start; transform: translateX(var(--dl)); }
+.nav .brand { color: var(--paper); opacity: 1; justify-self: start; transform: translateX(var(--dl)); }
 .nav__end { grid-column: 3; justify-self: end; display: flex; align-items: center; gap: 6px; transform: translateX(var(--dr)); }
 .nav.is-pill .brand, .nav.is-pill .nav__end { transform: none; }
 .nav__end .btn { min-height: 40px; padding: 0 16px; font-size: 14px; }
@@ -325,6 +328,15 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 /* ============ ФОРМАТИ (папір) ============ */
 .sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 48px; align-items: end; margin-bottom: clamp(28px, 4vw, 48px); }
 .sec-head__side { display: grid; gap: 16px; justify-items: start; }
+/* ц.14 (критик ц.13, P3 spacing): шапка «Процесу» на ПК — у тій самій сітці 5 : 7, що й аркуші стопки під нею. Права колонка
+   (лід і TODO) починається рівно там, де віджети аркушів: P + (W − 2P − G) · 5/12 + G, де P і G — padding і gap .pcard.
+   TODO — під лідом, 46ch, 16 px зверху. */
+@media (min-width: 900px) {
+  .process .sec-head { --pp: clamp(24px, 3.4vw, 48px); --pg: clamp(24px, 4vw, 56px);
+    grid-template-columns: calc(var(--pp) + (100% - 2 * var(--pp) - var(--pg)) * 5 / 12) minmax(0, 1fr); column-gap: var(--pg); }
+  .process .sec-head__side { gap: 0; padding-right: var(--pp); }
+  .process .sec-head__side .todo { max-width: 46ch; margin-top: 16px; }
+}
 .cur { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
 .cur__b { width: 48px; height: 44px; border-radius: 10px; border: 1px solid var(--p-line); background: transparent; color: var(--p-tx); font: 600 17px var(--sans); cursor: pointer; }
 .cur__b[aria-pressed="true"] { background: #000; color: var(--paper); border-color: #000; }
