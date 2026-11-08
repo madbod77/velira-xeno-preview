@@ -111,8 +111,14 @@
     });
   });
 
-  /* ================= форма-прев’ю: перевіряє, не надсилає ================= */
-  var form = $('#lead-form'), status = form.querySelector('.form__status');
+  /* ================= форма заявки ================= */
+  // Є data-endpoint → заявка йде на сервер (Google Apps Script). Нема або сервер не відповів →
+  // відкриваємо Telegram з уже написаним текстом заявки: людині лишається натиснути «Надіслати».
+  var form = $('#lead-form'), status = form.querySelector('.form__status'), sendBtn = form.querySelector('[type="submit"]');
+  var TG = 'https://t.me/madbod_77', PRIVACY_VERSION = form.getAttribute('data-privacy') || '';
+  var say = function (html) { status.innerHTML = html; };
+  var tgLink = function (text) { return TG + '?text=' + encodeURIComponent(text); };
+  var track = function (n, p) { if (typeof window.veliraTrack === 'function') window.veliraTrack(n, p); };
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var bad = $$('[required]', form).filter(function (f) {
@@ -120,8 +126,40 @@
       if (f.type !== 'checkbox') f.setAttribute('aria-invalid', String(!ok));
       return !ok;
     });
-    if (bad.length) { status.textContent = 'Заповніть усі поля й позначте обидві згоди.'; bad[0].focus(); return; }
-    status.textContent = 'Поля заповнено. Це прев’ю — заявку не надіслано. Напишіть у Telegram @madbod_77.';
+    if (bad.length) { say('Заповніть усі поля й позначте обидві згоди.'); bad[0].focus(); return; }
+    var v = function (n) { return (form.elements[n] && form.elements[n].value || '').trim(); };
+    var attr = typeof window.veliraAttribution === 'function' ? window.veliraAttribution() : {};
+    var from = [attr.gclid || attr.gbraid || attr.wbraid ? 'Google Ads' : attr.utm_source, attr.utm_campaign].filter(Boolean).join(' · ');
+    var text = 'Заявка з сайту Velira\nІм’я / бренд: ' + v('name') + '\nКонтакт: ' + v('contact') + '\nЗадача: ' + v('brief') + (from ? '\nЗвідки: ' + from : '');
+    var endpoint = form.getAttribute('data-endpoint') || '';
+    var fallback = function (lead, label) {
+      say(lead + ' <a class="form__tg" href="' + tgLink(text) + '" target="_blank" rel="noopener">' + (label || 'Відкрити Telegram з текстом заявки') + '</a>');
+    };
+    if (!endpoint) {
+      var win = window.open(tgLink(text), '_blank', 'noopener');
+      if (win) fallback('Відкрили Telegram з текстом заявки — натисніть «Надіслати» в чаті.', 'Чат не відкрився?');
+      else fallback('Текст заявки готовий.');
+      track('lead_telegram_draft', { method: 'telegram' });
+      return;
+    }
+    var payload = {
+      name: v('name'), contact: v('contact'), brief: v('brief'), company: v('company'),
+      privacyAcknowledged: form.elements.privacyAcknowledged.checked,
+      deliveryConsent: form.elements.deliveryConsent.checked,
+      privacyVersion: PRIVACY_VERSION, source: 'home', language: 'uk', page: location.href.split('#')[0].slice(0, 300), attribution: attr
+    };
+    sendBtn.disabled = true; say('Надсилаємо…');
+    var ctl = 'AbortController' in window ? new AbortController() : null, timer = setTimeout(function () { if (ctl) ctl.abort(); }, 12000);
+    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload), signal: ctl ? ctl.signal : undefined })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res || res.ok !== true) throw new Error((res && res.error) || 'not ok');
+        form.reset(); $$('[aria-invalid]', form).forEach(function (f) { f.removeAttribute('aria-invalid'); });
+        say('Заявку отримали. Відповімо за контактом, який ви вказали.');
+        track('lead_form_submit', { method: 'form' });
+      })
+      .catch(function () { fallback('Не вдалося надіслати з сайту.'); })
+      .then(function () { clearTimeout(timer); sendBtn.disabled = false; });
   });
 
   /* ================= маршрут: геометрія лінії (і для статичного варіанта) ================= */
