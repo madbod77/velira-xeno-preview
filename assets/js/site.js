@@ -209,7 +209,12 @@
      шов лежить рівно на межі секцій, тож на ПК, коли сцена маршруту прилипає, він уже за верхнім краєм екрана. */
   var absence = $('#absence'), stage = $('.route-stage'), losses = $('.losses'), miniV = $('.mini-v');
   var lossRows = $$('li', losses), lastLi = lossRows[lossRows.length - 1], lastCut = $('.cut', lastLi);
-  var wA = $('.wire--a path'), wB = $('.wire--b path'), wire = { a: 1, b: 1 }, wired = 1;
+  // ц.11: провід будується в простої (later), а гаситься ще пізніше (soon) — між ними він малювався повністю: на першому
+  // кадрі intro це був «кутик» на роздільнику плити. Тепер у режимі руху, коли маршрут нижче 85 % екрана, провід з самого
+  // початку не намальований (та сама умова, що й у soon нижче); без руху — увесь.
+  var wA = $('.wire--a path'), wB = $('.wire--b path'), wire = { a: 1, b: 1 };
+  var wired = root.classList.contains('js-motion') && matchMedia('(prefers-reduced-motion: no-preference)').matches &&
+    $('#route').getBoundingClientRect().top > innerHeight * .85 ? 0 : 1;
   function offsetIn(el, anc) {
     var x = 0, y = 0;
     while (el && el !== anc) { x += el.offsetLeft; y += el.offsetTop; el = el.offsetParent; }
@@ -251,7 +256,7 @@
   var geometry = function () { buildRoute(); drawRoute(drawn); buildWire(); drawWire(wired); };
   later(geometry);
 
-  if (!window.gsap || !window.ScrollTrigger) { root.classList.remove('js-motion'); return; }
+  if (!window.gsap || !window.ScrollTrigger) { root.classList.remove('js-motion'); wired = 1; return; }
   gsap.registerPlugin(ScrollTrigger);
   window.__motionReady = true;
 
@@ -601,20 +606,95 @@
       gsap.fromTo(field, { clipPath: 'inset(0% 0% 0% 0% round 0px 0px 0px 0px)' },
         { clipPath: 'inset(0% 0% 100% 0% round 0px 0px 48px 48px)', ease: 'none', immediateRender: false,
           scrollTrigger: { trigger: '#contact', start: desktopRoute() ? 'top 80%' : 'top 88%', end: 'top 35%', scrub: .6 } });
-      // лінія замикається: коло променя по формі
-      var formPart = partOf($('[data-form]')), formOn = false, ambientOn = false;
-      var ambient = gsap.timeline({ paused: true, repeat: -1 }).fromTo(formPart.beams, { rotation: 0 }, { rotation: 360, duration: 10, ease: 'none' });
-      ScrollTrigger.create({ trigger: '[data-form]', start: 'top 70%', once: true, onEnter: function () {
+      /* ц.11 — лінія замикає маршрут (критик ц.9–10, дослівно): тим самим скролом, що й шторка, 1,5 px лінія йде вниз
+         лівим краєм піднятого поля (проміжок перед формою; на телефоні — ліве поле сторінки) і входить у лівий край форми.
+         mix-blend-mode: difference — на папері вона темна (чорнило «Форматів»), на відкритому чорному — світла: та сама
+         лінія перетинає край шторки. Де лінія закінчується, там вузол спалахує й починає коло промінь форми (X05):
+         кут старту рахується від центру форми до цієї точки. Заявка = кінець шляху. */
+      var formCell = $('[data-form]'), contact = $('#contact');
+      var formPart = partOf(formCell), formOn = false, ambientOn = false, ambient = null, closed = false;
+      var NS = 'http://www.w3.org/2000/svg';
+      var closer = document.createElementNS(NS, 'svg'); closer.setAttribute('class', 'closer'); closer.setAttribute('aria-hidden', 'true');
+      var cLine = document.createElementNS(NS, 'path'), cNode = document.createElementNS(NS, 'circle');
+      cLine.setAttribute('class', 'closer__line'); cNode.setAttribute('class', 'closer__node'); cNode.setAttribute('r', '3.5');
+      closer.appendChild(cLine); closer.appendChild(cNode); contact.prepend(closer);
+      var CL = 1, cP = 0, cY0 = 0, END_DY = 52;   // точка входу — на прямій ділянці лівого краю форми, нижче заокруглення 28 px
+      var closerDraw = function (p) {
+        // при p = 0 кругла заглушка штриха нульової довжини лишала крапку під карткою — ховаємо лінію повністю
+        cP = p; cLine.style.strokeDashoffset = (CL * (1 - p)).toFixed(1); cLine.style.visibility = p > .001 ? '' : 'hidden';
+        cNode.toggleAttribute('data-on', p > .995);
+      };
+      // лінія виходить з низу останньої картки стопки «Процесу» (Етап 4 з 4): липка картка зупиняється на дні свого блока
+      var lastStage = $$('#process [data-card]').pop();
+      var stageBottom = function (s) {
+        if (!lastStage) return 0;
+        var par = lastStage.parentElement, pr = par.getBoundingClientRect();
+        var b = pr.bottom - (parseFloat(getComputedStyle(par).paddingBottom) || 0) - (parseFloat(getComputedStyle(lastStage).marginBottom) || 0);
+        return Math.max(-240, Math.min(0, Math.round(b - s.top)));
+      };
+      // ламана з заокругленими кутами (радіус ≤ половини коротшого сусіднього відрізка)
+      var rounded = function (pts, R) {
+        var d = 'M' + pts[0][0] + ' ' + pts[0][1];
+        for (var i = 1; i < pts.length - 1; i++) {
+          var a = pts[i - 1], p = pts[i], n = pts[i + 1];
+          var la = Math.hypot(p[0] - a[0], p[1] - a[1]), ln = Math.hypot(n[0] - p[0], n[1] - p[1]), r = Math.min(R, la / 2, ln / 2);
+          var p1 = [p[0] + (a[0] - p[0]) * r / la, p[1] + (a[1] - p[1]) * r / la], p2 = [p[0] + (n[0] - p[0]) * r / ln, p[1] + (n[1] - p[1]) * r / ln];
+          d += 'L' + p1[0] + ' ' + p1[1] + 'Q' + p[0] + ' ' + p[1] + ' ' + p2[0] + ' ' + p2[1];
+        }
+        var z = pts[pts.length - 1]; return d + 'L' + z[0] + ' ' + z[1];
+      };
+      var closerBuild = function () {
+        var s = contact.getBoundingClientRect(), f = formCell.getBoundingClientRect(), W = s.width, H = contact.offsetHeight;
+        var fl = Math.round(f.left - s.left), ft = f.top - s.top, ye = Math.round(ft + END_DY) + .5, y0 = cY0 = stageBottom(s), pts;
+        if (desktopRoute()) {
+          // ПК: проміжок колонок за 40 px до форми — прямо вниз з низу картки, поворот у лівий край форми
+          var gx = fl - 40 + .5;
+          pts = [[gx, y0], [gx, ye], [fl, ye]];
+        } else {
+          // телефон: з низу картки (24 px від її лівого краю) — уступ у ліве поле сторінки (текст колонки починається на fl),
+          // униз полем, поворот у лівий край форми
+          var mx = Math.round(fl / 2) + .5, sx = fl + 24.5, jy = y0 + Math.min(14, Math.max(6, -y0 / 2));
+          pts = [[sx, y0], [sx, jy], [mx, jy], [mx, ye], [fl, ye]];
+        }
+        closer.setAttribute('viewBox', '0 ' + y0 + ' ' + W + ' ' + (H - y0)); closer.style.top = y0 + 'px'; closer.style.height = (H - y0) + 'px';
+        cLine.setAttribute('d', rounded(pts, 12));
+        CL = cLine.getTotalLength() || 1; cLine.style.strokeDasharray = CL + ' ' + CL;
+        cNode.setAttribute('cx', fl); cNode.setAttribute('cy', ye);
+        // промінь X05: голова конуса (≈357° градієнта) — у бік точки входу від центру форми
+        var cx = f.left + f.width / 2, cy = f.top + f.height / 2, px = f.left, py = f.top + END_DY;
+        if (!closed) formPart.angle = Math.atan2(px - cx, -(py - cy)) * 180 / Math.PI + 3;
+        closerDraw(cP);
+      };
+      var closeRoute = function () {
+        if (closed) return; closed = true;
         lap(formPart, 2.3, 1).eventCallback('onComplete', function () {
           gsap.to([formPart.ring, formPart.halo], { opacity: .55, duration: 1.2 });
+          // спокійне коло продовжує з того кута, де стало перше (без стрибка на 0°)
+          var a = formPart.angle;
+          ambient = gsap.timeline({ paused: true, repeat: -1 }).fromTo(formPart.beams, { rotation: a }, { rotation: a + 360, duration: 10, ease: 'none' });
           ambientOn = true; if (formOn) ambient.play();
         });
-      } });
+      };
+      // старт — разом зі шторкою, але не раніше, ніж липка картка відпустить низ (інакше початок лінії висить під нею;
+      // на 390 px картка відлипає, коли верх #contact ≈ 76 % екрана, а шторка стартує на 88 %)
+      var closerStart = function () {
+        var p0 = desktopRoute() ? .8 : .88, top = lastStage ? parseFloat(getComputedStyle(lastStage).top) : NaN;
+        if (!isNaN(top)) p0 = Math.min(p0, (top + lastStage.offsetHeight - cY0) / innerHeight);
+        return 'top ' + (p0 * 100).toFixed(1) + '%';
+      };
+      closerBuild();
+      ScrollTrigger.addEventListener('refreshInit', closerBuild);
+      ScrollTrigger.create({ trigger: contact, start: closerStart, endTrigger: formCell,
+        end: function () { return 'top+=' + END_DY + ' ' + (desktopRoute() ? '55%' : '62%'); }, scrub: .6,
+        onUpdate: function (st) { closerDraw(st.progress); if (st.progress > .995) closeRoute(); },
+        onLeave: closeRoute, onRefresh: function (st) { if (st.progress > .995) { closerDraw(1); closeRoute(); } } });
+      killers.push(function () { ScrollTrigger.removeEventListener('refreshInit', closerBuild); closer.remove(); });
       ScrollTrigger.create({ trigger: '[data-form]', start: 'top bottom', end: 'bottom top', onToggle: function (s) {
         formOn = s.isActive;
+        if (!ambient) return;
         if (formOn && ambientOn) ambient.play(); else ambient.pause();
       } });
-      killers.push(function () { ambient.kill(); });
+      killers.push(function () { if (ambient) ambient.kill(); });
     });
 
     /* ---------- перемикач $ / ₴: числа котяться ---------- */

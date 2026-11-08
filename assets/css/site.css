@@ -186,6 +186,9 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 .rot-frame .br { bottom: 0; margin-left: calc(var(--s) * -1); border-width: 0 1.5px 1.5px 0; }
 .rot-frame, .rot-flash { display: none; }
 .js-motion .rot-frame, .js-motion .rot-flash { display: block; }
+/* ц.11 (рішення власника): рамка обіймає слово симетрично І стоїть на краю тексту. rotate.js ставить кутики на
+   ±round(.14em) від слова, тож зсуваємо весь ротатор на той самий відступ: зовнішній край кутиків = x лівого краю h1. */
+.js-motion .rot { margin-left: .14em; margin-left: round(.14em, 1px); }
 .cta { display: flex; flex-wrap: wrap; gap: 12px; }
 .vmark { position: relative; margin: 0; justify-self: center; width: min(100%, 380px); display: grid; gap: 18px; justify-items: start; }
 .vmark svg { width: 100%; height: auto; overflow: visible; }
@@ -406,7 +409,8 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 .dir--on { background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .7), 0 0 30px rgba(255, 255, 255, .1); }
 .dir--on b { opacity: 1; text-shadow: var(--glow); }
 .dirs__note { margin: 16px 20px 0; font-size: 15px; color: var(--tx-2); }
-.tl { flex: 1; position: relative; display: grid; gap: 14px; align-content: space-evenly; padding: 22px 20px 6px; }
+/* ц.11: лише таймлайн процесу (div) — раніше .tl чіплявся й до кутика рамки ротатора <i class="tl"> (41×29 замість 10×10) */
+div.tl { flex: 1; position: relative; display: grid; gap: 14px; align-content: space-evenly; padding: 22px 20px 6px; }
 .tl__row { display: grid; grid-template-columns: 130px 1fr; align-items: center; gap: 12px; font-size: 15px; }
 .tl__row small { color: var(--tx-2); font-size: 15px; }
 .tl__row i { position: relative; display: block; height: 34px; border-radius: 6px; background: rgba(255, 255, 255, .04); }
@@ -481,6 +485,11 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
 .ink circle, .ink__bar { fill: #0a0a0a; transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); transition: transform .3s var(--e-mv); }
 .ink circle[data-on], .ink__bar[data-on] { transform: scale(1); }
 @media (min-width: 900px) { .fgrid[data-ink] .sys:last-of-type .sys__name { margin-bottom: 16px; } }   /* місце для риски під $7500 */
+/* ц.11: лінія, що замикає маршрут у формі (лише з рухом; створює site.js). difference: на папері шторки — темна, на чорному — світла */
+.closer { position: absolute; left: 0; top: 0; width: 100%; pointer-events: none; overflow: visible; z-index: 3; mix-blend-mode: difference; }
+.closer__line { fill: none; stroke: #f4f4f1; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.closer__node { fill: #f4f4f1; transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); transition: transform .3s var(--e-mv); }
+.closer__node[data-on] { transform: scale(1); }
 .foot { border-top: 1px solid var(--line); background: var(--bg-1); color: var(--tx-3); font-size: 14px; }
 .foot-in { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px 32px; padding-block: 34px 26px; }
 .foot .brand { color: var(--tx); }
@@ -592,7 +601,7 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
   .log__row { height: 46px; }
   .tl__row { grid-template-columns: 104px 1fr; gap: 10px; font-size: 13px; }
   .tl__row small { font-size: 13px; white-space: nowrap; }
-  .tl { padding-inline: 16px; }
+  div.tl { padding-inline: 16px; }
   .tl__head { left: calc(16px + 114px); }
   .tl__row:first-child, .tl__axis { display: none; }
   .brief li { grid-template-columns: 92px 1fr; font-size: 14px; }
