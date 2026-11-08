@@ -324,7 +324,8 @@
         gsap.set(h, from(12, 18));
         var inF = !!h.closest('#formats'), phone = !desktopRoute();
         // телефон (критик ц.5 р.1–2, дослівно: 'top 95%' і 0,6 с): заголовок «Форматів» осідає раніше й коротше — до того, як перший рядок цін дійде до середини
-        ScrollTrigger.create({ trigger: h, start: inF ? (phone ? 'top 95%' : 'top 50%') : 'top 88%', once: true, onEnter: function () { gsap.to(h, to(inF && phone ? .6 : 1.0)); } });
+        // ц.9: на ПК шапка «Форматів» уже на папері диска T06 — осідає так само, як інші заголовки
+        ScrollTrigger.create({ trigger: h, start: inF && phone ? 'top 95%' : 'top 88%', once: true, onEnter: function () { gsap.to(h, to(inF && phone ? .6 : 1.0)); } });
       });
       // смуга 30 / 70 заповнюється
       var pay = $('.pay');
@@ -421,38 +422,62 @@
                                 : { trigger: grid, start: 'top 76%', onEnter: flash });
     });
 
-    /* ---------- T06: поле ink → paper розкривається колом з кінця лінії ---------- */
+    /* ---------- T06: поле ink → paper — коло з кінця лінії, одним жестом ----------
+       ц.9 (власник, дослівно): папір розкривається, перш ніж зміст «Форматів» стає читабельним, і рядок маршруту
+       дочитується. Тому коло тепер — частина самої сторінки: великий диск паперу (.bloom) лежить у «Форматах»,
+       його вершина — у проміжку між рядком «Почнемо із сайту…» і шапкою «Форматів», під кінцем лінії маршруту
+       (x = кінець лінії). Диск їде разом із прокруткою (без затримки scrub): шапка й таблиця з'являються на екрані
+       вже на папері, а край кола ніколи не торкається рядка маршруту. Радіус — найменший, за якого кожен верхній кут
+       шапки лежить під дугою з запасом 18 px. Коли дуга повністю пішла за верхній край, вмикається нерухоме поле паперу
+       (під диском, тож перемикання не видно) — далі на ньому стоять стопка етапів і шторка T01. */
     var paper = $('.field__paper'), field = $('.field');
     soon(function () {
       var foot = $('.route-foot'), fmt = $('#formats');
-      // центр кола — там, де закінчилась лінія маршруту: у мить старту вона щойно пішла за верхній край разом із рядком
-      // «Почнемо із сайту…», тож папір розливається згори вниз — з тієї ж точки, де починається чорнильна лінія прайсу
-      var originAt = function () {
-        var x = Math.max(0, Math.min(100, geo.end.x / innerWidth * 100));
-        return x.toFixed(1) + '% 0%';
-      };
-      // ц.7, «спершу дочитати»: коло стартує лише тоді, коли останній рядок маршруту («Почнемо із сайту…») уже пішов
-      // за верхній край екрана (і не раніше, ніж верх «Форматів» на 90 %), — край кола ніколи не розтинає й не накриває його.
-      // На ПК рядок у липкій сцені: його кінцеве положення рахуємо від низу секції, без getBoundingClientRect під sticky.
-      var footGone = function () {
-        var fb;
+      var bloom = document.createElement('div');
+      bloom.className = 'bloom'; bloom.setAttribute('aria-hidden', 'true');
+      fmt.prepend(bloom);
+      // кінцеве положення низу рядка маршруту відносно верху «Форматів» (на ПК рядок у липкій сцені — від низу секції)
+      var footRel = function () {
+        var f = fmt.getBoundingClientRect().top, fb;
         if (getComputedStyle(stage).position === 'sticky') {
           var rs = routeSec.getBoundingClientRect(), pb = parseFloat(getComputedStyle(routeSec).paddingBottom) || 0, fo = offsetIn(foot, stage);
           fb = rs.bottom - pb - stage.offsetHeight + (fo ? fo.y + foot.offsetHeight : stage.offsetHeight);
         } else fb = foot.getBoundingClientRect().bottom;
-        return Math.max(fmt.getBoundingClientRect().top - innerHeight * .9, fb) + scrollY;
+        return fb - f;
       };
-      var BLOOM = .6;    // довжина розкриття — 60 % екрана прокрутки: «Формати» недовго на чорному
-      // до початку переходу папір невидимий: при стрибку нагору (Home, логотип) диск не «доїжджає» за scrub-затримкою
-      var showPaper = function (st) { paper.style.visibility = st.scroll() > st.start ? '' : 'hidden'; };
-      var bloomStart = 0;
-      gsap.fromTo(paper, { clipPath: function () { return 'circle(0% at ' + originAt() + ')'; } },
-        { clipPath: function () { return 'circle(150% at ' + originAt() + ')'; }, ease: 'none', immediateRender: false,
-          scrollTrigger: { trigger: '#formats', start: function () { return (bloomStart = Math.round(footGone())); },
-            end: function () { return bloomStart + Math.round(innerHeight * BLOOM); }, scrub: .6, invalidateOnRefresh: true,
-            onRefresh: showPaper, onEnter: showPaper, onLeaveBack: showPaper, onEnterBack: showPaper,
-            onToggle: function (st) { paper.style.willChange = st.isActive ? 'clip-path' : ''; } } });
-      killers.push(function () { paper.style.visibility = ''; });
+      var yFull = 0;
+      var bloomBuild = function () {
+        var fr = fmt.getBoundingClientRect(), W = fr.width;
+        var heads = $$('.sec-head .kicker, .sec-head h2, .sec-head__side > *', fmt).map(function (el) {
+          var r = el.getBoundingClientRect(); return { t: r.top - fr.top, l: r.left - fr.left, r: r.right - fr.left };
+        });
+        var fB = footRel(), kTop = Math.min.apply(null, heads.map(function (h) { return h.t; }));
+        var cx = Math.max(24, Math.min(W - 24, geo.end.x - fr.left));
+        var crest = Math.round(fB + Math.max(10, (kTop - fB) * .3));
+        var dxm = Math.max(cx, W - cx), R = dxm * 1.05;
+        heads.forEach(function (h) {
+          [h.l, h.r].forEach(function (x) {
+            var dx = x - cx, room = h.t - 18 - crest;
+            if (room > 4) R = Math.max(R, (dx * dx + room * room) / (2 * room));
+          });
+        });
+        R = Math.ceil(R);
+        yFull = Math.ceil(R - Math.sqrt(R * R - dxm * dxm));   // від цієї висоти диск уже ширший за екран
+        bloom.style.top = crest + 'px';
+        bloom.style.backgroundImage = 'radial-gradient(circle ' + R + 'px at ' + cx.toFixed(1) + 'px ' + R + 'px, var(--paper) ' + (R - .75) + 'px, transparent ' + R + 'px), linear-gradient(var(--paper), var(--paper))';
+        bloom.style.backgroundSize = '100% ' + (2 * R) + 'px, 100% 100%';
+        bloom.style.backgroundPosition = '0 0, 0 ' + yFull + 'px';
+      };
+      bloomBuild();
+      ScrollTrigger.addEventListener('refreshInit', bloomBuild);
+      // нерухоме поле вмикається, коли вся дуга (до yFull) пішла за верхній край; вимикається на зворотному шляху там само
+      var setPaper = function (on) { paper.style.clipPath = on ? 'none' : 'circle(0% at 50% 0%)'; };
+      setPaper(false);
+      // кінця немає (стопка нижче змінює висоту сторінки): лише вхід/вихід через старт
+      ScrollTrigger.create({ trigger: bloom, start: function () { return 'top+=' + (yFull + 12) + ' top'; }, end: '+=100000', invalidateOnRefresh: true,
+        onEnter: function () { setPaper(true); }, onLeaveBack: function () { setPaper(false); },
+        onRefresh: function (st) { setPaper(st.scroll() > st.start); } });
+      killers.push(function () { ScrollTrigger.removeEventListener('refreshInit', bloomBuild); bloom.remove(); paper.style.clipPath = ''; });
 
       /* ---------- маршрут іде далі: на папері світло стає чорнилом і проходить прайсом ----------
          З точки, де розкрилось коло, чорнильна лінія сходить у ліве поле прайсу й ставить вузол біля кожного формату
@@ -486,13 +511,12 @@
         dots.forEach(function (c) { c.style.display = 'none'; });
         dotAt = []; LB = 0; lineB.setAttribute('d', '');
         if (wide) {
-          // з точки, де розкрилось коло, — у ліве поле, далі вниз: Spark → Orbit → Supernova → Premium
+          // ц.9 (критик, дослівно): лінія починається біля прайсу — у лівому полі, і йде вниз: Spark → Orbit → Supernova → Premium;
+          // жодного відрізка згори й повороту — гачка немає в самій геометрії
           lx = Math.round(pl.left - s.left - 30) + .5;
-          var sx = Math.round(Math.max(lx, Math.min(W - 8, geo.end.x - s.left))) + .5, y1 = 28, r = 14;
           var yPrem = mid(prem.querySelector('h3'));
-          var turn = sx - lx > r * 2; if (!turn) sx = lx;
-          d = 'M' + sx + ' 0' + (turn ? 'V' + (y1 - r) + 'Q' + sx + ' ' + y1 + ' ' + (sx - r) + ' ' + y1 + 'H' + (lx + r) + 'Q' + lx + ' ' + y1 + ' ' + lx + ' ' + (y1 + r) : 'L' + lx + ' ' + (y1 + r));
-          d += 'V' + yPrem; y0 = y1 + r;
+          y0 = Math.round(rel(plist).t - 12);
+          d = 'M' + lx + ' ' + y0 + 'V' + yPrem;
           lineA.setAttribute('d', d); LA = lineA.getTotalLength() || 1;
           var head = LA - (yPrem - y0);
           ys.concat([yPrem]).forEach(function (y, k) { dots[k].setAttribute('cx', lx); dots[k].setAttribute('cy', y); dots[k].style.display = ''; dotAt[k] = head + (y - y0); });
@@ -509,24 +533,23 @@
         } else {
           // телефон: лінія всередині колонки прайсу (card.left + 14), від верху картки — ніколи під пігулкою навігації
           lx = Math.round(pl.left - s.left + 14) + .5; y0 = Math.round(pl.top - s.top + 22);
+          // ц.9 (критик, дослівно): закінчується рискою знака V, як на ПК — лінія доходить до риски, і риска лягає разом із нею
           var yEnd = ys[ys.length - 1];
-          lineA.setAttribute('d', 'M' + lx + ' ' + y0 + 'V' + yEnd); LA = lineA.getTotalLength() || 1;
+          lineA.setAttribute('d', 'M' + lx + ' ' + y0 + 'V' + (yEnd + 18)); LA = lineA.getTotalLength() || 1;
           ys.forEach(function (y, k) { dots[k].setAttribute('cx', lx); dots[k].setAttribute('cy', y); dots[k].style.display = ''; dotAt[k] = y - y0; });
-          inkBar.setAttribute('d', ''); dEnd = LA;
+          inkBar.setAttribute('d', 'M' + (lx - 12) + ' ' + (yEnd + 18) + 'h24l-3.5 6h-24z'); dEnd = LA;
         }
         lineA.style.strokeDasharray = LA + ' ' + LA;
         lineB.style.strokeDasharray = (LB || 1) + ' ' + (LB || 1);
-        total = Math.max(LA, dEnd); barAt = wide ? total : Infinity;
+        total = Math.max(LA, dEnd); barAt = total;
         inkDraw(inkP);
       };
       inkBuild();
       ScrollTrigger.addEventListener('refreshInit', inkBuild);
-      // desktop: старт, коли таблиця вже на екрані (критик ц.5 р.2) — гачок не висить у порожньому папері
-      // ц.7: чорнило не малюється по чорному — не раніше, ніж коло T06 (тепер пізніше) пройде третину екрана
+      // desktop: старт, коли таблиця вже на екрані (критик ц.5 р.2); ц.9: прайс завжди вже на папері диска — чорнило не йде по чорному
       var inkStart = 0;
       ScrollTrigger.create({ trigger: plist, start: function () {
-          var own = plist.getBoundingClientRect().top + scrollY - innerHeight * (desktopRoute() ? .8 : .92);
-          return (inkStart = Math.round(Math.max(own, bloomStart + innerHeight * .3)));
+          return (inkStart = Math.round(plist.getBoundingClientRect().top + scrollY - innerHeight * (desktopRoute() ? .8 : .92)));
         },
         end: function () { var el = desktopRoute() ? sysCard : plist; return Math.max(inkStart + innerHeight * .5, el.getBoundingClientRect().bottom + scrollY - innerHeight * .62); }, scrub: .5, invalidateOnRefresh: true,
         onRefresh: inkBuild, onUpdate: function (st) { inkDraw(st.progress); } });
