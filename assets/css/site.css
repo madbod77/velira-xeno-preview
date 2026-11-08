@@ -73,7 +73,8 @@ h3 { font-size: 20px; line-height: 1.2; letter-spacing: -.015em; font-weight: 60
        --dl: calc(var(--gut) - var(--px) - 14px); --dr: calc(var(--px) + 7px - var(--gut)); }
 .nav__edge, .nav__fill, .nav__shadow { position: absolute; inset: 0; pointer-events: none; }
 .nav__edge { background: rgba(255, 255, 255, .12); clip-path: inset(0 0 0 0 round 0px); }
-.nav__fill { background: rgba(6, 6, 7, .8); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+/* ц.12 (критик ц.11, дослівно): заливка щільніша й розмиття сильніше — під час морфу смуга → пігулка текст під нею не читається */
+.nav__fill { background: rgba(0, 0, 0, .88); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
              clip-path: inset(0 0 1px 0 round 0px); }
 .nav__shadow { inset: 10px var(--px) 10px var(--px); border-radius: 26px; opacity: 0;
                box-shadow: 0 18px 40px -12px rgba(0, 0, 0, .9), 0 0 34px rgba(255, 255, 255, .05); }
@@ -427,6 +428,26 @@ div.tl { flex: 1; position: relative; display: grid; gap: 14px; align-content: s
             border: 1px solid rgba(255, 255, 255, .08); background: rgba(255, 255, 255, .03); font-size: 16px; }
 .log__row small { color: var(--tx-2); font-size: 14px; text-align: right; }
 .log__row[data-new] { border-color: rgba(255, 255, 255, .4); box-shadow: 0 0 24px rgba(255, 255, 255, .1); }
+/* ц.12 р.3 (критик р.1–2, дослівно: «Break the rhythm on the last sheet… 1.4× title above a full-width journal»):
+   останній аркуш — місце, звідки лінія маршруту виходить до форми, — читається як приземлення, а не четвертий однаковий:
+   заголовок 1,4× угорі ліворуч, лід і «Для вас» праворуч від нього, журнал — на всю ширину аркуша під ними */
+.pcard--land { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); row-gap: clamp(20px, 2.6vw, 32px); }
+.pcard--land .pcard__t { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "k k" "h p" "h o";
+                         column-gap: clamp(24px, 4vw, 56px); row-gap: 14px; align-items: end; padding-top: 0; }
+.pcard--land .pcard__k { grid-area: k; }
+.pcard--land h3 { grid-area: h; align-self: end; font-size: clamp(48px, 6.2vw, 86px); line-height: .98; }
+.pcard--land .pcard__t p:not(.pcard__k):not(.pcard__out) { grid-area: p; }
+.pcard--land .pcard__out { grid-area: o; margin: 0 !important; }
+.pcard--land .log { --pitch: 64px; }
+.pcard--land .log__row { height: 54px; }
+/* ц.12 р.3 (критик р.1–2): вуаль за пігулкою — контент hero не видно у відкритій смузі над і поруч пігулки.
+   На паперових секціях («Формати», «Процес») її немає — там темна смуга лягла б на папір */
+/* суцільна до низу пігулки (62 px), далі згасає до 92 px: варіант «#000 45 % → 72 px» лишав напівпрозору смугу 20–60 px,
+   крізь яку слово ротатора ще читалось поруч із пігулкою (виміряно кадром) */
+.top-veil { position: fixed; inset: 0 0 auto 0; height: 92px; z-index: 47; pointer-events: none; opacity: 0;
+            background: linear-gradient(#000 64px, rgba(0, 0, 0, 0)); }
+.nav.is-pill ~ .top-veil:not([data-off]) { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) { .top-veil { transition: opacity .3s var(--e-std); } .top-veil[data-off], .top-veil[data-card] { transition: none; } }
 
 @media (prefers-reduced-motion: no-preference) {
   .js-motion .slot { height: calc((var(--n) - var(--i)) * var(--U)); margin-bottom: calc((var(--n) - var(--i) - 1) * var(--U) * -1); }
@@ -560,6 +581,8 @@ div.tl { flex: 1; position: relative; display: grid; gap: 14px; align-content: s
   .fgrid[data-ink] .plist { padding-left: 28px; }   /* критик ц.5 р.2: лінія маршруту — всередині колонки, на card.left + 14 */   /* критик ц.5 р.1: без порожнього паперу перед «Форматами» */
   .pcard { grid-template-columns: 1fr; gap: 22px; align-content: start; }
   .pcard__out { display: none; }   /* одна колонка: порожньої лівої половини немає, картка лишається короткою */
+  .pcard--land .pcard__t { display: flex; align-items: stretch; }   /* ц.12: одна колонка — заголовок над лідом, журнал на всю ширину */
+  .pcard--land h3 { align-self: auto; }
   .contact-in { grid-template-columns: 1fr; }
   .contact-copy { position: static; }
   .form__row { grid-template-columns: 1fr; }
@@ -571,15 +594,29 @@ div.tl { flex: 1; position: relative; display: grid; gap: 14px; align-content: s
   .hero-in { position: relative; }
   /* ц.9 (власник): знак помітний — 170 px за заголовком угорі праворуч, контур тьмяний (.18), риска на повну;
      він поза потоком, тож h1 і кнопка лишаються на місцях; риска стоїть праворуч від кінця 3-го рядка h1, не під текстом */
-  .vmark { position: absolute; top: -40px; right: -8px; width: 170px; grid-row: auto; justify-self: end; margin: 0; }
+  /* ц.13 (власник-делегат, критик ц.12 тричі): контур не проходить за жодним словом. Знак стоїть у вільному правому полі —
+     праворуч від кінців eyebrow (x≈270 на 390) і рядків h1 «від» / «до» / «втрат:» (≤261), вище за ротатор (y≥245).
+     100 px на 390, вужчі екрани — менше (100vw − 280). Перетин рамки знака з кожним словом першого екрана перевіряє
+     tools/c13_vcheck.py (390 / 375 / 320). h1 і кнопка не зрушили: знак поза потоком */
+  .vmark { position: absolute; top: -40px; right: -12px; width: min(100px, calc(100vw - 280px)); grid-row: auto; justify-self: end; margin: 0; }
   .hero-copy { position: relative; z-index: 1; }
-  .v-body, .v-grid { opacity: .18; }
-  .v-edge { stroke: rgba(255, 255, 255, .42); }
+  /* ц.13: знак уже не за текстом — тьмяність ц.12 (.18 / контур .22, введена лише через перетин зі словами) знято, щоб
+     малий знак лишався помітним: тіло й сітка .5, контур .5 */
+  .v-body, .v-grid { opacity: .5; }
+  .v-edge { stroke: rgba(255, 255, 255, .5); }
+  .v-trace { display: none; }   /* ц.12 р.3 (критик р.2): на телефоні світло по контуру не проходить яскравою лінією крізь eyebrow */
   .hero-kicker { padding-right: 76px; }
+  /* ц.12 (критик ц.11, дослівно): риска на екрані зсунута на (6, −14) px, щоб її низ був вище верху великих літер 3-го рядка h1.
+     Одиниці — координати viewBox знака (410 од. на 170 px: 1 px = 2,41 од.) */
+  /* ц.13: знак уже весь праворуч від тексту — риска стоїть на своєму місці в знаку, без зсуву ц.12 */
+}
+@media (min-width: 400px) and (max-width: 599px) {
+  /* ≥400 «першого» переходить у 1-й рядок h1 (до x≈384) — знак лишається в смузі над h1 (низ < 164) і праворуч від eyebrow */
+  .vmark { width: 72px; }
 }
 @media (max-width: 374px) {
-  /* вузькі телефони (320): рядки h1 коротші — знак менший і до краю екрана, риска лишається праворуч від тексту */
-  .vmark { width: 120px; right: -16px; }
+  /* вузькі телефони (320): eyebrow закінчується на x≈211, «від» — на ≈235 (y≥190) — знак 88 px до краю екрана, низ вище «від» */
+  .vmark { width: 88px; right: -16px; }
 }
 @media (max-width: 520px) {
   :root { --T: 80px; --hold: 55vh; --h: auto; --U: calc(78vh + var(--hold)); }
@@ -594,6 +631,7 @@ div.tl { flex: 1; position: relative; display: grid; gap: 14px; align-content: s
   .cut { width: 56px; }
   .pcard { padding: 24px 20px; border-radius: 22px; }
   .pcard h3 { font-size: 30px; }
+  .pcard--land h3 { font-size: 42px; }   /* ц.12: 1,4 × 30 px — останній етап читається як приземлення */
   .pcard__t { gap: 10px; }
   .deck { padding-bottom: 28px; }
   .log { --pitch: 54px; }

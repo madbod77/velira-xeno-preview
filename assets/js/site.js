@@ -57,13 +57,34 @@
 
   /* Важке (геометрія, ScrollTrigger-и нижче першого екрана) — по одному шматку в простої головного потоку,
      щоб завантаження телефона не складалося з довгих задач; перша прокрутка доробляє чергу одразу. */
-  var queue = [], pumping = false;
-  var idle = window.requestIdleCallback || function (f) { return setTimeout(f, 80); };
+  // ц.12: таймаут простою 1400 → 150 мс. У Firefox черга простою виконується пізніше, ніж у Chrome (поки йде анімація
+  // першого екрана, простою майже немає), і шматки налаштування чекали до 1,4 с кожен — проява заголовка форми запізнювалась.
+  // Тепер кожен шматок стартує не пізніше ніж за 150 мс у будь-якому браузері.
+  var queue = [], pumping = false, IDLE_MAX = 150;
+  var idle = window.requestIdleCallback || function (f) { return setTimeout(f, 50); };
   function pump() {
-    idle(function () { var f = queue.shift(); if (f) f(); if (queue.length) pump(); else pumping = false; }, { timeout: 1400 });
+    idle(function () { var f = queue.shift(); if (f) f(); if (queue.length) pump(); else pumping = false; }, { timeout: IDLE_MAX });
   }
   function later(f) { queue.push(f); if (!pumping) { pumping = true; pump(); } }
   function flush() { while (queue.length) queue.shift()(); }
+  /* ц.13 (власник-делегат: довгі задачі на телефоні під час завантаження): налаштування секцій нижче першого екрана
+     (ScrollTrigger-и, геометрія чорнила, шторки, лінії до форми, таймлайн процесу) не будуються при завантаженні, а лише коли
+     секція підійде на 1 висоту екрана (IntersectionObserver rootMargin 100 %). Кожна ціль — список: спрацьовує на першій
+     секції списку, що наблизилась (перехід за якорем повз секцію теж будує її налаштування). Самі шматки — у черзі простою,
+     кожен окремою задачею. Вигляд і рух ті самі: усе готове ще за екран до появи. */
+  var waits = [];
+  var nearIO = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      waits.forEach(function (w) { if (!w.done && w.els.indexOf(e.target) >= 0) { w.done = true; later(w.f); } });
+    });
+  }, { rootMargin: '100% 0px 100% 0px' }) : null;
+  function whenNear(sel, f) {
+    var els = sel.split(',').map(function (s) { return $(s.trim()); }).filter(Boolean);
+    if (!nearIO || !els.length) { later(f); return; }
+    waits.push({ els: els, f: f, done: false });
+    els.forEach(function (el) { nearIO.observe(el); });
+  }
 
   /* X05: квадрати променя покривають клітинку під час обертання (розмір — з ResizeObserver, без читань макета) */
   var cells = $$('.cell');
@@ -73,7 +94,8 @@
       e.target.style.setProperty('--d', Math.ceil(Math.hypot(w, h) + 16) + 'px');
     });
   });
-  cells.forEach(function (c) { ro.observe(c); });
+  // ц.13: розмір потрібен лише для кола променя (маршрут, форма) — спостерігаємо, коли маршрут за екран, а не в першому кадрі
+  whenNear('#route, #formats, #process, #contact', function () { cells.forEach(function (c) { ro.observe(c); }); });
 
   /* ================= перемикач $ / ₴ (працює й без руху) ================= */
   var RATE = 41.5;
@@ -174,7 +196,11 @@
     pTrail.style.strokeDasharray = pGlow.style.strokeDasharray = geo.L + ' ' + geo.L;
     pComet.style.strokeDasharray = '70 ' + (geo.L * 2);
   }
-  var drawn = 1;   // доля намальованої лінії (без руху — уся)
+  // доля намальованої лінії (без руху — уся). ц.13: у режимі руху, коли маршрут нижче 85 % екрана, лінія з самого початку
+  // не намальована (як провід нижче) — раніше перша побудова геометрії малювала її всю, запалювала 4 картки й запускала
+  // 4 кола променя поза екраном (≈20 мс на телефоні ×4 CPU + кадри intro), а потім усе гасилося
+  var drawn = root.classList.contains('js-motion') && matchMedia('(prefers-reduced-motion: no-preference)').matches &&
+    $('#route').getBoundingClientRect().top > innerHeight * .85 ? 0 : 1;
   function drawRoute(frac) {
     drawn = Math.max(0, Math.min(1, frac));
     var len = geo.L * drawn;
@@ -254,9 +280,12 @@
     wB.style.strokeDashoffset = (wire.b - lb).toFixed(1);
   }
   var geometry = function () { buildRoute(); drawRoute(drawn); buildWire(); drawWire(wired); };
-  later(geometry);
+  // ц.13: у режимі руху геометрію лінії й проводу будуємо, коли маршрут (або нижча секція) за екран від видимої зони:
+  // до того обидві не намальовані (drawn = wired = 0), а провід починає малюватись лише з 'top 95%' маршруту.
+  // Без руху — як раніше, у першому простої (статична лінія видна одразу)
+  if (wired === 0) whenNear('#route, #formats, #process, #contact', geometry); else later(geometry);
 
-  if (!window.gsap || !window.ScrollTrigger) { root.classList.remove('js-motion'); wired = 1; return; }
+  if (!window.gsap || !window.ScrollTrigger) { root.classList.remove('js-motion'); wired = 1; drawn = 1; return; }
   gsap.registerPlugin(ScrollTrigger);
   window.__motionReady = true;
 
@@ -307,6 +336,8 @@
     var killers = [], alive = true;
     // шматок налаштування нижче першого екрана — у простій, але в тому ж gsap-контексті (revert прибере й його)
     var soon = function (f) { later(function () { if (alive) ctx.add(f); }); };
+    // ц.13: те саме, але коли одна з секцій списку підійде на 1 екран (див. whenNear)
+    var near = function (sel, f) { whenNear(sel, function () { if (alive) ctx.add(f); }); };
     killers.push(function () { alive = false; });
 
     /* ---------- hero: Lead — рядок 1 + ротатор; пролог моменту — знак V ---------- */
@@ -318,9 +349,14 @@
         .fromTo(shineIn, { xPercent: 100 * F }, { xPercent: -100, duration: SD, ease: 'power1.inOut' }, 0)
         .set(shine, { opacity: 0 });
     };
-    var rot = window.KitRotator ? window.KitRotator($('.hero [data-rotate]')) : null;
+    // ц.13: ротатор (rotate.js: розбиття на літери, вимір, вхід) — ≈ 28 мс із 43 мс старту site.js на телефоні ×4 CPU.
+    // До 0,3 с він схований (CSS .js-motion .hero .rot { opacity: 0 }; показує .set у таймлайні hero), тож будується в
+    // наступній задачі й стає в ту саму позицію таймлайну (0,3 с) — старт скрипта вже не одна довга задача
+    var rot = null;
     var trace = $('.v-trace'), barGlow = $('.v-bar-glow'), vbar = $('.v-bar');
-    var hero = gsap.timeline()
+    // ц.13: lazy: false — стани «до» ставляться в цьому ж синхронному шматку (до .fold-set). Раніше їх примусово скидав
+    // синхронний gsap.set ротатора; тепер ротатор у наступній задачі, і без цього був кадр «видно → сховано» (no_intro_flash)
+    var hero = gsap.timeline({ defaults: { lazy: false } })
       .fromTo('.hero .grid-bg', { opacity: 0 }, { opacity: 1, duration: 1.6, ease: 'power1.out' }, 0)
       .fromTo('.hero .glow-a, .hero .glow-b', { opacity: 0 }, { opacity: 1, duration: 2.2, ease: 'power1.out' }, .1)
       .fromTo('.hero .hero-kicker', { opacity: 0 }, { opacity: 1, duration: .5, ease: STD }, .04)
@@ -341,6 +377,9 @@
       .to(barGlow, { opacity: .3, duration: .55, ease: 'power1.inOut' }, 1.75)
       .to(vbar, { fill: '#bdbdb9', duration: .55, ease: 'power1.inOut' }, 1.75)
       .add(sweep(), .95);
+    // ц.12 (критик ц.11): на телефоні риска стоїть поруч із 3-м рядком h1 — після спалаху вона стихає ще й до .7,
+    // щоб не змагатися з кінцем рядка «…без втрат:»
+    if (matchMedia('(max-width: 599px)').matches) hero.to(vbar, { opacity: .7, duration: .55, ease: 'power1.inOut' }, 1.75);
     // хвиля: «Ціна відсутності», що вже в першому екрані, проявляється після Lead hero, а не стоїть різкою з 0 мс
     var foldAbs = $$('#absence .kicker, #absence [data-blur], #absence .plate__note').filter(function (el) { return el.getBoundingClientRect().top < innerHeight; });
     if (foldAbs.length) hero.fromTo(foldAbs, from(0, G.y), to(G.d, { stagger: stag }), .7);
@@ -348,7 +387,13 @@
     // fromTo вище вже поставив інлайн-стан «до» тим, що в першому екрані, — тепер CSS відпускає решту (вони нижче краю).
     // Той самий синхронний шматок — між ними немає малювання, тож жодного «видно → сховано → видно».
     root.classList.add('fold-set');
-    if (rot) { hero.add(rot.enter(), .3); rot.start(2.7); } else gsap.set('.hero .rot', { opacity: 1 });
+    setTimeout(function () {
+      if (!alive) return;
+      ctx.add(function () {
+        rot = window.KitRotator ? window.KitRotator($('.hero [data-rotate]')) : null;
+        if (rot) { hero.add(rot.enter(), Math.max(.3, hero.time())); rot.start(2.7); } else gsap.set('.hero .rot', { opacity: 1 });
+      });
+    }, 0);
     var fine = matchMedia('(hover: hover) and (pointer: fine)').matches, busy = null;
     var replay = function () { if (busy && busy.isActive()) return; busy = sweep(); };
     if (fine) l1.addEventListener('pointerenter', replay);
@@ -371,8 +416,10 @@
         list.forEach(function (h, i) { gsap.to(h, to(d, { delay: stag(i) })); });
       };
       var rest = ups.filter(function (h) { return early.indexOf(h) < 0; });
-      if (rest.length) ScrollTrigger.batch(rest, { start: G.start, once: true, interval: .1, onEnter: function (b) { reveal(b, G.d); } });
-      if (early.length) ScrollTrigger.batch(early, { start: 'top 95%', once: true, interval: .1, onEnter: function (b) { reveal(b, .6); } });
+      // ц.12: інтервал збирання групи .1 → .02 с — група, що входить за один кадр, лишається групою (стагер 80 мс),
+      // але перший рядок не чекає зайві 100 мс після перетину лінії 80 %
+      if (rest.length) ScrollTrigger.batch(rest, { start: G.start, once: true, interval: .02, onEnter: function (b) { reveal(b, G.d); } });
+      if (early.length) ScrollTrigger.batch(early, { start: 'top 95%', once: true, interval: .02, onEnter: function (b) { reveal(b, .6); } });
       // смуга 30 / 70 заповнюється
       var pay = $('.pay');
       if (below(pay)) {
@@ -449,9 +496,9 @@
         scrollTrigger: { trigger: routeSec, start: desk ? 'top 85%' : 'top 95%', end: desk ? 'top 8%' : 'top 40%', scrub: .6 } });
     });
 
-    soon(function () {
+    near('#route, #formats, #process, #contact', function () {
       var desk = desktopRoute();
-      routeTween = gsap.fromTo(prog, { v: 0 }, { v: 1, ease: 'none', immediateRender: false,
+      routeTween =gsap.fromTo(prog, { v: 0 }, { v: 1, ease: 'none', immediateRender: false,
         onUpdate: function () { drawRoute(desk ? prog.v / .9 : prog.v); },
         scrollTrigger: desk ? { trigger: routeSec, start: 'top top', end: 'bottom bottom', scrub: .6 }
                             : { trigger: grid, start: 'top 72%', end: 'bottom 55%', scrub: .6 } });
@@ -478,7 +525,8 @@
        шапки лежить під дугою з запасом 18 px. Коли дуга повністю пішла за верхній край, вмикається нерухоме поле паперу
        (під диском, тож перемикання не видно) — далі на ньому стоять стопка етапів і шторка T01. */
     var paper = $('.field__paper'), field = $('.field');
-    soon(function () {
+    // ц.13: папір T06, чорнило прайсу, шторка T01 і лінія до форми — коли «Формати» (або нижчі секції) за екран від видимої зони
+    near('#formats, #process, #contact', function () {
       var foot = $('.route-foot'), fmt = $('#formats');
       var bloom = document.createElement('div');
       bloom.className = 'bloom'; bloom.setAttribute('aria-hidden', 'true');
@@ -706,7 +754,7 @@
     killers.push(function () { rollPrices = null; });
 
     /* ---------- процес: таймлайн руху з «головкою» і журнал конвеєра (X03) ---------- */
-    soon(function () {
+    near('#process, #contact', function () {
       // головка ходить лише колонкою ВИДИМИХ смуг (на телефоні першу приховано), підписи вона не перетинає.
       // Вимір — у нетрансформованих координатах .tl (offsetLeft/offsetWidth): картка стопки буває зменшена й нахилена.
       var tlHead = $('.tl__head'), tlBox = tlHead.parentNode, tlCard = tlBox.closest('[data-card]');
@@ -933,12 +981,14 @@
     };
     var onScroll = function () { if (pointer) { if (near(pointer.x, pointer.y)) aim(pointer.x, pointer.y); else release(); } };
     var zone = $('#route');
-    layout();
+    // ц.13: зсуви карток міряє перший виклик spotRO (нижче) і кожна побудова геометрії (spotPark) — не синхронне читання
+    // макета під час старту скрипта
     // картки, вже запалені до старту (статичний варіант / повернення), — світло стоїть на останній
     routeCells.forEach(function (c, k) { if (c.hasAttribute('data-lit')) home = k; });
     if (home >= 0 && geo.nodes) rest(home, REST);
     var spotRO = new ResizeObserver(function () { spotPark(); });
-    spotRO.observe(grid);
+    // ц.13: не в першому кадрі завантаження (перший виклик RO пише --ox/--oy у картки й читає макет) — коли маршрут за екран
+    whenNear('#route, #formats, #process, #contact', function () { if (spotPark) spotRO.observe(grid); });
     zone.addEventListener('pointermove', onMove, { passive: true });
     zone.addEventListener('pointerleave', onLeave);
     zone.addEventListener('pointerdown', onDown, { passive: true });
@@ -950,6 +1000,110 @@
       ['--on', '--gx', '--gy'].forEach(function (p) { grid.style.removeProperty(p); });
     };
   });
+
+  /* ---------- ц.12: вихід шапки маршруту з-під меню ----------
+     На ПК сцена маршруту липка; коли вона відпускається, «Шлях однієї заявки…» їде вгору й раніше проходив під плашкою меню
+     (критик ц.11, двічі not_fixed). Тепер уся шапка (підпис, заголовок, лід) гасне на останніх 64 px перед низом смуги
+     меню: верх шапки ≥ низ меню + 64 → 1, ≤ низ меню → 0. Жодного кадру, де видимий заголовок перетинає плашку.
+     Лише opacity; без руху — не діє (шапка стоїть, як у статичній сторінці). */
+  // ц.12 р.2 (критик р.1): у закріпленій сцені верх шапки ≈ 92 px — це було всередині смуги 72…136, і шапка стояла на ~35 %.
+  // Тепер смуга закінчується рівно там, де шапка стоїть у закріпленій сцені: повна яскравість на всю закріплену ділянку,
+  // гасіння — лише коли сцена відпущена й шапка їде від свого місця до низу пігулки меню.
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var rhead = $('.route-head'), navIn = nav.querySelector('.nav__in'), FADE = 64, rq = 0, last = -1, band = FADE;
+    var measure = function () {
+      var navB = navIn.getBoundingClientRect().bottom;
+      var pinned = getComputedStyle(stage).position === 'sticky' ? offsetIn(rhead, stage) : null;
+      band = pinned ? Math.max(12, pinned.y - navB - 1) : FADE;
+    };
+    var put = function () {
+      rq = 0;
+      var o = Math.max(0, Math.min(1, (rhead.getBoundingClientRect().top - navIn.getBoundingClientRect().bottom) / band));
+      o = Math.round(o * 1000) / 1000;
+      if (o === last) return; last = o;
+      rhead.style.opacity = o < 1 ? String(o) : '';
+    };
+    var onS = function () { if (!rq) rq = requestAnimationFrame(put); };
+    var onR = function () { measure(); put(); };
+    addEventListener('scroll', onS, { passive: true }); addEventListener('resize', onR);
+    // ц.13: перший вимір — у простої (шапка маршруту на старті далеко нижче меню; прокрутка доробляє чергу одразу)
+    later(onR);
+    return function () { removeEventListener('scroll', onS); removeEventListener('resize', onR); if (rq) cancelAnimationFrame(rq); rhead.style.opacity = ''; };
+  });
+
+  /* ---------- ц.13: вихід останнього аркуша з-під меню ----------
+     Критик ц.12 р.3 (дослівно, другий варіант fix): «fade the card's title … before it reaches the pill bottom (same linear
+     opacity band already used for .route-head)». Текстовий блок аркуша «Прев’ю і запуск» (підпис, заголовок 86 px, лід,
+     «Для вас») гасне лише тоді, коли стопка вже виходить: від свого закріпленого місця до низу пігулки меню. У закріпленій
+     стопці блок завжди 1,0. Разом із вуаллю (обрізана по аркушу) — жодного кадру з половинами літер біля пігулки. */
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var lastCard = $$('#process [data-card]').pop(), tb = lastCard && $('.pcard__t', lastCard), navIn = nav.querySelector('.nav__in');
+    if (!tb) return;
+    var rq = 0, last = -1, band = 64;
+    var measure = function () {
+      var navB = navIn.getBoundingClientRect().bottom, st = parseFloat(getComputedStyle(lastCard).top);
+      var off = offsetIn(tb, lastCard);
+      band = !isNaN(st) && off ? Math.max(12, st + off.y - navB - 1) : 64;
+    };
+    var put = function () {
+      rq = 0;
+      var o = Math.max(0, Math.min(1, (tb.getBoundingClientRect().top - navIn.getBoundingClientRect().bottom) / band));
+      o = Math.round(o * 1000) / 1000;
+      if (o === last) return; last = o;
+      tb.style.opacity = o < 1 ? String(o) : '';
+    };
+    var onS = function () { if (!rq) rq = requestAnimationFrame(put); };
+    var onR = function () { measure(); put(); };
+    addEventListener('scroll', onS, { passive: true }); addEventListener('resize', onR);
+    ScrollTrigger.addEventListener('refresh', onR);
+    later(onR);
+    return function () {
+      removeEventListener('scroll', onS); removeEventListener('resize', onR); ScrollTrigger.removeEventListener('refresh', onR);
+      if (rq) cancelAnimationFrame(rq); tb.style.opacity = '';
+    };
+  });
+
+  /* ц.12 р.3: вуаль за пігулкою (CSS .top-veil) вимикається, коли під верхом екрана — папір: нерухоме поле паперу ввімкнене
+     (T06) і шторка T01 ще не підняла його вище верхніх 80 px екрана. Інакше темна смуга лягла б на «Формати» й «Процес». */
+  var veil = $('.top-veil'), fieldEl = $('.field'), paperEl = $('.field__paper'), vq = 0;
+  var pcards = $$('#process [data-card]'), VEIL_H = 92;
+  var veilPut = function () {
+    vq = 0;
+    var on = root.classList.contains('is-armed') && paperEl.style.clipPath === 'none';
+    // до вмикання поля папір під верхом дає сам диск T06 (.bloom): його вершина вже вище за пігулку
+    var bl = !on && root.classList.contains('is-armed') ? $('.bloom') : null;
+    if (bl && bl.getBoundingClientRect().top < 40 && bl.getBoundingClientRect().bottom > 72) { veil.toggleAttribute('data-off', true); return; }
+    if (on) {
+      var m = /inset\(\s*[-\d.]+%?\s+[-\d.]+%?\s+([-\d.]+)%/.exec(getComputedStyle(fieldEl).clipPath || '');
+      on = (m ? +m[1] : 0) < (1 - 80 / innerHeight) * 100;
+    }
+    /* ц.13 (власник-делегат; критик ц.12 р.3): на папері вуаль не вимикається, поки під смугою пігулки (верхні 92 px) виходить
+       аркуш стопки «Процесу» — інакше 86-px заголовок «Прев’ю і запуск» проходить під пігулкою. Вуаль тоді обрізана рівно
+       по аркушу (зліва/справа, згори — від його верху, з його радіусом): темна смуга лягає лише на темний аркуш, папір
+       довкола лишається чистим. Без переходу: на темному аркуші ввімкнення не видно, а заголовок не встигає визирнути */
+    // лише коли стопка ВИХОДИТЬ: останній аркуш уже зрушив вище свого липкого верху (у закріпленій стопці смужки «Етап N з 4»
+    // карток позаду лежать у тій самій смузі — їх вуаль не чіпає)
+    var lastP = pcards[pcards.length - 1];
+    if (on && lastP && lastP.getBoundingClientRect().top < (parseFloat(getComputedStyle(lastP).top) || 0) - 1) {
+      var L = Infinity, Rt = -Infinity, T = Infinity;
+      pcards.forEach(function (c) {
+        var r = c.getBoundingClientRect();
+        if (r.top < VEIL_H && r.bottom > 0) { L = Math.min(L, r.left); Rt = Math.max(Rt, r.right); T = Math.min(T, r.top); }
+      });
+      if (Rt > L) {
+        var t = Math.max(0, T), rr = T > -28 ? '28px 28px 0 0' : '0';
+        veil.style.clipPath = 'inset(' + t.toFixed(1) + 'px ' + (innerWidth - Rt).toFixed(1) + 'px 0 ' + L.toFixed(1) + 'px round ' + rr + ')';
+        veil.toggleAttribute('data-card', true); veil.toggleAttribute('data-off', false);
+        return;
+      }
+    }
+    if (veil.hasAttribute('data-card')) { veil.removeAttribute('data-card'); veil.style.clipPath = ''; }
+    veil.toggleAttribute('data-off', on);
+  };
+  if (veil) {
+    addEventListener('scroll', function () { if (!vq) vq = requestAnimationFrame(veilPut); }, { passive: true });
+    veilPut();
+  }
 
   addEventListener('scroll', arm, { passive: true });
   addEventListener('resize', geometry);
