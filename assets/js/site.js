@@ -1077,18 +1077,20 @@
   mm.add('(prefers-reduced-motion: no-preference)', function () {
     var lastCard = $$('#process [data-card]').pop(), tb = lastCard && $('.pcard__t', lastCard), navIn = nav.querySelector('.nav__in');
     if (!tb) return;
-    var rq = 0, last = -1, band = 64;
-    var measure = function () {
-      var navB = navIn.getBoundingClientRect().bottom, st = parseFloat(getComputedStyle(lastCard).top);
-      var off = offsetIn(tb, lastCard);
-      band = !isNaN(st) && off ? Math.max(12, st + off.y - navB - 1) : 64;
-    };
+    /* ц.15 (критик ц.14, P3, дослівно): «start the title's ramp only when its top is within 24 px of the pill bottom
+       (not from its pinned position)». Кожен рядок блоку (підпис, заголовок, лід, «Для вас») гасне окремо — на останніх
+       24 px перед низом пігулки; доти він 1,0, тож заголовок не слабшає, поки аркуш ще читають. */
+    var rq = 0, BAND = 24, kids = [].slice.call(tb.children), was = kids.map(function () { return -1; });
+    var measure = function () {};
     var put = function () {
       rq = 0;
-      var o = Math.max(0, Math.min(1, (tb.getBoundingClientRect().top - navIn.getBoundingClientRect().bottom) / band));
-      o = Math.round(o * 1000) / 1000;
-      if (o === last) return; last = o;
-      tb.style.opacity = o < 1 ? String(o) : '';
+      var navB = navIn.getBoundingClientRect().bottom;
+      for (var i = 0; i < kids.length; i++) {
+        var o = Math.max(0, Math.min(1, (kids[i].getBoundingClientRect().top - navB) / BAND));
+        o = Math.round(o * 1000) / 1000;
+        if (o === was[i]) continue; was[i] = o;
+        kids[i].style.opacity = o < 1 ? String(o) : '';
+      }
     };
     var onS = function () { if (!rq) rq = requestAnimationFrame(put); };
     var onR = function () { measure(); put(); };
@@ -1097,7 +1099,7 @@
     later(onR);
     return function () {
       removeEventListener('scroll', onS); removeEventListener('resize', onR); ScrollTrigger.removeEventListener('refresh', onR);
-      if (rq) cancelAnimationFrame(rq); tb.style.opacity = '';
+      if (rq) cancelAnimationFrame(rq); kids.forEach(function (k) { k.style.opacity = ''; });
     };
   });
 
