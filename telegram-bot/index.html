@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Телеграм-бот для бізнесу й заявок з сайту | Velira</title>
+<meta name="description" content="Телеграм-бот для бізнесу: ставить клієнту потрібні питання, передає заявку в таблицю або CRM і сповіщає людину. Сайт, канал розмови й автоматизація — 41 500 ₴.">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="https://veliraweb.com.ua/telegram-bot/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:site_name" content="Velira">
+<meta property="og:url" content="https://veliraweb.com.ua/telegram-bot/">
+<meta property="og:title" content="Telegram-бот, який уточнює заявку й передає її команді | Velira">
+<meta property="og:description" content="Бот ставить клієнту потрібні питання, заявка з суттю йде в таблицю або CRM, людина отримує сповіщення. Сайт, канал розмови й автоматизація — 41 500 ₴.">
+<meta property="og:image" content="https://veliraweb.com.ua/telegram-bot/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Знак Velira, заголовок про Telegram-бота для заявок і приклад діалогу, що стає заявкою, на чорному тлі">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Telegram-бот, який уточнює заявку й передає її команді | Velira">
+<meta name="twitter:description" content="Бот ставить клієнту потрібні питання, заявка з суттю йде в таблицю або CRM, людина отримує сповіщення. Сайт, канал розмови й автоматизація — 41 500 ₴.">
+<meta name="twitter:image" content="https://veliraweb.com.ua/telegram-bot/og.jpg">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/onest-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/onest-latin.woff2" as="font" type="font/woff2" crossorigin><script>
+  /* Рух лише з JS і коли його не вимкнено. H1, ціна й дії видимі з першого малювання й без цього класу. */
+  (function (d) { d.classList.add('lp-js'); if (window.matchMedia && matchMedia('(prefers-reduced-motion: no-preference)').matches) d.classList.add('lp-motion'); })(document.documentElement);
+</script>
+<link rel="stylesheet" href="/assets/css/site.css?v=20261113f1">
+<link rel="stylesheet" href="/assets/css/services.css?v=20261112f2">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://veliraweb.com.ua/telegram-bot/#webpage","url":"https://veliraweb.com.ua/telegram-bot/","name":"Телеграм-бот для бізнесу й заявок з сайту | Velira","inLanguage":"uk","isPartOf":{"@id":"https://veliraweb.com.ua/#website"},"about":{"@id":"https://veliraweb.com.ua/telegram-bot/#service"},"breadcrumb":{"@id":"https://veliraweb.com.ua/telegram-bot/#breadcrumb"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://veliraweb.com.ua/telegram-bot/og.jpg","width":1200,"height":630},"dateModified":"2026-11-13"},{"@type":"Service","@id":"https://veliraweb.com.ua/telegram-bot/#service","name":"Telegram-бот для прийому й уточнення заявок","serviceType":"Розробка Telegram-бота та автоматизація заявок","description":"Бот у Telegram ставить клієнту потрібні питання за сценарієм під послуги бізнесу, передає заявку в таблицю або CRM і сповіщає відповідальну людину; розмову можна передати людині.","provider":{"@id":"https://veliraweb.com.ua/#org"},"areaServed":{"@type":"Country","name":"Україна"},"isRelatedTo":{"@id":"https://veliraweb.com.ua/#svc-standard-system"}},{"@type":"Service","@id":"https://veliraweb.com.ua/#svc-standard-system","name":"Standard System — сайт, розмова й автоматизація","url":"https://veliraweb.com.ua/telegram-bot/","provider":{"@id":"https://veliraweb.com.ua/#org"}},{"@type":"BreadcrumbList","@id":"https://veliraweb.com.ua/telegram-bot/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Velira","item":"https://veliraweb.com.ua/"},{"@type":"ListItem","position":2,"name":"Telegram-бот","item":"https://veliraweb.com.ua/telegram-bot/"}]}]}</script>
+</head>
+<body class="lp tb">
+<a class="skip" href="#main">До головного вмісту</a>
+
+<header class="nav" id="nav">
+  <div class="nav__shadow" aria-hidden="true"></div>
+  <div class="nav__edge" aria-hidden="true"></div>
+  <div class="nav__fill" aria-hidden="true"></div>
+  <div class="nav__in">
+    <a class="brand" href="/" aria-label="Velira — на головну">
+      <svg class="brand__mark" viewBox="430 340 390 438" aria-hidden="true"><path d="M435 346H480L625 587L770 347H815L560 771H514Z"/><path d="M608 731H780L751 771H581Z"/></svg>
+      <span>Velira</span>
+    </a>
+    <nav class="nlinks" aria-label="Розділи сторінки">
+      <span class="nlinks__hl" aria-hidden="true"></span><span class="nlinks__dot" aria-hidden="true"></span>
+      <a href="#stsenarii">Сценарії</a><a href="#tsina">Ціна</a><a href="#zapusk">Запуск</a><a href="#vidpovidi">Питання</a>
+    </nav>
+    <div class="nav__end">
+      <a class="btn btn-light" href="#contact"><span class="lbl-l">Обговорити задачу</span><span class="lbl-s">Обговорити</span></a>
+      <button class="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Відкрити меню">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="top-veil" aria-hidden="true"></div>
+<div class="sheet" id="menu" aria-hidden="true" inert>
+  <a href="#stsenarii">Сценарії бота</a><a href="#contact">Заявка</a><a href="#tsina">Скільки коштує</a><a href="#zapusk">Як запускаємо</a><a href="#vidpovidi">Питання</a>
+  <a class="sheet__page" href="/">Головна<small>маршрут заявки</small></a>
+  <a class="sheet__page" href="/landing/">Лендинг<small>від 6 225 ₴</small></a>
+  <a class="sheet__page" href="/tsiny/">Ціни<small>шість форматів</small></a>
+  <a class="sheet__page" href="/pro-velira/">Про студію<small>як працюємо</small></a>
+  <a class="sheet__tg" href="https://t.me/madbod_77?text=%D0%94%D0%BE%D0%B1%D1%80%D0%B8%D0%B9%20%D0%B4%D0%B5%D0%BD%D1%8C%21%20%D0%9F%D0%B8%D1%88%D1%83%20%D0%B7%D1%96%20%D1%81%D1%82%D0%BE%D1%80%D1%96%D0%BD%D0%BA%D0%B8%20%C2%ABTelegram-%D0%B1%D0%BE%D1%82%C2%BB%20%D0%BD%D0%B0%20%D1%81%D0%B0%D0%B9%D1%82%D1%96%20Velira.%20%D0%9C%D0%B5%D0%BD%D1%96%20%D0%BF%D0%BE%D1%82%D1%80%D1%96%D0%B1%D0%BD%D0%BE%3A%20Telegram-%D0%B1%D0%BE%D1%82.%20" target="_blank" rel="noopener" data-tg="Добрий день! Пишу зі сторінки «Telegram-бот» на сайті Velira. Мені потрібно: ">Написати в Telegram<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+</div>
+
+<main id="main" class="lp-main">
+  <!-- ПЕРШИЙ ЕКРАН: H1, ціна системи, оплата частинами (суми — у пропозиції, TODO 15) і обидві дії — у статичному HTML; на ПК праворуч — приклад діалогу, що стає заявкою -->
+  <section class="lp-hero tb-hero" id="top" data-tone="ink">
+    <div class="bg" aria-hidden="true"><div class="grid-bg"></div></div>
+    <div class="wrap tb-hero__in">
+      <div class="lp-copy">
+        <nav class="crumbs" aria-label="Ви тут"><a href="/">Velira</a><span aria-hidden="true">/</span><span aria-current="page">Telegram-бот</span></nav>
+        <p class="lp-kick"><svg class="mini-v" viewBox="430 340 390 438" aria-hidden="true"><path d="M435 346H480L625 587L770 347H815L560 771H514Z"/><path class="lp-origin" d="M608 731H780L751 771H581Z"/></svg>Telegram-бот для заявок</p>
+        <h1 class="lp-h1">Telegram-бот для бізнесу: уточнює заявку й передає її&nbsp;команді</h1>
+        <p class="lp-sub">Сайт пояснює, бот ставить потрібні питання, автоматизація передає заявку в таблицю або CRM, а відповідальна людина отримує сповіщення.</p>
+        <div class="tb-price">
+          <p class="tb-price__main">Telegram-бот може бути каналом розмови у Standard System: сайт, канал розмови (Telegram-бот або інший доречний сценарій) і автоматизація одного процесу — <b>41&nbsp;500&nbsp;₴</b>; суму в гривні рахуємо за курсом, погодженим у пропозиції.</p>
+          <p class="tb-price__pay">Оплата частинами: передоплата на старті й решта після погодженого прев’ю — суми в пропозиції.</p>
+          <p>Окремий бот чи складніший сценарій — індивідуальний прорахунок, сума — у пропозиції до оплати.</p>
+        </div>
+        <div class="cta lp-cta">
+          <a class="btn btn-light" href="#contact">Обговорити задачу
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn-ghost" href="https://t.me/madbod_77?text=%D0%94%D0%BE%D0%B1%D1%80%D0%B8%D0%B9%20%D0%B4%D0%B5%D0%BD%D1%8C%21%20%D0%9F%D0%B8%D1%88%D1%83%20%D0%B7%D1%96%20%D1%81%D1%82%D0%BE%D1%80%D1%96%D0%BD%D0%BA%D0%B8%20%C2%ABTelegram-%D0%B1%D0%BE%D1%82%C2%BB%20%D0%BD%D0%B0%20%D1%81%D0%B0%D0%B9%D1%82%D1%96%20Velira.%20%D0%9C%D0%B5%D0%BD%D1%96%20%D0%BF%D0%BE%D1%82%D1%80%D1%96%D0%B1%D0%BD%D0%BE%3A%20Telegram-%D0%B1%D0%BE%D1%82.%20" target="_blank" rel="noopener" data-tg="Добрий день! Пишу зі сторінки «Telegram-бот» на сайті Velira. Мені потрібно: ">Написати в Telegram
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+        </div>
+        <ul class="lp-trust">
+          <li>Файли й права — ваші після повної оплати</li><li>Передумали до старту — повертаємо передоплату, крім заздалегідь погоджених і вже понесених сторонніх витрат</li><li>Ключові сервіси — за можливості на вас</li>
+        </ul>
+      </div>
+
+      <figure class="tb-demo">
+        <div class="tb-win" aria-hidden="true">
+          <div class="tb-win__bar"><span class="tb-av">V</span><b>Velira Bot</b><span class="demo">приклад діалогу</span></div>
+          <div class="tb-chat">
+            <p data-a="1" class="tb-msg">Вітаю! Допоможу уточнити вашу задачу. Що хочете створити?</p>
+            <p data-a="2" class="tb-msg tb-msg--me">Сайт для мого бізнесу.</p>
+            <p data-a="3" class="tb-msg">Чудово. Зберемо деталі та передамо їх команді.</p>
+          </div>
+        </div>
+        <div class="tb-wire" aria-hidden="true"><i data-a="1"></i></div>
+        <div class="tb-card" aria-hidden="true">
+          <div class="tb-card__bar"><b>Заявка з контекстом</b><span class="demo">V—01 · приклад</span></div>
+          <dl class="tb-lead">
+            <div data-a="1"><dt>Контакт</dt><dd>Дані клієнта</dd></div>
+            <div data-a="2"><dt>Задача</dt><dd>Сайт для бізнесу</dd></div>
+            <div data-a="3"><dt>Джерело</dt><dd>Сайт → Telegram-бот</dd></div>
+            <div data-a="4" class="tb-lead__to"><dt>Куди</dt><dd>Таблиця або CRM + сповіщення команді</dd></div>
+          </dl>
+        </div>
+        <figcaption>Приклад сценарію, як на головній сторінці: не робота для клієнта й не справжня розмова.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- СЦЕНАРІЇ: розмова стає заявкою — кожна відповідь світлом переходить у поле, далі рядок таблиці й сповіщення -->
+  <section class="lp-sec lp-paper" id="stsenarii" aria-labelledby="stsenarii-title" data-tone="paper">
+    <div class="wrap">
+      <header class="lp-head">
+        <div>
+          <p class="kicker lp-k" data-reveal>Сценарії — що бот питає і що отримує команда</p>
+          <h2 id="stsenarii-title" data-reveal>Що робить бот для заявок</h2>
+        </div>
+        <p class="lp-p" data-reveal>Телеграм-бот від Velira ставить клієнту потрібні питання за сценарієм під ваші послуги, передає заявку з контекстом у таблицю або CRM і сповіщає відповідальну людину. Розмову можна передати живій людині. У зв’язці «сайт + канал розмови + автоматизація одного процесу» це формат Standard System — 41&nbsp;500&nbsp;₴ за курсом на 12.11.2026.</p>
+      </header>
+
+      <div class="tb-sc" data-sc>
+        <input type="radio" name="sc" id="sc-salon" value="salon" checked>
+        <input type="radio" name="sc" id="sc-sto" value="sto">
+        <div class="tb-tabs">
+          <label class="tb-tab" for="sc-salon">Салон краси</label><label class="tb-tab" for="sc-sto">СТО</label>
+          <p class="tb-tabs__note">Приклади сценаріїв, не роботи для клієнтів</p>
+        </div>
+
+        <div class="tb-panels">
+          <!-- салон краси: фото при денному світлі, довжина, попереднє фарбування → майстер -->
+          <div class="tb-panel tb-panel--salon" data-panel="salon">
+            <div class="tb-col tb-col--chat">
+              <h3>Бот уточнює<small>сценарій під ваші послуги</small></h3>
+              <div class="tb-win">
+                <div class="tb-win__bar"><span class="tb-av">V</span><b>Бот салону</b><small data-typing hidden>друкує…</small><span class="demo">приклад сценарію</span></div>
+                <div class="tb-chat">
+                  <p class="tb-msg" data-t="1">Вітаю! Допоможу записатися на фарбування. Надішліть, будь ласка, два фото волосся при денному світлі.</p>
+                  <p class="tb-msg tb-msg--me tb-msg--att" data-t="2"><i aria-hidden="true"></i><i aria-hidden="true"></i><span class="sr-only">Два фото волосся</span></p>
+                  <p class="tb-msg" data-t="4">Дякую! Яка зараз довжина?</p>
+                  <p class="tb-msg tb-msg--me" data-t="5">До лопаток.</p>
+                  <p class="tb-msg" data-t="7">Чи фарбувалися за останні 6 місяців?</p>
+                  <p class="tb-msg tb-msg--me" data-t="8">Так, мелірування 4 місяці тому.</p>
+                  <p class="tb-msg" data-t="10">Передаю майстру-колористу — він відповість щодо ціни й часу.</p>
+                </div>
+              </div>
+            </div>
+            <div class="tb-col tb-col--lead">
+              <h3>Заявка вже з суттю<small>поля заповнює розмова</small></h3>
+              <div class="tb-card">
+                <div class="tb-card__bar"><b>Заявка з бота</b><span class="demo">приклад</span></div>
+                <dl class="tb-lead">
+                  <div><dt>Послуга</dt><dd>Фарбування</dd></div>
+                  <div data-t="3"><dt>Фото</dt><dd>2 фото при денному світлі</dd></div>
+                  <div data-t="6"><dt>Довжина</dt><dd>До лопаток</dd></div>
+                  <div data-t="9"><dt>Фарбування</dt><dd>Мелірування, 4 міс. тому</dd></div>
+                  <div><dt>Контакт</dt><dd>@username у Telegram</dd></div>
+                  <div class="tb-lead__to" data-t="11"><dt>Кому</dt><dd>Майстру-колористу</dd></div>
+                </dl>
+              </div>
+              <p class="tb-form"><b>Та сама людина через звичайну форму</b>Ім’я, контакт і <q>Скільки коштує фарбування?</q> — без фото й деталей.</p>
+            </div>
+            <div class="tb-col tb-col--out">
+              <h3>Таблиця або CRM і сповіщення<small>людина бачить, з чого почати</small></h3>
+              <div class="tb-sheet">
+                <div class="tb-sheet__bar">Заявки<span class="demo">демо</span></div>
+                <div class="tb-sheet__h"><span>Звідки</span><span>Суть</span><span>Статус</span></div>
+                <div class="tb-sheet__r tb-sheet__r--new" data-t="12"><span>Сайт → бот</span><span><b>Фарбування</b> · 2 фото · до лопаток · мелірування 4 міс.</span><span><i class="tb-sheet__st">нова</i></span></div>
+              </div>
+              <div class="tb-note" data-t="13">
+                <span class="tb-note__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span>
+                <span class="tb-note__t"><b>Нова заявка: фарбування</b><small>Майстру-колористу · фото й деталі вже в заявці</small></span>
+                <span class="tb-note__go"><small>Наступний крок: ціна й час</small><span>Відповісти</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- СТО: звук, марка, рік, пробіг → майстер -->
+          <div class="tb-panel tb-panel--sto" data-panel="sto">
+            <div class="tb-col tb-col--chat">
+              <h3>Бот уточнює<small>сценарій під ваші послуги</small></h3>
+              <div class="tb-win">
+                <div class="tb-win__bar"><span class="tb-av">V</span><b>Бот СТО</b><small data-typing hidden>друкує…</small><span class="demo">приклад сценарію</span></div>
+                <div class="tb-chat">
+                  <p class="tb-msg" data-t="1">Вітаю! Опишіть, що турбує, або запишіть звук на телефон.</p>
+                  <p class="tb-msg tb-msg--me tb-msg--voice" data-t="2"><svg viewBox="0 0 64 18" aria-hidden="true"><path d="M2 9h0M7 5v8M12 2v14M17 6v6M22 3v12M27 7v4M32 4v10M37 6v6M42 2v14M47 6v6M52 8v2M57 5v8M62 9h0"/></svg><span>голосове 0:12</span></p>
+                  <p class="tb-msg tb-msg--me" data-t="3">Стукає спереду, коли їду ямами.</p>
+                  <p class="tb-msg" data-t="5">Марка й рік авто?</p>
+                  <p class="tb-msg tb-msg--me" data-t="6">Skoda Octavia, 2014.</p>
+                  <p class="tb-msg" data-t="8">Який пробіг?</p>
+                  <p class="tb-msg tb-msg--me" data-t="9">212 тис. км.</p>
+                  <p class="tb-msg" data-t="11">Передаю майстру-діагносту — він передзвонить і запропонує час діагностики.</p>
+                </div>
+              </div>
+            </div>
+            <div class="tb-col tb-col--lead">
+              <h3>Заявка вже з суттю<small>поля заповнює розмова</small></h3>
+              <div class="tb-card">
+                <div class="tb-card__bar"><b>Заявка з бота</b><span class="demo">приклад</span></div>
+                <dl class="tb-lead">
+                  <div><dt>Послуга</dt><dd>Діагностика</dd></div>
+                  <div data-t="4"><dt>Симптом</dt><dd>Стук спереду на ямах · голосове 0:12</dd></div>
+                  <div data-t="7"><dt>Авто</dt><dd>Skoda Octavia, 2014</dd></div>
+                  <div data-t="10"><dt>Пробіг</dt><dd>212 тис. км</dd></div>
+                  <div><dt>Контакт</dt><dd>@username у Telegram</dd></div>
+                  <div class="tb-lead__to" data-t="12"><dt>Кому</dt><dd>Майстру-діагносту</dd></div>
+                </dl>
+              </div>
+              <p class="tb-form"><b>Та сама людина через звичайну форму</b>Ім’я, контакт і <q>Щось стукає, скільки коштує діагностика?</q> — без звуку й даних авто.</p>
+            </div>
+            <div class="tb-col tb-col--out">
+              <h3>Таблиця або CRM і сповіщення<small>людина бачить, з чого почати</small></h3>
+              <div class="tb-sheet">
+                <div class="tb-sheet__bar">Заявки<span class="demo">демо</span></div>
+                <div class="tb-sheet__h"><span>Звідки</span><span>Суть</span><span>Статус</span></div>
+                <div class="tb-sheet__r tb-sheet__r--new" data-t="13"><span>Сайт → бот</span><span><b>Діагностика</b> · стук спереду · Octavia 2014 · 212 тис. км</span><span><i class="tb-sheet__st">нова</i></span></div>
+              </div>
+              <div class="tb-note" data-t="14">
+                <span class="tb-note__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span>
+                <span class="tb-note__t"><b>Нова заявка: діагностика</b><small>Майстру-діагносту · голосове й дані авто вже в заявці</small></span>
+                <span class="tb-note__go"><small>Наступний крок: час діагностики</small><span>Відповісти</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tb-sc__foot">
+          <button class="tlink tb-replay" type="button" hidden>Програти розмову ще раз</button>
+          <a class="tlink" href="/#route">Маршрут заявки на головній</a>
+          <a class="tlink" href="/sait-dlia-salonu-krasy/">Сайт для салону краси</a>
+          <a class="tlink" href="/sait-dlia-sto/">Сайт для СТО</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЗАЯВКА: формат «Telegram-бот» уже обрано -->
+  <section class="sec contact lp-contact" id="contact" aria-labelledby="contact-title" data-tone="ink">
+    <div class="wrap contact-in">
+      <div class="contact-copy">
+        <p class="kicker lp-k">Заявка — формат «Telegram-бот» уже обрано</p>
+        <h2 id="contact-title" data-reveal>Залиште задачу або напишіть у&nbsp;Telegram</h2>
+        <a class="tg" href="https://t.me/madbod_77?text=%D0%94%D0%BE%D0%B1%D1%80%D0%B8%D0%B9%20%D0%B4%D0%B5%D0%BD%D1%8C%21%20%D0%9F%D0%B8%D1%88%D1%83%20%D0%B7%D1%96%20%D1%81%D1%82%D0%BE%D1%80%D1%96%D0%BD%D0%BA%D0%B8%20%C2%ABTelegram-%D0%B1%D0%BE%D1%82%C2%BB%20%D0%BD%D0%B0%20%D1%81%D0%B0%D0%B9%D1%82%D1%96%20Velira.%20%D0%9C%D0%B5%D0%BD%D1%96%20%D0%BF%D0%BE%D1%82%D1%80%D1%96%D0%B1%D0%BD%D0%BE%3A%20Telegram-%D0%B1%D0%BE%D1%82.%20" target="_blank" rel="noopener" data-tg="Добрий день! Пишу зі сторінки «Telegram-бот» на сайті Velira. Мені потрібно: "><span>Telegram</span><b>@madbod_77</b>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+        <div class="after">
+          <h3 class="after__h">Що буде після заявки</h3>
+          <ol class="after__list">
+            <li>Ви описуєте задачу: тут або в Telegram.</li>
+            <li>Уточнюємо деталі за контактом, який ви залишили.</li>
+            <li>Надсилаємо пропозицію: сума в гривні, обсяг робіт, строк і реквізити виконавця.</li>
+            <li>Погоджуєте — вносите передоплату, і ми стартуємо.</li>
+          </ol>
+          <p class="after__note">Заявка — ще не замовлення: вона ні до чого не зобов’язує.</p>
+        </div>
+      </div>
+      <div class="cell" data-form>
+        <form class="card form" id="lead-form" method="post" novalidate data-endpoint="https://script.google.com/macros/s/AKfycbxfB7hS3Jh6gok8PCbRBYnUuBIXx3D6vTPZ1nBB-UzEAzlcOgnfOJ-1_fMSHBPFB-mE/exec" data-privacy="2026-11-09-v2.2" data-source="telegram-bot" data-page-name="Telegram-бот">
+          <fieldset class="fmt">
+            <legend class="fmt__lg">Формат <span>— обрано Telegram-бот, можна змінити</span></legend>
+            <div class="fmt__set">
+              <label class="fmt__c"><input type="radio" name="format" value="Telegram-бот" checked><i class="fmt__bg" aria-hidden="true"></i><span class="fmt__n">Telegram-бот</span><span class="fmt__p">сума — у пропозиції</span></label>
+              <label class="fmt__c"><input type="radio" name="format" value="Standard System"><i class="fmt__bg" aria-hidden="true"></i><span class="fmt__n">Сайт, розмова й автоматизація</span><span class="fmt__p">41&nbsp;500&nbsp;₴</span></label>
+              <label class="fmt__c"><input type="radio" name="format" value="Spark"><i class="fmt__bg" aria-hidden="true"></i><span class="fmt__n">Лендинг</span><span class="fmt__p">від 6&nbsp;225&nbsp;₴</span></label>
+              <label class="fmt__c"><input type="radio" name="format" value="Orbit"><i class="fmt__bg" aria-hidden="true"></i><span class="fmt__n">Бізнес-сайт</span><span class="fmt__p">від 10&nbsp;375&nbsp;₴</span></label>
+              <label class="fmt__c"><input type="radio" name="format" value="Supernova"><i class="fmt__bg" aria-hidden="true"></i><span class="fmt__n">Магазин</span><span class="fmt__p">від 20&nbsp;750&nbsp;₴</span></label>
+              <label class="fmt__c" hidden><input type="radio" name="format" value="Premium"><i class="fmt__bg" aria-hidden="true"></i><span class="fmt__n">Premium</span><span class="fmt__p">від 207&nbsp;500&nbsp;₴</span></label>
+              <label class="fmt__c" hidden><input type="radio" name="format" value="Premium System"><i class="fmt__bg" aria-hidden="true"></i><span class="fmt__n">Premium System</span><span class="fmt__p">311&nbsp;250&nbsp;₴</span></label>
+              <label class="fmt__c"><input type="radio" name="format" value="Інше"><i class="fmt__bg" aria-hidden="true"></i><span class="fmt__n">Ще не знаю</span><span class="fmt__p">підкажемо формат</span></label>
+            </div>
+            <label class="consent fmt__urgent"><input type="checkbox" name="urgent"><span>Терміново: запуск за 48 годин — ×1,5 до ціни Spark, Orbit чи Supernova, якщо погодимо до старту</span></label>
+          </fieldset>
+          <div class="form__row">
+            <label><span>Ім’я / бренд</span><input type="text" name="name" autocomplete="name" required maxlength="200" placeholder="Як до вас звертатись"></label>
+            <label><span>Telegram, email або телефон</span><input type="text" name="contact" required maxlength="200" placeholder="@username / email / +380…"></label>
+          </div>
+          <label><span>Що потрібно зробити? <em class="form__opt" hidden>необов’язково — формат уже обрано</em></span><textarea name="brief" rows="3" required maxlength="2000" placeholder="Наприклад: бот, що приймає заявки й ставить потрібні питання"></textarea></label>
+          <p class="form__privacy">Надсилаючи форму, ви просите Velira зв’язатися щодо проєкту. Якщо проєкт не почнеться, заявку зберігаємо до 90 днів. Не надсилайте паролі, платіжні дані, документи чи іншу чутливу інформацію.</p>
+          <label class="consent"><input type="checkbox" name="privacyAcknowledged" required><span>Підтверджую, що прочитав(ла) <a href="/privacy.html" target="_blank" rel="noopener">повідомлення про приватність</a>.</span></label>
+          <label class="consent"><input type="checkbox" name="deliveryConsent" required><span>Окремо погоджуюсь на передачу заявки через сервіси Google (таблиця й пошта Velira), а якщо вони недоступні — через Telegram, включно з можливою обробкою за межами України. Це не згода на маркетинг.</span></label>
+          <label class="hp" aria-hidden="true">Компанія<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+          <div class="form__foot"><button class="btn btn-light" type="submit">Надіслати задачу</button><p class="form__status" role="status" aria-live="polite"></p></div>
+          <noscript><p class="form__status">Без JavaScript форма не надсилається — напишіть у Telegram <a class="form__tg" href="https://t.me/madbod_77">@madbod_77</a>.</p></noscript>
+        </form>
+        <div class="bm-ring" aria-hidden="true"><i class="beam"></i></div><div class="bm-halo" aria-hidden="true"><i class="beam"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- після заявки · ЦІНА: окремої ціни бота немає — чек Standard System поруч із поясненням (ціна й 30/70 уже в першому екрані) -->
+  <section class="lp-sec tb-cost-sec" id="tsina" data-cv aria-labelledby="tsina-title" data-tone="ink">
+    <div class="wrap tb-cost">
+      <div class="tb-cost__copy">
+        <p class="kicker lp-k" data-reveal>Ціна — бот іде в системі, окремого прайсу немає</p>
+        <h2 id="tsina-title" data-reveal>Скільки коштує Telegram-бот</h2>
+        <p class="lp-p" data-reveal>Окремої фіксованої ціни на Telegram-бота у Velira немає: окремий бот — це індивідуальний прорахунок, і суму, обсяг робіт і строк ви побачите в пропозиції до оплати. Готовий формат Standard System коштує 41&nbsp;500&nbsp;₴ і включає сайт, канал розмови з клієнтами та автоматизацію одного повторюваного процесу. Оплата частинами: передоплата на старті й решта після погодженого прев’ю — суми в пропозиції.</p>
+        <ul class="tb-cost__more" data-reveal>
+          <li><b>Канал розмови</b> у Standard System — Telegram-бот або інший доречний сценарій для вашої аудиторії.</li>
+          <li><b>Потрібні лише форми?</b> У бізнес-сайті Orbit від 10&nbsp;375&nbsp;₴ є форми та інтеграція з Telegram; що саме вона охоплює у вашому випадку, фіксуємо в пропозиції.</li>
+          <li><b>Усі шість форматів</b> і що входить у ціну — <a href="/tsiny/">на сторінці цін</a>.</li>
+        </ul>
+      </div>
+      <aside class="bill" aria-labelledby="bill-std" data-reveal>
+        <div class="bill__slot" aria-hidden="true"></div>
+        <div class="bill__feed">
+          <div class="bill__paper">
+            <header class="bill__top">
+              <p class="bill__brand"><svg viewBox="430 340 390 438" aria-hidden="true"><path d="M435 346H480L625 587L770 347H815L560 771H514Z"/><path d="M608 731H780L751 771H581Z"/></svg>Velira</p>
+              <p class="bill__t" id="bill-std">Standard System</p>
+              <p class="bill__meta">Фіксовано в доларах · ціни на 12.11.2026 · курс 41,5 ₴/$</p>
+            </header>
+            <div class="bill__body">
+              <p class="bill__ln"><span>Сайт: пропозиція, наступний крок і форма заявки</span><i>у ціні</i></p>
+              <p class="bill__ln"><span>Канал розмови: Telegram-бот або інший доречний сценарій</span><i>у ціні</i></p>
+              <p class="bill__ln"><span>Автоматизація одного повторюваного процесу</span><i>у ціні</i></p>
+              <p class="bill__ln bill__ln--note"><span>Обсяг робіт фіксуємо до старту</span><i>у пропозиції</i></p>
+            </div>
+            <div class="bill__total"><span>Разом</span><b>41&nbsp;500&nbsp;₴</b></div>
+            <div class="bill__pay">
+              <p class="bill__ln"><span><b>Передоплата</b> — на старті</span><i>у пропозиції</i></p>
+              <p class="bill__ln"><span><b>Решта</b> — після погодженого прев’ю</span><i>у пропозиції</i></p>
+            </div>
+            <p class="bill__out"><b>Окремо:</b> домен, хостинг, API, CRM і реклама — якщо інше не вказано в пропозиції.</p>
+            <p class="bill__own">Після повної оплати файли й права — ваші, зокрема на бота й автоматизацію.</p>
+            <div class="bill__acts">
+              <a class="btn btn-ink" href="#lead-form" data-format="Standard System" data-placement="bill_standard_system">Обговорити Standard System
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="btn btn-line" href="/tsiny/">Усі формати й ціни</a>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- після заявки: заявки з сайту й бота — один маршрут -->
+  <section class="lp-sec lp-paper" id="zaiavky" data-cv aria-labelledby="zaiavky-title" data-tone="paper">
+    <div class="wrap lp-two">
+      <header class="lp-lead">
+        <p class="kicker lp-k" data-reveal>Маршрут — форма й бот разом</p>
+        <h2 id="zaiavky-title" data-reveal>Заявки з сайту в Telegram і таблицю</h2>
+        <p class="lp-p" data-reveal>Форма на сайті й бот працюють в одному маршруті: заявка з будь-якого з них потрапляє в таблицю або CRM — залежно від того, з чим ви працюєте, — а відповідальна людина отримує сповіщення. Інтеграції підбираємо під ваші інструменти.</p>
+      </header>
+      <dl class="lp-rows" data-reveal>
+        <div><dt>Форма й бот</dt><dd>один маршрут: хто не користується Telegram, залишає заявку у формі</dd></div>
+        <div><dt>Таблиця або CRM</dt><dd>дані не потрібно переносити вручну</dd></div>
+        <div><dt>Сповіщення</dt><dd>відповідальна людина одразу бачить нову заявку</dd></div>
+        <div><dt>Передача людині</dt><dd>коли потрібна відповідь чи рішення, бот передає розмову</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- після заявки: етапи й оплата -->
+  <section class="lp-sec lp-paper" id="zapusk" data-cv aria-labelledby="zapusk-title" data-tone="paper">
+    <div class="wrap">
+      <header class="lp-head">
+        <div>
+          <p class="kicker lp-k" data-reveal>Запуск — коли й за що ви платите</p>
+          <h2 id="zapusk-title" data-reveal>Як запускаємо і коли ви платите</h2>
+        </div>
+        <p class="lp-p" data-reveal>Спочатку сценарій і структура, потім дизайн, код і інтеграції. Другу частину оплати ви вносите після того, як побачили й погодили живе прев’ю; суми — у пропозиції.</p>
+      </header>
+      <ol class="lp-steps">
+        <li data-reveal>
+          <p class="lp-steps__n">Бриф і фокус</p>
+          <p class="lp-steps__do">Уточнюємо бізнес, аудиторію, ціль і одну головну дію.</p>
+          <p class="lp-steps__you"><small>Для вас</small>пропозиція: сума в гривні, обсяг робіт і строк</p>
+          <p class="lp-steps__pay lp-steps__pay--a"><i aria-hidden="true"></i><span><b>Передоплата</b> — стартуємо</span></p>
+        </li>
+        <li data-reveal>
+          <p class="lp-steps__n">Структура й напрям</p>
+          <p class="lp-steps__do">Будуємо сценарій сторінок і погоджуємо візуальну систему.</p>
+          <p class="lp-steps__you"><small>Для вас</small>сценарій розмови під ваші послуги</p>
+          <p class="lp-steps__pay"><i aria-hidden="true"></i><span>без оплати</span></p>
+        </li>
+        <li data-reveal>
+          <p class="lp-steps__n">Дизайн і код</p>
+          <p class="lp-steps__do">Збираємо адаптив, анімації, форми й потрібні інтеграції.</p>
+          <p class="lp-steps__you"><small>Для вас</small>форма й бот — в одному маршруті до таблиці або CRM</p>
+          <p class="lp-steps__pay"><i aria-hidden="true"></i><span>без оплати</span></p>
+        </li>
+        <li data-reveal>
+          <p class="lp-steps__n">Прев’ю і запуск</p>
+          <p class="lp-steps__do">Показуємо живе прев’ю, вносимо погоджені правки й допомагаємо з доменом.</p>
+          <p class="lp-steps__you"><small>Для вас</small>живе прев’ю до другої частини оплати</p>
+          <p class="lp-steps__pay lp-steps__pay--b"><i aria-hidden="true"></i><span><b>Решта</b> — після погодження</span></p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- після заявки: межі бота — плита -->
+  <section class="lp-sec" id="ne-robit" data-cv aria-labelledby="ne-robit-title" data-tone="ink">
+    <div class="wrap">
+      <div class="pr-pay tb-limits">
+        <div>
+          <p class="kicker lp-k" data-reveal>Межі — щоб очікування збігались</p>
+          <h2 id="ne-robit-title" data-reveal>Чого бот не робить</h2>
+          <p class="lp-p" data-reveal>Бот — частина маршруту заявки, а не заміна вашої команди. Ось що варто знати до старту.</p>
+        </div>
+        <div>
+          <ul class="pr-list" data-reveal>
+            <li><b>Не замінює людину</b><small>збирає суть і передає розмову вашій людині</small></li>
+            <li><b>Працює лише в Telegram</b><small>для решти клієнтів лишається форма на сайті</small></li>
+            <li><b>Не гарантує продажів</b><small>кількість заявок залежить від реклами, пропозиції й ринку (<a class="tlink" href="/terms.html">Умови</a>, §3)</small></li>
+            <li><b>Не схвалює заявки у ваш канал</b><small>автоприйняття в Telegram-канал — інша задача</small></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- відповіді: питання — заголовком, відповідь — абзацом -->
+  <section class="lp-sec lp-qa" id="vidpovidi" data-cv aria-labelledby="vidpovidi-title" data-tone="ink">
+    <div class="wrap lp-qa__in">
+      <header class="lp-qa__head">
+        <p class="kicker lp-k" data-reveal>Відповіді — про бота, ціну й права</p>
+        <h2 id="vidpovidi-title" data-reveal>Що варто знати до замовлення бота</h2>
+      </header>
+      <div class="lp-qa__list">
+        <article data-reveal>
+          <h3>Чим бот кращий за звичайну форму?</h3>
+          <p>Форма приймає те, що людина встигла написати. Бот ставить уточнювальні питання за сценарієм під ваші послуги, тож заявка приходить уже з суттю, і команді зрозуміло, з чого почати. Форма на сайті лишається для тих, хто не користується Telegram.</p>
+        </article>
+        <article data-reveal>
+          <h3>Куди потрапляє заявка з бота?</h3>
+          <p>У таблицю або CRM — залежно від того, з чим ви працюєте; інтеграції підбираємо під ваші інструменти. Відповідальна людина отримує сповіщення про нову заявку, а за потреби бот передає розмову живій людині.</p>
+        </article>
+        <article data-reveal>
+          <h3>Скільки коштує Telegram-бот?</h3>
+          <p>Окремої фіксованої ціни на бота немає. Telegram-бот може бути каналом розмови у Standard System: сайт, канал розмови з клієнтами й автоматизація одного повторюваного процесу — 41&nbsp;500&nbsp;₴ (сума в гривні — за курсом, погодженим у пропозиції); оплата частинами — передоплата на старті й решта після погодженого прев’ю, суми в пропозиції. Окремий бот чи складніший сценарій — індивідуальний прорахунок.</p>
+        </article>
+        <article data-reveal>
+          <h3>Чи буде бот належати мені?</h3>
+          <p>Після повної оплати погоджені файли й права переходять до вас — це стосується й бота, і автоматизації. Ключові сервіси — домен, хостинг, аналітику, CRM — за технічної можливості оформлюємо на вас; як саме передаємо бота й доступи, фіксуємо в пропозиції до старту. Деталі — на сторінці <a href="/rights.html">Права на сайт</a>.</p>
+        </article>
+        <article data-reveal>
+          <h3>Що, якщо Telegram або інший сервіс дасть збій?</h3>
+          <p>Бот працює всередині Telegram, тому клієнт має користуватися цим месенджером; для решти лишається форма на сайті. Velira не контролює безперервність Telegram, CRM чи хостингу, але допомагає коректно інтегрувати погоджені сервіси (<a href="/terms.html">Умови</a>, §11).</p>
+        </article>
+        <article data-reveal>
+          <h3>Це бот для автоприйняття заявок у канал?</h3>
+          <p>Ні. Тут мова про бота, який приймає звернення клієнтів вашого бізнесу: ставить питання, збирає контакт і передає заявку команді. Автоматичне схвалення заявок на вступ у Telegram-канал — інша задача; якщо вона потрібна, опишіть її, і ми скажемо, чи візьмемося.</p>
+        </article>
+        <p class="lp-qa__end" data-reveal>Не знайшли відповіді? <a class="tlink" href="https://t.me/madbod_77?text=%D0%94%D0%BE%D0%B1%D1%80%D0%B8%D0%B9%20%D0%B4%D0%B5%D0%BD%D1%8C%21%20%D0%9F%D0%B8%D1%88%D1%83%20%D0%B7%D1%96%20%D1%81%D1%82%D0%BE%D1%80%D1%96%D0%BD%D0%BA%D0%B8%20%C2%ABTelegram-%D0%B1%D0%BE%D1%82%C2%BB%20%D0%BD%D0%B0%20%D1%81%D0%B0%D0%B9%D1%82%D1%96%20Velira.%20%D0%9C%D0%B5%D0%BD%D1%96%20%D0%BF%D0%BE%D1%82%D1%80%D1%96%D0%B1%D0%BD%D0%BE%3A%20Telegram-%D0%B1%D0%BE%D1%82.%20" target="_blank" rel="noopener" data-tg="Добрий день! Пишу зі сторінки «Telegram-бот» на сайті Velira. Мені потрібно: ">Напишіть у Telegram ↗</a> або <a class="tlink" href="#lead-form">залиште задачу</a>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in foot-in--cols">
+    <div class="foot__about">
+      <a class="brand" href="/" aria-label="Velira — на головну">
+        <svg class="brand__mark" viewBox="430 340 390 438" aria-hidden="true"><path d="M435 346H480L625 587L770 347H815L560 771H514Z"/><path d="M608 731H780L751 771H581Z"/></svg>
+        <span>Velira</span>
+      </a>
+      <p class="foot__line">Зв’язок із клієнтом не має обриватися.</p>
+      <p class="foot__sum">Velira — студія з Києва, що робить сайти, лендинги й Telegram-боти для малого й середнього бізнесу та за потреби додає автоматичну передачу заявок у таблицю або CRM. Лендинг коштує від 6&nbsp;225&nbsp;₴, бізнес-сайт — від 10&nbsp;375&nbsp;₴. Оплата сайтів — 30% на старті й 70% після погодженого прев’ю.</p>
+    </div>
+    <div class="foot__col foot__col--svc"><p class="foot__h">Послуги</p><a href="/landing/">Лендинг від 6&nbsp;225&nbsp;₴</a><a href="/tsiny/">Ціни: шість форматів</a><a href="/telegram-bot/" aria-current="page">Telegram-бот для заявок</a></div>
+    <div class="foot__col foot__col--ex"><p class="foot__h">Приклади</p><a href="/sait-dlia-salonu-krasy/">Сайт для салону краси</a><a href="/sait-dlia-sto/">Сайт для СТО</a></div>
+    <div class="foot__col foot__col--std"><p class="foot__h">Студія</p><a href="/pro-velira/">Про Velira</a><a href="/skilky-koshtuie-landing/">Скільки коштує лендинг</a></div>
+    <div class="foot__col foot__col--talk"><p class="foot__h">Зв’язок</p><a href="https://t.me/madbod_77" target="_blank" rel="noopener">Telegram @madbod_77</a><a href="https://www.instagram.com/velira.web/" target="_blank" rel="noopener">Instagram @velira.web</a><a href="#contact">Форма заявки</a></div>
+    <nav class="foot__col" aria-label="Документи"><p class="foot__h">Документи</p><a href="/privacy.html">Приватність</a><a href="/terms.html">Умови</a><a href="/rights.html">Права на сайт</a></nav>
+    <p class="foot__copy">© 2026 Velira (VeliraWeb) · Київ · працюємо дистанційно</p>
+  </div>
+</footer>
+
+<script defer src="/assets/js/measure.js?v=20261112"></script>
+<script defer src="/assets/js/form.js?v=20261113f1"></script>
+<script defer src="/assets/js/page.js?v=20261112"></script>
+<script defer src="/assets/js/bot.js?v=20261112"></script>
+</body>
+</html>

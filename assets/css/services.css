@@ -1,0 +1,445 @@
+/* Velira — стилі сторінок /tsiny/ і /telegram-bot/ (цикл 17 · M2). Підключаються ПІСЛЯ site.css і лише на цих сторінках:
+   головна й /landing/ їх не вантажать (виміряна вага /landing/ не змінюється).
+   Той самий словник, що /landing/: Onest, ink / paper, знак V, рамки, світло по лінії; рух — page.js + tsiny.js / bot.js без GSAP.
+   /tsiny/ — «кошторис, що збирається з вибраних пунктів»: паперовий чек виходить зі світлої щілини й передруковується при виборі.
+   /telegram-bot/ — «розмова стає заявкою»: кожна відповідь клієнта світлом переходить у поле заявки, далі — рядок таблиці й сповіщення. */
+
+/* ---------- чек (спільний компонент: /tsiny/ живий, /telegram-bot/ статичний) ---------- */
+.bill { position: relative; --z: 8px; color: var(--p-tx); color-scheme: light; }
+.bill__slot { position: relative; z-index: 2; height: 2px; margin: 0 -8px; border-radius: 1px; background: #f4f4f1;
+              box-shadow: 0 0 10px rgba(255, 255, 255, .55), 0 0 28px rgba(255, 255, 255, .18); }
+.bill__feed { position: relative; overflow: hidden; margin-top: -1px; padding-bottom: 2px; }
+.bill__paper { position: relative; background: #f4f4f1; padding: 20px 22px calc(18px + var(--z));
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--z)) 100%;
+          mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--z)) 100%; }
+.bill__top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: start; padding-bottom: 12px; border-bottom: 1px dashed rgba(0, 0, 0, .28); }
+.bill__brand { display: inline-flex; align-items: center; gap: 7px; margin: 0; font-size: 13px; font-weight: 650; letter-spacing: -.005em; color: var(--p-tx); }
+.bill__brand svg { width: 12px; height: 14px; fill: #0a0a0a; }
+.bill__t { grid-column: 1; margin: 6px 0 0; font-size: 22px; line-height: 1.1; letter-spacing: -.025em; font-weight: 640; color: var(--p-tx); }
+.bill__meta { grid-column: 1 / -1; margin: 3px 0 0; font-size: 12.5px; line-height: 1.4; color: var(--p-tx-3); }
+.bill__cur { grid-column: 2; grid-row: 1 / 3; display: flex; gap: 4px; }
+.bill__cur button { width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(0, 0, 0, .16); background: transparent; color: var(--p-tx);
+                    font: 600 15px var(--sans); cursor: pointer; transition: background-color .15s var(--e-std), color .15s var(--e-std); }
+.bill__cur button[aria-pressed="true"] { background: #050505; border-color: #050505; color: var(--paper); }
+.bill__cur button:focus-visible, .bill :focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.bill__body { padding: 12px 0 10px; border-bottom: 1px dashed rgba(0, 0, 0, .28); }
+.bill__ln { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: baseline; margin: 0; padding: 4px 0; font-size: 14px; line-height: 1.35; color: var(--p-tx-2); }
+.bill__ln i { font-style: normal; font-size: 12.5px; color: var(--p-tx-3); white-space: nowrap; }
+.bill__ln--fmt { padding: 0 0 6px; font-size: 16px; color: var(--p-tx); }
+.bill__ln--fmt b { font-weight: 650; }
+.bill__ln--fmt .bill__amt { font-size: 16px; font-weight: 640; color: var(--p-tx); }
+.bill__amt { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bill__ln--note { color: var(--p-tx); font-weight: 500; }
+.bill__rush { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 42px; margin: 6px 0 0; padding: 0 2px;
+              font-size: 14px; color: var(--p-tx); cursor: pointer; border-top: 1px solid rgba(0, 0, 0, .08); }
+.bill__rush input { width: 18px; height: 18px; margin: 0; accent-color: #050505; }
+.bill__rush i { font-style: normal; font-weight: 650; font-variant-numeric: tabular-nums; }
+.bill__rush[hidden], .bill__ln[hidden] { display: none; }
+.bill__total { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 12px; padding: 12px 0 8px; }
+.bill__total span { font-size: 14px; color: var(--p-tx-2); }
+.bill__total b { font-size: 28px; line-height: 1; font-weight: 650; letter-spacing: -.03em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bill__pay { display: grid; gap: 6px; padding-bottom: 12px; border-bottom: 1px dashed rgba(0, 0, 0, .28); }
+.bill__bar { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: rgba(0, 0, 0, .07); }
+.bill__bar i { display: block; transform-origin: 0 50%; }
+.bill__bar i:first-child { width: 30%; background: #050505; }
+.bill__bar i:last-child { width: 70%; background: repeating-linear-gradient(135deg, rgba(0, 0, 0, .55) 0 2px, transparent 2px 6px); }
+.bill__pay .bill__ln { padding: 1px 0; font-size: 13.5px; }
+.bill__pay .bill__ln b { color: var(--p-tx); font-weight: 650; }
+.bill__out, .bill__own { margin: 0; padding-top: 10px; font-size: 12.5px; line-height: 1.5; color: var(--p-tx-2); }
+.bill__out b { color: var(--p-tx); font-weight: 600; }
+.bill__acts { display: grid; gap: 8px; padding-top: 14px; }
+.bill__acts .btn { width: 100%; min-height: 46px; }
+.bill__fine { margin: 2px 0 0; font-size: 12px; color: var(--p-tx-3); text-align: center; }
+
+/* ---------- /tsiny/: перший екран + кошторис (одна сітка: чек — праворуч і липне, поки ви обираєте) ---------- */
+.pr-top { position: relative; isolation: isolate; }
+.pr-top > .bg { inset: 0 0 auto 0; height: 980px; }
+.pr-top .grid-bg { -webkit-mask-image: radial-gradient(ellipse 62% 70% at 78% 26%, #000 0%, rgba(0, 0, 0, .45) 45%, transparent 80%);
+                           mask-image: radial-gradient(ellipse 62% 70% at 78% 26%, #000 0%, rgba(0, 0, 0, .45) 45%, transparent 80%); }
+.pr-top__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 404px); column-gap: clamp(40px, 5.5vw, 96px); }
+.pr-hero { grid-column: 1; grid-row: 1; padding-block: 118px 64px; }
+.pr-hero .lp-copy { gap: 18px; }
+.pr-h1 { font-size: clamp(34px, 4.3vw, 62px); line-height: 1.03; letter-spacing: -.042em; font-weight: 640; color: #dededb; }
+.pr-h1 b { font-weight: inherit; color: #fff; text-shadow: var(--glow); }
+.pr-ta { margin: 0; max-width: 62ch; font-size: clamp(16px, 1.2vw, 18px); line-height: 1.6; color: var(--tx-2); }
+.pr-ta b { color: var(--tx); font-weight: 600; white-space: nowrap; }
+/* ціни .pv (перемикач валют) у рядку тексту й у списку — розміром рядка, не прайсу головної */
+.pr .pr-ta .pv, .pr .pr-row__p .pv { display: inline; font-size: inherit; font-weight: inherit; letter-spacing: inherit; }
+.pr-date { display: inline-flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; color: var(--tx-3); }
+.pr-date::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--paper); box-shadow: 0 0 10px rgba(255, 255, 255, .8); }
+.pr-est { grid-column: 1; grid-row: 2; position: relative; padding-bottom: clamp(56px, 7vw, 104px); }
+.pr-est__head { display: grid; gap: 14px; max-width: 62ch; margin-bottom: 26px; }
+.pr-est__head .kicker { margin: 0; }
+.pr-est__head h2 { max-width: 18ch; }
+.pr-bill-col { grid-column: 2; grid-row: 1 / span 2; padding-top: 112px; padding-bottom: clamp(56px, 7vw, 104px); }
+.pr-bill-col .bill { position: sticky; top: 84px; }
+.pr-grp { margin: 0 0 8px; padding-top: 22px; font-size: 14px; font-weight: 500; color: var(--tx-3); }
+.pr-grp:first-of-type { padding-top: 0; }
+.pr-rows { display: grid; gap: 8px; }
+.pr-row { position: relative; isolation: isolate; display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 4px 14px; align-items: baseline;
+          padding: 18px 20px 18px 16px; border-radius: var(--r-lg); }
+.pr-row__in { position: absolute; left: 16px; top: 22px; z-index: 3; width: 22px; height: 22px; margin: 0; opacity: 0; cursor: pointer; }
+.pr-row__bg { position: absolute; inset: 0; z-index: -1; border-radius: inherit; border: 1px solid var(--line-2);
+              background: radial-gradient(120% 120% at 0% 0%, rgba(255, 255, 255, .04), rgba(255, 255, 255, 0) 55%), #08080a;
+              transition: border-color .15s var(--e-std), background-color .15s var(--e-std); }
+.pr-row__dot { grid-column: 1; grid-row: 1; align-self: center; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, .45);
+               display: grid; place-items: center; transition: border-color .15s var(--e-std); }
+.pr-row__dot::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, .9); transform: scale(0);
+                      transition: transform .3s var(--e-mv); }
+.pr-row__h { grid-column: 2; grid-row: 1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; cursor: pointer; }
+.pr-row__h::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }   /* весь рядок — ціль дотику */
+.pr-row__n { font-size: clamp(20px, 1.7vw, 24px); font-weight: 640; letter-spacing: -.025em; color: var(--tx); }
+.pr-row__k { font-size: 14.5px; color: var(--tx-3); }
+.pr-row__p { margin: 0; grid-column: 3; grid-row: 1; font-size: clamp(19px, 1.6vw, 23px); font-weight: 620; letter-spacing: -.02em; color: var(--tx); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pr-row__p small { font-size: 14px; font-weight: 500; letter-spacing: 0; color: var(--tx-3); }
+.pr-row__d { grid-column: 2 / -1; margin: 2px 0 0; font-size: 15px; line-height: 1.5; color: var(--tx-2); }
+.pr-row__d span { display: block; margin-top: 2px; color: var(--tx-3); font-size: 14px; }
+.pr-row__r { grid-column: 2; margin: 6px 0 0; font-size: 13.5px; font-weight: 500; color: var(--tx); }
+.pr-row__more { grid-column: 3; justify-self: end; position: relative; z-index: 2; display: inline-flex; align-items: center; min-height: 40px; margin: -6px 0 -12px;
+                font-size: 14px; font-weight: 600; color: var(--tx); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .35);
+                text-underline-offset: 4px; transition: text-decoration-color .15s var(--e-std); }
+.pr-row__more:hover { text-decoration-color: currentColor; }
+.pr-row:hover .pr-row__bg { border-color: var(--line-3); }
+.pr-row__in:checked ~ .pr-row__bg { border-color: rgba(255, 255, 255, .62); background-color: #0d0d0f;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1), 0 0 34px -10px rgba(255, 255, 255, .28); }
+.pr-row__in:checked ~ .pr-row__dot { border-color: #fff; }
+.pr-row__in:checked ~ .pr-row__dot::after { transform: scale(1); }
+.pr-row__in:focus-visible ~ .pr-row__bg { outline: 2px solid var(--paper); outline-offset: 3px; }
+/* обраний рядок «тягнеться» світлом до чека (ПК): коротка лінія з краю рядка в проміжок між колонками */
+@media (min-width: 1080px) {
+  .pr-row__bg::after { content: ""; position: absolute; left: 100%; top: 50%; width: clamp(40px, 5.5vw, 96px); height: 1.5px; margin-top: -1px;
+                       background: linear-gradient(90deg, rgba(255, 255, 255, .85), rgba(255, 255, 255, 0)); transform-origin: 0 50%; transform: scaleX(0); }
+  .pr-row__in:checked ~ .pr-row__bg::after { transform: none; }
+}
+.pr-dock { display: none; }
+.pr-pickwrap { position: relative; }   /* межа липкої стрічки: вона з’являється разом зі списком форматів і зникає на його кінці */
+.pr-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* рух чека: виходить зі щілини (ПК, перший екран — CSS, без JS); на телефоні — коли доходить прокрутка (page.js data-rv).
+   Заповнення анімацій — backwards: після кінця анімація знімається й лишається звичайний стан (знімок усієї сторінки його бачить) */
+@media (prefers-reduced-motion: no-preference) {
+  .pr-row__in:checked ~ .pr-row__bg::after { transition: transform .45s var(--e-mv) .05s; }
+  .bill__ln.is-print { animation: bill-type .26s steps(14, end) backwards; }
+  .bill__amt.is-roll, .bill__total b.is-roll { animation: bill-roll .32s var(--e-mv) backwards; }
+}
+@media (min-width: 1080px) and (prefers-reduced-motion: no-preference) {
+  .lp-motion .bill.is-feed .bill__paper { animation: bill-feed 1.05s cubic-bezier(.2, .7, .2, 1) .3s backwards; }
+  .lp-motion .bill.is-feed .bill__slot { animation: bill-slot 1.4s cubic-bezier(.4, 0, .2, 1) .2s backwards; }
+  .lp-motion .bill.is-feed .bill__bar i { animation: lp-grow .7s cubic-bezier(.2, .7, .2, 1) 1.15s backwards; }
+  .lp-motion .bill.is-feed .bill__bar i:last-child { animation-delay: 1.23s; }
+}
+@keyframes bill-feed { from { transform: translateY(-101%); } to { transform: none; } }
+@keyframes bill-slot { 0% { box-shadow: 0 0 10px rgba(255, 255, 255, .55), 0 0 28px rgba(255, 255, 255, .18); }
+                       30% { box-shadow: 0 0 16px rgba(255, 255, 255, .95), 0 0 46px rgba(255, 255, 255, .4); }
+                       100% { box-shadow: 0 0 10px rgba(255, 255, 255, .55), 0 0 28px rgba(255, 255, 255, .18); } }
+@keyframes bill-type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes bill-roll { from { opacity: 0; transform: translateY(.45em); } to { opacity: 1; transform: none; } }
+/* чек нижче першого екрана (телефон, /telegram-bot/): поки він за екраном — data-rv="pre" (page.js); з'являючись, друкується
+   від щілини вниз — clip-path зверху донизу з легким зсувом, тож верх чека (назва, сума) видно першим */
+.lp-motion .bill[data-rv="pre"] .bill__paper { clip-path: inset(0 0 100% 0); transform: translateY(-14px); }
+.lp-motion .bill[data-rv="pre"] { opacity: 1; transform: none; }
+.lp-motion .bill[data-rv="in"] .bill__paper { clip-path: inset(0 0 0 0); transform: none;
+  transition: clip-path .85s cubic-bezier(.2, .7, .2, 1) .05s, transform .85s cubic-bezier(.2, .7, .2, 1) .05s; }
+.lp-motion .bill[data-rv="in"] .bill__slot { animation: bill-slot 1.2s cubic-bezier(.4, 0, .2, 1); }
+
+/* ---------- /tsiny/: ринок — шкала, на якій видно, де стоїть Spark ---------- */
+.pr-scale { position: relative; margin: 8px 0 0; padding: 22px clamp(18px, 2.4vw, 32px) 18px; border-radius: var(--r-xl); border: 1px solid var(--p-line); background: #fbfbf9;
+            --max: 30000; }
+.pr-scale__axis { position: relative; height: 22px; margin: 0 0 6px var(--lw); border-bottom: 1px solid var(--p-line); }
+.pr-scale__axis span { position: absolute; bottom: 6px; left: calc(var(--v) / var(--max) * 100%); transform: translateX(-50%); font-size: 12.5px; color: var(--p-tx-3);
+                       white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pr-scale__axis span:first-child { transform: none; }
+.pr-scale__axis span:last-child { transform: translateX(-100%); }
+.pr-scale__lanes { position: relative; margin: 0; padding: 0; list-style: none; }
+.pr-scale { --lw: 290px; }
+.pr-lane { display: grid; grid-template-columns: var(--lw) minmax(0, 1fr); align-items: center; min-height: 50px; border-bottom: 1px solid rgba(0, 0, 0, .06); }
+.pr-lane:last-child { border-bottom: 0; }
+.pr-lane__l { padding-right: 18px; font-size: 14px; line-height: 1.35; color: var(--p-tx); }
+.pr-lane__l small { display: block; font-size: 13px; color: var(--p-tx-3); font-variant-numeric: tabular-nums; }
+.pr-lane__track { position: relative; height: 12px; }
+.pr-lane__bar { position: absolute; top: 0; bottom: 0; left: calc(var(--a) / var(--max) * 100%); width: max(6px, calc((var(--b) - var(--a)) / var(--max) * 100%));
+                border-radius: 6px; background: rgba(0, 0, 0, .78); transform-origin: 0 50%; }
+.pr-lane__bar--open { width: calc(100% - var(--a) / var(--max) * 100%); border-radius: 6px 0 0 6px;
+                      background: linear-gradient(90deg, rgba(0, 0, 0, .78) 0, rgba(0, 0, 0, .78) calc(100% - 64px), rgba(0, 0, 0, 0)); }
+.pr-lane__bar--dot { width: 12px; border-radius: 50%; }
+.pr-lane--g .pr-lane__bar { background: repeating-linear-gradient(135deg, rgba(0, 0, 0, .72) 0 2px, transparent 2px 6px); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .6); }
+/* Spark — риска на кожній доріжці в точці 6 225 ₴: разом вони складаються у вертикаль, що не перетинає підписів */
+.pr-lane__track::after { content: ""; position: absolute; left: calc(6225 / var(--max) * 100%); top: -10px; bottom: -10px; width: 2px; margin-left: -1px;
+                         border-radius: 1px; background: #050505; transform-origin: 50% 50%; }
+.pr-scale__foot { position: relative; height: 46px; margin-left: var(--lw); }
+.pr-scale__mk { position: absolute; top: 12px; left: calc(6225 / var(--max) * 100%); transform: translateX(-14px); display: inline-flex; align-items: center; gap: 8px;
+                padding: 6px 11px 6px 10px; border-radius: 9px; background: #050505; color: var(--paper); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.pr-scale__mk::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #fff; box-shadow: 0 0 8px #fff; }
+.pr-scale figcaption { margin: 10px 0 0; padding-top: 14px; border-top: 1px solid var(--p-line); font-size: 13.5px; line-height: 1.55; color: var(--p-tx-3); }
+.lp-motion .pr-scale[data-rv="pre"] .pr-lane__bar { transform: scaleX(0); }
+.lp-motion .pr-scale[data-rv="pre"] .pr-lane__track::after { transform: scaleY(0); }
+.lp-motion .pr-scale[data-rv="pre"] .pr-scale__mk { opacity: 0; }
+.lp-motion .pr-scale[data-rv="in"] .pr-lane__bar { transition: transform .7s cubic-bezier(.2, .7, .2, 1) calc(.2s + var(--i, 0) * 80ms); }
+.lp-motion .pr-scale[data-rv="in"] .pr-lane__track::after { transition: transform .45s var(--e-mv) calc(.8s + var(--i, 0) * 50ms); }
+.lp-motion .pr-scale[data-rv="in"] .pr-scale__mk { transition: opacity .4s var(--e-std) 1.15s; }
+.pr-why { margin-top: clamp(28px, 4vw, 44px); }
+.pr-why > div { grid-template-columns: minmax(0, 220px) minmax(0, 1fr); }
+
+/* ---------- /tsiny/: від чого залежить сума — рядки «чинник → між якими форматами» ---------- */
+.pr-fac { margin: 0; border-top: 1px solid var(--p-line); }
+.pr-fac > div { display: grid; grid-template-columns: minmax(0, 170px) minmax(0, 1fr) minmax(0, auto); gap: 6px 28px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--p-line); }
+.pr-fac dt { font-size: clamp(18px, 1.5vw, 21px); font-weight: 620; letter-spacing: -.02em; color: var(--p-tx); }
+.pr-fac dd { margin: 0; font-size: 15.5px; line-height: 1.5; color: var(--p-tx-2); }
+.pr-fac .pr-path { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; justify-content: flex-end; }
+.pr-path span { display: inline-flex; align-items: center; min-height: 28px; padding: 0 10px; border-radius: 8px; border: 1px solid rgba(0, 0, 0, .18); font-size: 13.5px; font-weight: 600; color: var(--p-tx); white-space: nowrap; }
+.pr-path i { width: 14px; height: 1.5px; background: rgba(0, 0, 0, .45); }
+
+/* ---------- /tsiny/: окремо й оплата — плита ---------- */
+.pr-pay { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border-radius: var(--r-xl); border: 1px solid var(--line);
+          background: radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, .05), rgba(255, 255, 255, 0) 52%), linear-gradient(180deg, #0d0d0e, #060607); }
+.pr-pay > div { padding: clamp(26px, 3.6vw, 52px); display: grid; gap: 16px; align-content: start; }
+.pr-pay > div + div { border-left: 1px solid var(--line); }
+.pr-pay h2 { font-size: clamp(28px, 3vw, 42px); }
+.pr-pay .lp-p { font-size: 16px; }
+.pr-list { margin: 4px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line-2); }
+.pr-list li { display: grid; grid-template-columns: minmax(0, 13em) minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 11px 0; border-bottom: 1px solid var(--line-2);
+              font-size: 15px; line-height: 1.45; color: var(--tx-2); }
+.pr-list li b { color: var(--tx); font-weight: 600; }
+.pr-list li small { font-size: 13.5px; line-height: 1.45; color: var(--tx-3); }
+.pr-pay .lp-split { width: 100%; }
+
+/* ---------- /telegram-bot/: перший екран і демо «діалог → заявка» ---------- */
+.tb-hero__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 430px); gap: clamp(32px, 5vw, 88px); align-items: center; }
+.tb-price { display: grid; gap: 10px; width: min(100%, 580px); padding: 16px 18px; border-radius: var(--r-lg); border: 1px solid var(--line-2); background: rgba(255, 255, 255, .025); }
+.tb-price p { margin: 0; font-size: 15px; line-height: 1.5; color: var(--tx-2); }
+.tb-price .tb-price__main { font-size: 16.5px; color: var(--tx); }
+.tb-price .tb-price__main b { font-size: 22px; font-weight: 650; letter-spacing: -.02em; white-space: nowrap; text-shadow: var(--glow); }
+.tb-price .lp-split { width: 100%; margin: 2px 0 0; }
+.tb-price .lp-split__l { grid-template-columns: minmax(0, 40fr) minmax(0, 60fr); }
+.tb-demo { display: none; }
+@media (min-width: 1080px) {
+  .tb-demo { position: relative; display: grid; gap: 0; margin: 0; }
+  .tb-demo figcaption { margin-top: 14px; font-size: 13px; line-height: 1.5; color: var(--tx-3); }
+}
+/* вікно чату й картка заявки — та сама мова, що у вставках маршруту головної */
+.tb-win { position: relative; border-radius: 16px; background: #0b0b0d; color: #e8e8e6; box-shadow: inset 0 0 0 1px var(--line-2), 0 30px 70px -30px rgba(0, 0, 0, .9); overflow: hidden; }
+.tb-win__bar { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.tb-win__bar b { font-size: 14px; font-weight: 600; }
+.tb-win__bar small { font-size: 12px; color: var(--tx-3); }
+.tb-av { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 7px; background: var(--paper); color: #000; font-weight: 700; font-size: 12px; }
+.tb-chat { display: grid; gap: 8px; align-content: start; padding: 14px; min-height: 0; }
+.tb-msg { margin: 0; max-width: 88%; padding: 8px 12px; border-radius: 12px 12px 12px 4px; background: rgba(255, 255, 255, .075); font-size: 14px; line-height: 1.42; }
+.tb-msg--me { justify-self: end; border-radius: 12px 12px 4px 12px; background: var(--paper); color: #050505; }
+.tb-msg--att { display: flex; gap: 6px; padding: 6px; }
+.tb-msg--att i { display: block; width: 56px; height: 56px; border-radius: 8px; background: linear-gradient(135deg, #c9c6bf, #9d9a93); }
+.tb-msg--att i + i { background: linear-gradient(135deg, #b9b5ad, #8a877f); }
+.tb-msg--voice { display: inline-flex; align-items: center; gap: 10px; }
+.tb-msg--voice svg { width: 64px; height: 18px; fill: none; stroke: #050505; stroke-width: 2; stroke-linecap: round; }
+.tb-msg--voice span { font-size: 13px; font-variant-numeric: tabular-nums; }
+.tb-typing { display: inline-flex; gap: 4px; justify-self: start; padding: 11px 12px; border-radius: 12px 12px 12px 4px; background: rgba(255, 255, 255, .075); }
+.tb-typing i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, .6); }
+.tb-card { position: relative; border-radius: 16px; background: #0b0b0d; color: #e8e8e6; box-shadow: inset 0 0 0 1px var(--line-2); }
+.tb-card__bar { display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 14px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.tb-card__bar b { font-size: 14px; font-weight: 600; }
+.tb-lead { margin: 0; padding: 10px; display: grid; gap: 6px; }
+.tb-lead > div { position: relative; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px; padding: 7px 10px; border-radius: 9px; background: rgba(255, 255, 255, .035); font-size: 13.5px; line-height: 1.4; }
+.tb-lead dt { color: var(--tx-3); }
+.tb-lead dd { margin: 0; font-weight: 550; color: var(--tx); min-width: 0; overflow-wrap: anywhere; }
+.tb-lead .tb-lead__to { background: rgba(255, 255, 255, .1); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2); }
+.tb-wire { position: relative; height: 34px; margin-left: 38px; }
+.tb-wire::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1.5px; background: rgba(255, 255, 255, .3); }
+.tb-wire i { position: absolute; left: -3px; top: 0; width: 7.5px; height: 7.5px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 2px rgba(255, 255, 255, .8); opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  /* кожен елемент демо має data-a, доки його анімація не скінчилась (bot.js знімає атрибут на animationend): готовий стан —
+     звичайний, і повторний розрахунок стилів (зміна вікна, знімок усієї сторінки) не запускає показ знову */
+  .lp-motion .tb-demo .tb-msg[data-a] { animation: tb-in .4s var(--e-mv) backwards; }
+  .lp-motion .tb-demo .tb-msg[data-a="1"] { animation-delay: .15s; }
+  .lp-motion .tb-demo .tb-msg[data-a="2"] { animation-delay: .4s; }
+  .lp-motion .tb-demo .tb-msg[data-a="3"] { animation-delay: .65s; }
+  .lp-motion .tb-demo .tb-wire i[data-a] { animation: tb-drop .5s cubic-bezier(.4, 0, .2, 1) .9s backwards; }
+  .lp-motion .tb-demo .tb-lead > div[data-a] { animation: tb-fill .4s var(--e-mv) backwards; }
+  .lp-motion .tb-demo .tb-lead > div[data-a="1"] { animation-delay: 1.05s; }
+  .lp-motion .tb-demo .tb-lead > div[data-a="2"] { animation-delay: 1.12s; }
+  .lp-motion .tb-demo .tb-lead > div[data-a="3"] { animation-delay: 1.19s; }
+  .lp-motion .tb-demo .tb-lead > div[data-a="4"] { animation-delay: 1.26s; }
+}
+@keyframes tb-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes tb-drop { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(30px); } }
+@keyframes tb-fill { from { opacity: 0; clip-path: inset(0 100% 0 0 round 9px); } to { opacity: 1; clip-path: inset(0 0 0 0 round 9px); } }
+
+/* ---------- /telegram-bot/: сценарії — три колонки «бот уточнює → заявка з суттю → таблиця й сповіщення» ---------- */
+.tb-sc { position: relative; }
+.tb-sc > input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.tb-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 8px; }
+.tb-tab { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 12px; border: 1px solid rgba(0, 0, 0, .18); background: transparent;
+          font-size: 15px; font-weight: 600; color: var(--p-tx); cursor: pointer; transition: background-color .15s var(--e-std), color .15s var(--e-std), border-color .15s var(--e-std); }
+.tb-tab:hover { background: rgba(0, 0, 0, .05); }
+#sc-salon:checked ~ .tb-tabs [for="sc-salon"], #sc-sto:checked ~ .tb-tabs [for="sc-sto"], #sc-cake:checked ~ .tb-tabs [for="sc-cake"] { background: #050505; border-color: #050505; color: var(--paper); }
+#sc-salon:focus-visible ~ .tb-tabs [for="sc-salon"], #sc-sto:focus-visible ~ .tb-tabs [for="sc-sto"], #sc-cake:focus-visible ~ .tb-tabs [for="sc-cake"] { outline: 2px solid #000; outline-offset: 3px; }
+.tb-tabs__note { margin-left: auto; font-size: 13.5px; color: var(--p-tx-3); }
+.tb-panel { position: relative; display: none; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, 1fr); gap: clamp(14px, 2vw, 28px); margin-top: 16px; }
+#sc-salon:checked ~ .tb-panels .tb-panel--salon, #sc-sto:checked ~ .tb-panels .tb-panel--sto, #sc-cake:checked ~ .tb-panels .tb-panel--cake { display: grid; }
+.tb-col { position: relative; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.tb-col h3 { font-size: 17px; font-weight: 620; letter-spacing: -.012em; color: var(--p-tx); }
+.tb-col h3 small { display: block; margin-top: 2px; font-size: 13.5px; font-weight: 400; letter-spacing: 0; color: var(--p-tx-3); }
+.tb-col .tb-win, .tb-col .tb-card { box-shadow: 0 24px 50px -28px rgba(0, 0, 0, .55); }
+.tb-col .tb-chat { min-height: 360px; }
+.tb-form { margin: 0; padding: 12px 14px; border-radius: 14px; border: 1px dashed rgba(0, 0, 0, .3); font-size: 13.5px; line-height: 1.45; color: var(--p-tx-2); }
+.tb-form b { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 600; color: var(--p-tx); }
+.tb-form q { color: var(--p-tx); }
+.tb-sheet { border-radius: 14px; background: #fbfbf9; border: 1px solid var(--p-line); overflow: hidden; font-size: 13px; color: var(--p-tx-2); }
+.tb-sheet__bar { display: flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 12px; border-bottom: 1px solid var(--p-line); font-weight: 600; color: var(--p-tx); }
+.tb-sheet__bar .demo { border-color: rgba(0, 0, 0, .2); color: var(--p-tx-3); }
+.tb-sheet__h, .tb-sheet__r { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.5fr) minmax(0, .8fr); gap: 8px; padding: 8px 12px; }
+.tb-sheet__h { font-size: 12px; color: var(--p-tx-3); border-bottom: 1px solid var(--p-line); }
+.tb-sheet__r { color: var(--p-tx); line-height: 1.4; }
+.tb-sheet__r span { min-width: 0; overflow-wrap: anywhere; }
+.tb-sheet__r--new { background: rgba(0, 0, 0, .045); box-shadow: inset 3px 0 0 #050505; }
+.tb-sheet__r b { font-weight: 600; }
+.tb-sheet__st { display: inline-flex; align-self: start; padding: 1px 7px; border-radius: 6px; background: #050505; color: var(--paper); font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.tb-note { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px 12px; align-items: center; padding: 12px 14px; border-radius: 14px; background: #0b0b0d; color: #e8e8e6;
+           box-shadow: 0 24px 50px -28px rgba(0, 0, 0, .55); }
+.tb-note__ic { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: rgba(255, 255, 255, .08); }
+.tb-note__ic svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.tb-note__t b { display: block; font-size: 14px; }
+.tb-note__t small { display: block; font-size: 12.5px; line-height: 1.4; color: var(--tx-2); }
+.tb-note__go { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .08); }
+.tb-note__go small { font-size: 12.5px; color: var(--tx-2); }
+.tb-note__go span { padding: 6px 11px; border-radius: 8px; background: var(--paper); color: #000; font-weight: 600; font-size: 12px; }
+.tb-sc__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 18px; }
+.tb-replay { border: 0; padding: 0; background: none; font: inherit; font-weight: 600; cursor: pointer; color: var(--p-tx); }
+.tb-replay[hidden] { display: none; }
+/* світло, що переносить відповідь у поле заявки: точка йде від чату до картки (лише з рухом; створює bot.js) */
+.tb-spark { position: absolute; left: 0; top: 0; z-index: 6; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: #fff; pointer-events: none;
+            box-shadow: 0 0 0 1.5px #050505, 0 0 12px 3px rgba(255, 255, 255, .9); }
+/* кроки сценарію: стан у data-s (bot.js), класи елементів не змінюються; без JS і без руху все видно.
+   До показу крок — скелет: бульбашка, рядок таблиці чи картка сповіщення вже на місці (висота не стрибає), текст ще прозорий;
+   з'являючись, текст проступає (колір / opacity 250 мс), бульбашка — scale .985 → 1 */
+.lp-motion .tb-sc [data-s="pre"] { color: transparent; }
+.lp-motion .tb-sc [data-s="pre"] > * { opacity: 0; }
+.lp-motion .tb-sc .tb-msg[data-s="pre"] { color: transparent; background: rgba(255, 255, 255, .04); transform: scale(.985); }
+.lp-motion .tb-sc .tb-msg--me[data-s="pre"] { background: rgba(244, 244, 241, .16); }
+.lp-motion .tb-sc .tb-lead > div[data-s="pre"] > dt { opacity: 1; }
+.lp-motion .tb-sc [data-s="in"] { transition: color .25s var(--e-std), background-color .25s var(--e-std), transform .32s var(--e-mv); }
+.lp-motion .tb-sc [data-s="in"] > * { transition: opacity .25s var(--e-std); }
+.lp-motion .tb-sc .tb-lead > div[data-s="in"] dd { animation: bill-type .34s steps(16, end) backwards; }
+.lp-motion .tb-sc .tb-lead > div[data-s="in"]::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+                                                    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .7), 0 0 18px rgba(255, 255, 255, .25); opacity: 0; animation: tb-glow 1.1s var(--e-std); }
+@keyframes tb-glow { 0% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: 0; } }
+.tb-typing[hidden] { display: none; }
+
+/* ---------- /telegram-bot/: ціна — статичний чек Standard System поруч із поясненням ---------- */
+.tb-cost { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 404px); gap: clamp(32px, 5vw, 88px); align-items: start; }
+.tb-cost__copy { display: grid; gap: 18px; align-content: start; }
+.tb-cost__copy h2 { max-width: 14ch; }
+.tb-cost .bill { margin-top: 8px; }
+.tb-cost__more { display: grid; gap: 0; margin: 4px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line-2); }
+.tb-cost__more li { padding: 12px 0; border-bottom: 1px solid var(--line-2); font-size: 15px; line-height: 1.5; color: var(--tx-2); }
+.tb-cost__more li b { color: var(--tx); font-weight: 600; }
+.tb-cost__more a { color: var(--tx); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- адаптив (обидві сторінки) ---------- */
+@media (max-width: 1079px) {
+  .pr-top__in { grid-template-columns: minmax(0, 1fr); }
+  .pr-hero, .pr-est { grid-column: 1; grid-row: auto; }
+  .pr-bill-col { grid-column: 1; grid-row: auto; padding-top: 0; }
+  .pr-bill-col .bill { position: relative; top: 0; max-width: 460px; }
+  .pr-est { padding-bottom: 28px; }
+  .tb-hero__in { grid-template-columns: minmax(0, 1fr); }
+  .tb-panel { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .tb-col--out { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .tb-col--out h3 { grid-column: 1 / -1; }
+  .tb-cost { grid-template-columns: minmax(0, 1fr); }
+  .tb-cost .bill { max-width: 460px; }
+  /* телефон і планшет: стрічка кошторису внизу екрана, поки ви гортаєте формати; на кінці списку вона стає над чеком */
+  .pr-dock { position: sticky; bottom: max(12px, env(safe-area-inset-bottom)); z-index: 5; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px;
+             min-height: 52px; margin-top: 16px; padding: 0 8px 0 16px; border-radius: 14px; background: var(--paper); color: #050505;
+             box-shadow: 0 14px 34px -10px rgba(0, 0, 0, .85), 0 0 0 1px rgba(255, 255, 255, .25); }
+  .pr-dock__n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14.5px; }
+  .pr-dock__n b { font-weight: 650; }
+  .pr-dock__p { font-size: 15px; font-weight: 650; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .pr-dock__go { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 10px; background: #050505; color: var(--paper); font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+}
+@media (max-width: 899px) {
+  .pr-pay { grid-template-columns: minmax(0, 1fr); }
+  .pr-pay > div + div { border-left: 0; border-top: 1px solid var(--line); }
+  .pr-fac > div { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .pr-fac .pr-path { justify-content: flex-start; }
+  .pr-why > div { grid-template-columns: minmax(0, 1fr); }
+  .pr-scale { --lw: 0px; padding-inline: 16px; }
+  .pr-lane { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 10px 0; }
+  .pr-lane__l { padding-right: 0; }
+  .pr-lane__track::after { top: -6px; bottom: -6px; }
+}
+@media (max-width: 759px) {
+  /* телефон: сценарій щільніший — до форми ≤ 4 екранів на 390 × 844 (cro.md 4.4); зміст той самий */
+  .tb-col { gap: 10px; }
+  .tb-col h3 small { display: none; }
+  .tb-chat { gap: 6px; padding: 12px; }
+  .tb-msg { padding: 7px 11px; font-size: 13.5px; line-height: 1.4; }
+  .tb-lead { gap: 4px; padding: 8px; }
+  .tb-lead > div { padding: 5px 9px; }
+  .tb-price { padding: 14px 16px; gap: 8px; }
+  .tb-form { padding: 10px 12px; font-size: 13px; }
+  .tb-note { padding: 10px 12px; gap: 8px 10px; }
+  .tb-note__go { padding-top: 8px; }
+  .tb-sc__foot { margin-top: 10px; }
+  .tb-tabs { margin-bottom: 0; }
+  #stsenarii { padding-top: 44px; }
+  #stsenarii .lp-p { font-size: 15.5px; line-height: 1.55; }
+  .tb-panel { grid-template-columns: minmax(0, 1fr); margin-top: 12px; }
+  .tb-col--out { grid-column: auto; grid-template-columns: minmax(0, 1fr); }
+  .tb-col .tb-chat { min-height: 0; }
+  .tb-tabs__note { flex-basis: 100%; margin-left: 0; }
+}
+@media (max-width: 599px) {
+  .pr-hero { padding-block: 92px 36px; }
+  .pr-h1 { font-size: clamp(29px, 8.6vw, 36px); letter-spacing: -.035em; }
+  .pr-ta { font-size: 15.5px; }
+  .pr-row { grid-template-columns: 26px minmax(0, 1fr); padding: 14px 14px 14px 12px; gap: 2px 10px; }
+  .pr-row__in { left: 12px; top: 17px; }
+  .pr-row__p { grid-column: 2; grid-row: 2; font-size: 19px; }
+  .pr-row__d { grid-column: 2; font-size: 14.5px; }
+  .pr-row__d span { font-size: 13.5px; }
+  .pr-row__more { grid-column: 2; justify-self: start; margin: 0 0 -10px; }
+  .pr-est__head { margin-bottom: 18px; }
+  .bill__paper { padding: 18px 16px calc(16px + var(--z)); }
+  .bill__total b { font-size: 25px; }
+  .pr-fac > div { padding: 13px 0; }
+  .pr-fac dd { font-size: 14.5px; }
+  .pr-list li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .pr-list li small { text-align: left; }
+  .pr-scale__axis span { font-size: 11.5px; }
+  .tb-price .tb-price__main b { font-size: 20px; }
+  .tb-price .lp-split__l { grid-template-columns: minmax(0, 1fr); gap: 2px; }   /* суми 30 / 70 — двома рядками, не в 30-відсотковій колонці */
+  .tb-lead > div { grid-template-columns: 84px minmax(0, 1fr); }
+  .tb-sheet__h, .tb-sheet__r { grid-template-columns: minmax(0, .8fr) minmax(0, 1.5fr) auto; }
+}
+/* телефон: формати — компактні фішки «назва + ціна» просто над чеком (склад обраного формату показує чек; повний опис рядків
+   лишається в HTML і на ширших екранах) — до форми ≤ 4 екранів на 390 × 844 (cro.md 4.4) */
+@media (max-width: 599px) {
+  .pr-rows { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .pr-row { grid-template-columns: 22px minmax(0, 1fr); gap: 2px 8px; padding: 11px 10px 11px 10px; border-radius: 14px; }
+  .pr-row__in { left: 10px; top: 13px; width: 20px; height: 20px; }
+  .pr-row__dot { width: 18px; height: 18px; align-self: start; margin-top: 2px; }
+  .pr-row__dot::after { width: 8px; height: 8px; }
+  .pr-row__h { gap: 0 6px; }
+  .pr-row__n { font-size: 16px; letter-spacing: -.015em; }
+  .pr-row__k { display: none; }
+  .pr-row__p { grid-column: 2; grid-row: 2; font-size: 15.5px; font-weight: 600; letter-spacing: -.01em; }
+  .pr-row__p small { font-size: 12.5px; }
+  .pr-row__d, .pr-row__r, .pr-row__more { display: none; }
+  .pr-grp { padding-top: 16px; margin-bottom: 8px; font-size: 13.5px; }
+  .pr-dock { display: none; }
+  .pr-est { padding-bottom: 22px; }
+  .pr-est__head { gap: 12px; }
+}
+@media (max-width: 359px) {
+  .pr-row { grid-template-columns: 20px minmax(0, 1fr); gap: 2px 6px; padding: 10px 8px; }
+  .pr-row__in { left: 8px; }
+  .pr-row__n { font-size: 15px; }
+  .pr-row__p { font-size: 14px; letter-spacing: -.02em; }
+  .pr-row__p small { font-size: 11.5px; }
+  .pr-dock { grid-template-columns: minmax(0, 1fr) auto; }
+  .pr-dock__p { display: none; }
+  .bill__cur button { width: 36px; }
+  .tb-tab { padding: 0 12px; font-size: 14px; }
+}
+/* ц.17 fix1: для систем частки 30/70 не підтверджені (TODO 15) — смуга часток не показується, суми «у пропозиції» */
+.bill__pay.is-nosplit .bill__bar { display: none; }
+.tb-price .tb-price__pay { margin: 2px 0 0; }

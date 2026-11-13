@@ -79,6 +79,8 @@
       waits.forEach(function (w) { if (!w.done && w.els.indexOf(e.target) >= 0) { w.done = true; later(w.f); } });
     });
   }, { rootMargin: '100% 0px 100% 0px' }) : null;
+  // ц.18: відступ елемента від предка без transform-ів (сума offsetTop до root)
+  function offY(el, root) { var y = 0; while (el && el !== root) { y += el.offsetTop; el = el.offsetParent; } return el === root ? y : NaN; }
   function whenNear(sel, f) {
     var els = sel.split(',').map(function (s) { return $(s.trim()); }).filter(Boolean);
     if (!nearIO || !els.length) { later(f); return; }
@@ -111,56 +113,7 @@
     });
   });
 
-  /* ================= форма заявки ================= */
-  // Є data-endpoint → заявка йде на сервер (Google Apps Script). Нема або сервер не відповів →
-  // відкриваємо Telegram з уже написаним текстом заявки: людині лишається натиснути «Надіслати».
-  var form = $('#lead-form'), status = form.querySelector('.form__status'), sendBtn = form.querySelector('[type="submit"]');
-  var TG = 'https://t.me/madbod_77', PRIVACY_VERSION = form.getAttribute('data-privacy') || '';
-  var say = function (html) { status.innerHTML = html; };
-  var tgLink = function (text) { return TG + '?text=' + encodeURIComponent(text); };
-  var track = function (n, p) { if (typeof window.veliraTrack === 'function') window.veliraTrack(n, p); };
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var bad = $$('[required]', form).filter(function (f) {
-      var ok = f.type === 'checkbox' ? f.checked : f.value.trim().length > 0;
-      if (f.type !== 'checkbox') f.setAttribute('aria-invalid', String(!ok));
-      return !ok;
-    });
-    if (bad.length) { say('Заповніть усі поля й позначте обидві згоди.'); bad[0].focus(); return; }
-    var v = function (n) { return (form.elements[n] && form.elements[n].value || '').trim(); };
-    var attr = typeof window.veliraAttribution === 'function' ? window.veliraAttribution() : {};
-    var from = [attr.gclid || attr.gbraid || attr.wbraid ? 'Google Ads' : attr.utm_source, attr.utm_campaign].filter(Boolean).join(' · ');
-    var text = 'Заявка з сайту Velira\nІм’я / бренд: ' + v('name') + '\nКонтакт: ' + v('contact') + '\nЗадача: ' + v('brief') + (from ? '\nЗвідки: ' + from : '');
-    var endpoint = form.getAttribute('data-endpoint') || '';
-    var fallback = function (lead, label) {
-      say(lead + ' <a class="form__tg" href="' + tgLink(text) + '" target="_blank" rel="noopener">' + (label || 'Відкрити Telegram з текстом заявки') + '</a>');
-    };
-    if (!endpoint) {
-      var win = window.open(tgLink(text), '_blank', 'noopener');
-      if (win) fallback('Відкрили Telegram з текстом заявки — натисніть «Надіслати» в чаті.', 'Чат не відкрився?');
-      else fallback('Текст заявки готовий.');
-      track('lead_telegram_draft', { method: 'telegram' });
-      return;
-    }
-    var payload = {
-      name: v('name'), contact: v('contact'), brief: v('brief'), company: v('company'),
-      privacyAcknowledged: form.elements.privacyAcknowledged.checked,
-      deliveryConsent: form.elements.deliveryConsent.checked,
-      privacyVersion: PRIVACY_VERSION, source: 'home', language: 'uk', page: location.href.split('#')[0].slice(0, 300), attribution: attr
-    };
-    sendBtn.disabled = true; say('Надсилаємо…');
-    var ctl = 'AbortController' in window ? new AbortController() : null, timer = setTimeout(function () { if (ctl) ctl.abort(); }, 12000);
-    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload), signal: ctl ? ctl.signal : undefined })
-      .then(function (r) { return r.json(); })
-      .then(function (res) {
-        if (!res || res.ok !== true) throw new Error((res && res.error) || 'not ok');
-        form.reset(); $$('[aria-invalid]', form).forEach(function (f) { f.removeAttribute('aria-invalid'); });
-        say('Заявку отримали. Відповімо за контактом, який ви вказали.');
-        track('lead_form_submit', { method: 'form' });
-      })
-      .catch(function () { fallback('Не вдалося надіслати з сайту.'); })
-      .then(function () { clearTimeout(timer); sendBtn.disabled = false; });
-  });
+  /* ================= форма заявки — ц.17: винесено в assets/js/form.js (спільна для головної й сторінок послуг) ================= */
 
   /* ================= маршрут: геометрія лінії (і для статичного варіанта) ================= */
   var grid = $('.route-grid'), svg = $('.route-line'), origin = $('#route-origin');
@@ -170,6 +123,8 @@
   var routeCells = NODE_ORDER.map(function (k) { return $('[data-node="' + k + '"]', grid); });
   var geo = { L: 1, nodes: [], end: { x: 0, y: 0 } };
   var desktopRoute = function () { return matchMedia('(min-width: 900px)').matches; };
+  // ц.17 fix2: «перо» чорнила лінії «Приклади» і продовження лінії прайсу — частка висоти екрана, до якої лінія вже дійшла
+  var PEN = function () { return desktopRoute() ? .78 : .86; };
 
   function rel(el) {
     var g = grid.getBoundingClientRect(), r = el.getBoundingClientRect();
@@ -387,51 +342,59 @@
         .fromTo(shineIn, { xPercent: 100 * F }, { xPercent: -100, duration: SD, ease: 'power1.inOut' }, 0)
         .set(shine, { opacity: 0 });
     };
-    // ц.13: ротатор (rotate.js: розбиття на літери, вимір, вхід) — ≈ 28 мс із 43 мс старту site.js на телефоні ×4 CPU.
-    // До 0,3 с він схований (CSS .js-motion .hero .rot { opacity: 0 }; показує .set у таймлайні hero), тож будується в
-    // наступній задачі й стає в ту саму позицію таймлайну (0,3 с) — старт скрипта вже не одна довга задача
-    var rot = null;
+    var rot = null, hero = null;
     var trace = $('.v-trace'), barGlow = $('.v-bar-glow'), vbar = $('.v-bar');
-    // ц.13: lazy: false — стани «до» ставляться в цьому ж синхронному шматку (до .fold-set). Раніше їх примусово скидав
-    // синхронний gsap.set ротатора; тепер ротатор у наступній задачі, і без цього був кадр «видно → сховано» (no_intro_flash)
-    var hero = gsap.timeline({ defaults: { lazy: false } })
-      .fromTo('.hero .grid-bg', { opacity: 0 }, { opacity: 1, duration: 1.6, ease: 'power1.out' }, 0)
-      .fromTo('.hero .glow-a, .hero .glow-b', { opacity: 0 }, { opacity: 1, duration: 2.2, ease: 'power1.out' }, .1)
-      .fromTo('.hero .hero-kicker', { opacity: 0 }, { opacity: 1, duration: .5, ease: STD }, .04)
-      // ц.10: H1 і перша дія видимі з першого кадру — лише проступання .15 → 1 за 500 мс, без зсуву й розмиття (SYNTHESIS §3, TH/XA)
-      .fromTo(l1, { opacity: .15 }, { opacity: 1, duration: .5, ease: STD }, .04)
-      .set('.hero .rot', { opacity: 1 }, .3)
-      // головний доказ першого екрана — знак V: фокусування blur 10 → 0, scale .94 → 1, 600 мс (XH скриншот, масштаб пом'якшено)
-      .fromTo('.vmark svg', { opacity: 0, scale: .94, filter: 'blur(10px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: .6, ease: REVEAL, clearProps: 'filter' }, .1)
-      .fromTo('.hero .lede', { opacity: .15 }, { opacity: 1, duration: .5, ease: STD }, .12)
-      .fromTo('.hero .cta', { opacity: .15 }, { opacity: 1, duration: .5, ease: STD }, .2)
-      .fromTo('.vmark__cap', { opacity: 0 }, { opacity: 1, duration: .6, ease: 'power1.out' }, .9)
-      .fromTo(trace, { opacity: 0, strokeDashoffset: 0 }, { opacity: 1, duration: .25, ease: 'power1.out' }, .8)
-      .to(trace, { strokeDashoffset: -100, duration: 1.0, ease: 'sine.inOut' }, .8)
-      .to(trace, { opacity: 0, duration: .25, ease: 'power1.in' }, 1.6)
-      .fromTo(barGlow, { opacity: .3 }, { opacity: 1, duration: .3, ease: 'power2.out' }, 1.45)
-      .fromTo(vbar, { fill: '#bdbdb9' }, { fill: '#ffffff', duration: .3, ease: 'power2.out' }, 1.45)
-      // після спалаху риска стихає: біла кнопка лишається найяскравішою заповненою формою (критик ц.3/ц.4)
-      .to(barGlow, { opacity: .3, duration: .55, ease: 'power1.inOut' }, 1.75)
-      .to(vbar, { fill: '#bdbdb9', duration: .55, ease: 'power1.inOut' }, 1.75)
-      .add(sweep(), .95);
-    // ц.12 (критик ц.11): на телефоні риска стоїть поруч із 3-м рядком h1 — після спалаху вона стихає ще й до .7,
-    // щоб не змагатися з кінцем рядка «…без втрат:»
-    if (matchMedia('(max-width: 599px)').matches) hero.to(vbar, { opacity: .7, duration: .55, ease: 'power1.inOut' }, 1.75);
-    // хвиля: «Ціна відсутності», що вже в першому екрані, проявляється після Lead hero, а не стоїть різкою з 0 мс
-    var foldAbs = $$('#absence .kicker, #absence [data-blur], #absence .plate__note').filter(function (el) { return el.getBoundingClientRect().top < innerHeight; });
-    if (foldAbs.length) hero.fromTo(foldAbs, from(0, G.y), to(G.d, { stagger: stag }), .7);
-    // ц.8: до цієї миті CSS тримає ці елементи прихованими з першого малювання (html.js-motion:not(.fold-set));
-    // fromTo вище вже поставив інлайн-стан «до» тим, що в першому екрані, — тепер CSS відпускає решту (вони нижче краю).
-    // Той самий синхронний шматок — між ними немає малювання, тож жодного «видно → сховано → видно».
-    root.classList.add('fold-set');
-    setTimeout(function () {
+    /* ц.17 fix1 (критик ц.17 р.1, motion_craft; і not_fixed ц.16 дослівно — «відкласти розбиття ротатора на літери й побудову
+       таймлайну hero в requestIdleCallback»). H1, лід, дії, кікер, знак V, сітка й світіння тепер проявляються CSS-анімаціями
+       з першого малювання (клас .js-motion ставить інлайн-скрипт у <head>, site.css «хвиля першого екрана»): .15 → 1 за 500 мс
+       з 40 / 120 / 200 мс, не чекаючи GSAP, шрифтів чи черги простою. GSAP-таймлайн hero лишає тільки акценти після хвилі —
+       світло по контуру V (.8 с), спалах риски (1,45 с), блиск рядка (.95 с) і «Ціну відсутності» з .7 с — і будується в черзі
+       простою (later = requestIdleCallback, timeout 150 мс); розбиття ротатора — наступною окремою задачею. Таймлайн зсувається
+       на час, що минув від першого малювання, тож акценти стоять у такті з CSS-хвилею, хоч би коли збудувались. */
+    var sincePaint = function () {
+      try {
+        var pe = performance.getEntriesByType('paint'), fp = pe.length ? pe[0].startTime : -1;
+        return fp < 0 ? 0 : Math.max(0, (performance.now() - fp) / 1000);
+      } catch (e) { return 0; }
+    };
+    later(function () {
+      if (!alive) return;
+      ctx.add(function () {
+        hero = gsap.timeline({ defaults: { lazy: false } })
+          .fromTo(trace, { opacity: 0, strokeDashoffset: 0 }, { opacity: 1, duration: .25, ease: 'power1.out' }, .8)
+          .to(trace, { strokeDashoffset: -100, duration: 1.0, ease: 'sine.inOut' }, .8)
+          .to(trace, { opacity: 0, duration: .25, ease: 'power1.in' }, 1.6)
+          .fromTo(barGlow, { opacity: .3 }, { opacity: 1, duration: .3, ease: 'power2.out' }, 1.45)
+          .fromTo(vbar, { fill: '#bdbdb9' }, { fill: '#ffffff', duration: .3, ease: 'power2.out' }, 1.45)
+          // після спалаху риска стихає: біла кнопка лишається найяскравішою заповненою формою (критик ц.3/ц.4)
+          .to(barGlow, { opacity: .3, duration: .55, ease: 'power1.inOut' }, 1.75)
+          .to(vbar, { fill: '#bdbdb9', duration: .55, ease: 'power1.inOut' }, 1.75)
+          .add(sweep(), .95);
+        // ц.12 (критик ц.11): на телефоні риска стоїть поруч із 3-м рядком h1 — після спалаху вона стихає ще й до .7,
+        // щоб не змагатися з кінцем рядка «…без втрат:»
+        if (matchMedia('(max-width: 599px)').matches) hero.to(vbar, { opacity: .7, duration: .55, ease: 'power1.inOut' }, 1.75);
+        // хвиля: «Ціна відсутності», що вже в першому екрані, проявляється після Lead hero, а не стоїть різкою з 0 мс
+        var foldAbs = $$('#absence .kicker, #absence [data-blur], #absence .plate__note').filter(function (el) { return el.getBoundingClientRect().top < innerHeight; });
+        if (foldAbs.length) hero.fromTo(foldAbs, from(0, G.y), to(G.d, { stagger: stag }), .7);
+        // ц.8: до цієї миті CSS тримає ці елементи прихованими з першого малювання (html.js-motion:not(.fold-set));
+        // fromTo вище вже поставив інлайн-стан «до» тим, що в першому екрані, — тепер CSS відпускає решту (вони нижче краю).
+        // Той самий синхронний шматок — між ними немає малювання, тож жодного «видно → сховано → видно».
+        root.classList.add('fold-set');
+        var lag = sincePaint();
+        if (lag > 0) hero.time(Math.min(lag, hero.duration()));
+      });
+    });
+    // ротатор (rotate.js: розбиття на літери, вимір, вхід) — наступна задача простою. До входу він схований
+    // (CSS .js-motion .hero .rot { opacity: 0 }); показ і вхід стають в одну позицію таймлайну — без кадру «видно → сховано»
+    later(function () {
       if (!alive) return;
       ctx.add(function () {
         rot = window.KitRotator ? window.KitRotator($('.hero [data-rotate]')) : null;
-        if (rot) { hero.add(rot.enter(), Math.max(.3, hero.time())); rot.start(2.7); } else gsap.set('.hero .rot', { opacity: 1 });
+        var at = hero ? Math.max(.3, hero.time()) : 0;
+        if (rot && hero) { hero.set('.hero .rot', { opacity: 1 }, at).add(rot.enter(), at); rot.start(2.7); }
+        else gsap.set('.hero .rot', { opacity: 1 });
       });
-    }, 0);
+    });
     var fine = matchMedia('(hover: hover) and (pointer: fine)').matches, busy = null;
     var replay = function () { if (busy && busy.isActive()) return; busy = sweep(); };
     if (fine) l1.addEventListener('pointerenter', replay);
@@ -446,18 +409,23 @@
       var blurOf = function (h) { return h.tagName === 'H2' ? G.blurH : 0; };
       var ups = $$('[data-blur]').filter(function (h) { return below(h); });
       // телефон (критик ц.5 р.1–2, дослівно: 'top 95%' і 0,6 с): шапка «Форматів» осідає раніше й коротше — до того, як перший рядок цін дійде до середини
+      // ц.18 (критик ц.17 р.3, mobile): на телефоні картки «Прикладів» теж осідають раніше (top 95 %, 0,6 с) — щоб під кікером
+      // не лишався порожній папір, поки картки ще проявляються
+      // окремим пакетом від «Форматів»: інакше на переході за якорем повз «Формати» стагер черги відсуває картки ще на 0,4 с
       var early = ups.filter(function (h) { return phone && h.closest('#formats'); });
+      var earlyEx = ups.filter(function (h) { return phone && h.closest('#pryklady'); });
       ups.forEach(function (h) { gsap.set(h, from(blurOf(h), G.y)); });
       var reveal = function (list, d) {
         list = list.filter(function (h) { return shown.indexOf(h) < 0; }); if (!list.length) return;
         shown = shown.concat(list);
         list.forEach(function (h, i) { gsap.to(h, to(d, { delay: stag(i) })); });
       };
-      var rest = ups.filter(function (h) { return early.indexOf(h) < 0; });
+      var rest = ups.filter(function (h) { return early.indexOf(h) < 0 && earlyEx.indexOf(h) < 0; });
       // ц.12: інтервал збирання групи .1 → .02 с — група, що входить за один кадр, лишається групою (стагер 80 мс),
       // але перший рядок не чекає зайві 100 мс після перетину лінії 80 %
       if (rest.length) ScrollTrigger.batch(rest, { start: G.start, once: true, interval: .02, onEnter: function (b) { reveal(b, G.d); } });
       if (early.length) ScrollTrigger.batch(early, { start: 'top 95%', once: true, interval: .02, onEnter: function (b) { reveal(b, .6); } });
+      if (earlyEx.length) ScrollTrigger.batch(earlyEx, { start: 'top 95%', once: true, interval: .02, onEnter: function (b) { reveal(b, .6); } });
       // смуга 30 / 70 заповнюється
       var pay = $('.pay');
       if (below(pay)) {
@@ -620,12 +588,17 @@
       var NS = 'http://www.w3.org/2000/svg', ink = document.createElementNS(NS, 'svg');
       ink.setAttribute('class', 'ink'); ink.setAttribute('aria-hidden', 'true');
       var mk = function (tag, cls) { var e = document.createElementNS(NS, tag); if (cls) e.setAttribute('class', cls); ink.appendChild(e); return e; };
-      var lineA = mk('path', 'ink__line'), lineB = mk('path', 'ink__line'), inkBar = mk('path', 'ink__bar');
+      var lineA = mk('path', 'ink__line'), lineB = mk('path', 'ink__line'), lineC = mk('path', 'ink__line'), inkBar = mk('path', 'ink__bar');
       var dots = [0, 1, 2, 3, 4].map(function () { var c = mk('circle'); c.setAttribute('r', '4.5'); return c; });
       fgrid.setAttribute('data-ink', '');   // місце для лінії всередині колонки на телефоні (CSS)
       fmt.appendChild(ink);
       // довжини в px уздовж маршруту: A — головна лінія, B — гілка до «Систем», що відходить від A на позиції bAt
-      var LA = 1, LB = 0, bAt = 0, total = 1, dotAt = [], barAt = 1, inkP = 0, wide = true;
+      var LA = 1, LB = 0, LC = 0, cY = 0, cP = 0, bAt = 0, total = 1, dotAt = [], barAt = 1, inkP = 0, wide = true;
+      var cDraw = function (f) {
+        cP = f; var d = f * LC;
+        lineC.style.strokeDasharray = (LC || 1) + ' ' + (LC || 1);
+        lineC.style.strokeDashoffset = (LC - d).toFixed(1); lineC.style.visibility = d > .5 ? '' : 'hidden';
+      };
       var inkDraw = function (f) {
         inkP = f; var d = f * total;
         lineA.style.strokeDashoffset = (LA - Math.min(d, LA)).toFixed(1);
@@ -642,7 +615,7 @@
         var ys = rows.map(function (tr) { return mid(tr.querySelector('th')); });
         var d, lx, y0, dEnd;
         dots.forEach(function (c) { c.style.display = 'none'; });
-        dotAt = []; LB = 0; lineB.setAttribute('d', '');
+        dotAt = []; LB = 0; lineB.setAttribute('d', ''); lineC.setAttribute('d', ''); LC = 0;
         if (wide) {
           // ц.9 (критик, дослівно): лінія починається біля прайсу — у лівому полі, і йде вниз: Spark → Orbit → Supernova → Premium;
           // жодного відрізка згори й повороту — гачка немає в самій геометрії
@@ -659,6 +632,9 @@
           lineB.setAttribute('d', 'M' + lx + ' ' + gy + 'H' + (gx - 8) + 'Q' + gx + ' ' + gy + ' ' + gx + ' ' + (gy + 8) + 'V' + yPS);
           LB = lineB.getTotalLength(); bAt = head + (gy - y0);
           dots[4].setAttribute('cx', gx); dots[4].setAttribute('cy', yStd); dots[4].style.display = ''; dotAt[4] = bAt + (gx - lx) + (yStd - gy);
+          // ц.17 fix2 (критик, дослівно): лінія йде далі тим самим лівим полем — від вузла Premium повз «Точну суму…» до низу
+          // секції; там її підхоплює лінія «Прикладів» (та сама x, той самий край). Малює її «перо» (cDraw), а не прогрес прайсу.
+          lineC.setAttribute('d', 'M' + lx + ' ' + yPrem + 'V' + Math.round(H)); LC = lineC.getTotalLength(); cY = yPrem;
           // риска знака V — під ціною Premium System $7500
           var pv = rel(sysRows[1].querySelector('.pv'));
           inkBar.setAttribute('d', 'M' + (pv.r - 26) + ' ' + (pv.b + 5) + 'h24l-3.5 6h-24z');
@@ -675,18 +651,32 @@
         lineA.style.strokeDasharray = LA + ' ' + LA;
         lineB.style.strokeDasharray = (LB || 1) + ' ' + (LB || 1);
         total = Math.max(LA, dEnd); barAt = total;
-        inkDraw(inkP);
+        inkDraw(inkP); cDraw(cP);
       };
       inkBuild();
       ScrollTrigger.addEventListener('refreshInit', inkBuild);
       // desktop: старт, коли таблиця вже на екрані (критик ц.5 р.2); ц.9: прайс завжди вже на папері диска — чорнило не йде по чорному
       var inkStart = 0;
-      ScrollTrigger.create({ trigger: plist, start: function () {
+      var inkST = ScrollTrigger.create({ trigger: plist, start: function () {
           return (inkStart = Math.round(plist.getBoundingClientRect().top + scrollY - innerHeight * (desktopRoute() ? .8 : .92)));
         },
         end: function () { var el = desktopRoute() ? sysCard : plist; return Math.max(inkStart + innerHeight * .5, el.getBoundingClientRect().bottom + scrollY - innerHeight * .62); }, scrub: .5, invalidateOnRefresh: true,
         onRefresh: inkBuild, onUpdate: function (st) { inkDraw(st.progress); } });
+      var fTop = function () { return fmt.getBoundingClientRect().top + scrollY; };
+      var cEnd = function () { return Math.round(fTop() + fmt.offsetHeight - innerHeight * PEN()); };
+      ScrollTrigger.create({
+        start: function () {
+          var pen = fTop() + cY - innerHeight * PEN(), done = inkST.start + (inkST.end - inkST.start) * Math.min(1, LA / (total || 1));
+          return Math.min(Math.round(Math.max(pen, done)), cEnd() - 1);
+        },
+        end: cEnd,
+        scrub: .5, invalidateOnRefresh: true, onUpdate: function (st) { if (LC) cDraw(st.progress); } });
       killers.push(function () { ScrollTrigger.removeEventListener('refreshInit', inkBuild); ink.remove(); fgrid.removeAttribute('data-ink'); });
+
+      /* ц.17 (cro.md 2.1): дії одразу після цін. Коли блок заходить (верх на 80 %), по рамці чорної кнопки один раз
+         пробігає світло X05 — те саме коло, що на картках маршруту й формі; постійного мерехтіння немає */
+      var ctaCell = $('.fcta__cell'), ctaPart = ctaCell && partOf(ctaCell);
+      if (ctaPart) ScrollTrigger.create({ trigger: ctaCell, start: G.start, once: true, onEnter: function () { lap(ctaPart, 1.8, 1); } });
 
       /* ---------- T01: шторка — папір піднімається, відкриваючи чорне полотно форми ---------- */
       gsap.fromTo(field, { clipPath: 'inset(0% 0% 0% 0% round 0px 0px 0px 0px)' },
@@ -791,6 +781,75 @@
     };
     killers.push(function () { rollPrices = null; });
 
+    /* ---------- ц.17 fix2 (критик ц.17 р.1–2, originality, not_fixed — дослівно): «Приклади» в граматиці сторінки ----------
+       «Carry the price list's ink line on down the left margin of the paper field into «Приклади», and place one node at the
+       Indigo card captioned «формат → живий сайт», using the same 300 ms node pop as the price rows.»
+       Чорнило — «перо» на висоті PEN екрана: лінія доходить рівно туди, де зараз ця висота (scrub .5, як у прайсі). На ПК вона
+       починається з верхнього краю секції — там, де закінчилось продовження лінії прайсу (inkBuild, lineC), тож це одна лінія.
+       Вузол і підпис — HTML (.ex-route, видно й без руху), тут лише спалахують (data-on), коли перо до них доходить; тоді ж по
+       рамці картки Indigo один раз проходить коло променя X05. Кінець — риска знака V під «Ця сторінка теж наша робота».
+       Будується, коли секція за екран (whenNear, черга простою). Лише декор: aria-hidden. */
+    near('#pryklady, #process, #contact', function () {
+      var exSec = $('#pryklady'), exWrap = exSec && $('.wrap', exSec), exGrid = exSec && $('.ex-grid', exSec), cap = exSec && $('.ex-route', exSec);
+      if (!exSec || !exWrap || !exGrid || !cap) return;
+      var client = $('.ex-card--client', exSec), node = $('.ex-route__node', cap), tag = client && $('.ex-tag--live', client);
+      var NS = 'http://www.w3.org/2000/svg', ink = document.createElementNS(NS, 'svg');
+      ink.setAttribute('class', 'ink ink--ex'); ink.setAttribute('aria-hidden', 'true');
+      var line = document.createElementNS(NS, 'path'), bar = document.createElementNS(NS, 'path');
+      line.setAttribute('class', 'ink__line'); bar.setAttribute('class', 'ink__bar');
+      ink.appendChild(line); ink.appendChild(bar);
+      exSec.appendChild(ink); exSec.setAttribute('data-ink', '');
+      var ring = client && $('.bm-ring', client);
+      var part = ring ? { cell: client, beams: ring.querySelectorAll('.beam'), ring: ring, halo: ring, angle: -118 } : null;
+      var L = 1, y0 = 0, nodeAt = 0, prog = 0, lit = false;
+      var draw = function (f) {
+        prog = f; var d = f * L;
+        line.style.strokeDashoffset = (L - d).toFixed(1);
+        line.style.visibility = d > .5 ? '' : 'hidden';
+        var on = d >= nodeAt - 1;
+        cap.toggleAttribute('data-on', on);
+        bar.toggleAttribute('data-on', d >= L - 1); exSec.toggleAttribute('data-end', d >= L - 1);
+        // перо торкнулося вузла роботи для клієнта — рамка Indigo оживає один раз (як картки маршруту)
+        if (on && !lit) { lit = true; if (part) lap(part, 2.1, 1); }
+      };
+      var build = function () {
+        var sr = exSec.getBoundingClientRect(), W = sr.width, H = sr.height, phone = !matchMedia('(min-width: 700px)').matches;
+        var nr = node.getBoundingClientRect(), wr = exWrap.getBoundingClientRect();
+        var lx = Math.round(nr.left + nr.width / 2 - sr.left) + .5;
+        // ПК і планшет (≥ 900): від верхнього краю секції — продовження лінії прайсу; телефон: від кікера (у прайсі лінія — всередині картки)
+        y0 = desktopRoute() ? 0 : Math.round(wr.top - sr.top);
+        // ц.18: кінець — рівень мітки «Робота для клієнта · живий сайт» (риска під нею, як риска V під $7500 у прайсі)
+        // offsetTop, а не getBoundingClientRect: картка під час прояви зсунута transform-ом на 18 px
+        var cl = client ? client.getBoundingClientRect().left - sr.left : lx + 30;
+        var oy = tag ? offY(tag, exSec) : NaN;
+        // ц.18 fix1 (критик ц.18 р.1, дослівно): кінець — на середині мітки; лінія повертає тонкою рискою до краю картки, а далі в картці
+        // її закінчує паперовий гліф риски V за 8 px від мітки (site.css, .ex-tag--live::before/::after, поп за data-end)
+        var yEnd = isFinite(oy) ? oy + tag.offsetHeight / 2 : Math.round(wr.bottom - sr.top) - (phone ? 4 : 6), yNode = Math.round(nr.top + nr.height / 2 - sr.top);
+        ink.setAttribute('viewBox', '0 0 ' + W + ' ' + H); ink.style.height = H + 'px';
+        line.setAttribute('d', 'M' + lx + ' ' + y0 + 'V' + yEnd + (isFinite(oy) && cl > lx ? 'H' + (cl + .5) : '')); L = line.getTotalLength() || 1;
+        line.style.strokeDasharray = L + ' ' + L;
+        nodeAt = yNode - y0;
+        if (part) client.style.setProperty('--d', Math.ceil(Math.hypot(client.offsetWidth, client.offsetHeight) + 16) + 'px');
+        // гліф риски тепер у картці (паперовий, біля мітки); без мітки — запасна риска в полі, як раніше
+        if (isFinite(oy)) bar.setAttribute('d', '');
+        else { var bh = phone ? 2 : 3, bs = phone ? 2 : 3.5, x0 = lx - (phone ? .625 : .75), x1 = Math.max(x0 + 4, cl - 1.5);
+          bar.setAttribute('d', 'M' + x0 + ' ' + (yEnd - bh) + 'H' + x1 + 'l' + (-bs) + ' ' + (2 * bh) + 'H' + (x0 - bs) + 'z'); bar.style.transformOrigin = '0 50%'; }
+        draw(prog);
+      };
+      build();
+      ScrollTrigger.addEventListener('refreshInit', build);
+      // перо: старт — коли верх лінії на висоті PEN, кінець — коли туди дійшов її низ (довжина лінії = шлях прокрутки)
+      var exTop = function () { return exSec.getBoundingClientRect().top + scrollY; };
+      ScrollTrigger.create({
+        start: function () { return Math.round(exTop() + y0 - innerHeight * PEN()); },
+        end: function () { return Math.round(exTop() + y0 + L - innerHeight * PEN()); },
+        scrub: .5, invalidateOnRefresh: true,
+        onRefresh: function (st) { build(); }, onUpdate: function (st) { draw(st.progress); } });
+      killers.push(function () {
+        ScrollTrigger.removeEventListener('refreshInit', build); ink.remove(); exSec.removeAttribute('data-ink'); exSec.removeAttribute('data-end'); cap.removeAttribute('data-on');
+      });
+    });
+
     /* ---------- процес: таймлайн руху з «головкою» і журнал конвеєра (X03) ---------- */
     near('#process, #contact', function () {
       // головка ходить лише колонкою ВИДИМИХ смуг (на телефоні першу приховано), підписи вона не перетинає.
@@ -825,7 +884,7 @@
       tlRO.observe(tlBox);
 
       var log = $('.log'), STAGES = [['Бриф', 'факти з джерелами'], ['Референси', 'справжні сайти'], ['Концепт сторінки', '3 напрями'],
-        ['Режисура руху', 'переходи між секціями'], ['Незалежний критик', 'бачить кадри руху'], ['Ворота якості', 'кожна з 11 оцінок ≥ 8'],
+        ['Режисура руху', 'переходи між секціями'], ['ШІ-критик', 'бачить кадри руху'], ['Ворота якості', 'кожна з 11 оцінок ≥\u00a08'],
         ['Прев’ю на погодження', 'вам']];
       var pitch = function () { return parseFloat(getComputedStyle(log).getPropertyValue('--pitch')) || 50; };
       var rows = $$('.log__row', log), P = pitch();
@@ -1144,6 +1203,36 @@
     addEventListener('scroll', function () { if (!vq) vq = requestAnimationFrame(veilPut); }, { passive: true });
     veilPut();
   }
+
+  /* ц.17 fix1 (критик, mobile P3): на ПК знімки «Прикладів» вантажаться після load у простої, з низьким пріоритетом.
+     На телефоні — ні: перше відкриття лишається тим, що написано на сторінці (≈ КБ); там їх вантажить черга whenNear за екран. */
+  if (matchMedia('(min-width: 900px)').matches) {
+    var exPre = function () {
+      (window.requestIdleCallback || function (f) { return setTimeout(f, 200); })(function () {
+        $$('#pryklady img').forEach(function (im) { im.setAttribute('fetchpriority', 'low'); im.loading = 'eager'; if (im.decode) im.decode().catch(function () {}); });
+      }, { timeout: 1500 });
+    };
+    if (document.readyState === 'complete') exPre(); else addEventListener('load', exPre);
+  }
+
+  /* ц.17 fix2 (критик ц.17 р.2, mobile P3, дослівно — другий варіант): усі три знімки «Прикладів» — eager + decode() з черги
+     whenNear, щойно «Формати» підійдуть на екран (і з «зменшити рух» теж). На телефоні перше відкриття не росте: «Формати»
+     при завантаженні далі ніж за екран. Швидкий перехід за якорем #pryklady теж будує цю чергу (список секцій). */
+  whenNear('#formats, #pryklady, #process, #contact', function () {
+    $$('#pryklady img').forEach(function (im) { im.setAttribute('fetchpriority', 'low'); im.loading = 'eager'; if (im.decode) im.decode().catch(function () {}); });
+  });
+
+  /* ц.18: статична лінія «Прикладів» (без руху й до чорнила) закінчується на рівні мітки Indigo — --ex-end для site.css.
+     Рахується в черзі whenNear (не при завантаженні) і заново, коли змінюється розмір секції. */
+  var exS = $('#pryklady'), exW = exS && $('.wrap', exS), exT = exS && $('.ex-card--client .ex-tag--live', exS);
+  if (exW && exT) whenNear('#formats, #pryklady, #process, #contact', function () {
+    var put = function () {
+      var e = exW.offsetHeight - offY(exT, exW) - exT.offsetHeight / 2;   // ц.18 fix1: середина мітки (гліф риски V поруч із нею)
+      exS.style.setProperty('--ex-end', Math.round(e * 4) / 4 + 'px');
+    };
+    put();
+    new ResizeObserver(put).observe(exW);
+  });
 
   addEventListener('scroll', arm, { passive: true });
   addEventListener('resize', geometry);

@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,follow">
+<title>Десять тонів — концепт Velira: ціна фарбування за довжиною</title>
+<meta name="description" content="Концепт Velira для студії фарбування волосся: оберіть техніку й довжину — пасмо покаже орієнтир ціни, а точну суму назвуть за двома фото. Салон вигаданий.">
+<meta name="theme-color" content="#0a0807">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:site_name" content="Velira">
+<meta property="og:title" content="Десять тонів — концепт Velira (вигаданий бізнес, ціни умовні)">
+<meta property="og:description" content="Сайт студії фарбування, де ціна стоїть на самому пасмі: техніка, довжина, орієнтир ціни. Концепт Velira, бізнес вигаданий.">
+<link rel="canonical" href="https://veliraweb.com.ua/demo/salon-krasy/">
+<meta property="og:url" content="https://veliraweb.com.ua/demo/salon-krasy/">
+<meta property="og:image" content="https://veliraweb.com.ua/demo/salon-krasy/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Концепт «Десять тонів»: пасмо волосся, на якому стоять ціни за довжиною">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/geologica-uk.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/geologica-lat.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/notoserifdisplay-italic-uk.woff2" crossorigin>
+<link rel="preload" as="image" type="image/webp" href="assets/img/strand-poster.webp" fetchpriority="high">
+<link rel="stylesheet" href="assets/css/style.css">
+<script>
+/* Початковий стан до першого малювання: js — є скрипти; motion — можна рухати; якщо застосунок не стартував за 3 с — статичний стан. */
+(function (d, w) {
+  var c = d.documentElement.classList; c.add('js');
+  if (!(w.matchMedia && w.matchMedia('(prefers-reduced-motion: reduce)').matches)) c.add('motion');
+  w.setTimeout(function () { if (!w.__appReady) { c.remove('js'); c.remove('motion'); } }, 3000);
+})(document, window);
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Десять тонів — концепт Velira","description":"Концепт сайту для студії фарбування волосся. Бізнес вигаданий, ціни умовні.","inLanguage":"uk","url":"https://veliraweb.com.ua/demo/salon-krasy/","creator":{"@type":"Organization","name":"Velira","url":"https://veliraweb.com.ua/"}}
+</script>
+</head>
+<body>
+<a class="skip" href="#tekhniky">До змісту</a>
+
+<!-- Світ сторінки: світло салону й пасмо. Нерухомий шар позаду всього; предмет один на всю сторінку. -->
+<div class="world" aria-hidden="true">
+  <div class="world__light"><i class="world__cone"></i></div>
+  <canvas class="world__canvas" id="strand" hidden></canvas>
+</div>
+
+<!-- Плашка чесності: голос Velira, м’яка плаваюча капсула -->
+<aside class="island" id="island" aria-label="Про цей концепт">
+  <svg class="island__v" viewBox="0 0 20 20" aria-hidden="true"><path d="M4.2 5.2 9.4 15.3 16 4.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <p class="island__text"><b>Концепт Velira</b><span class="island__dot">&nbsp;· </span><span class="island__rest">вигаданий бізнес&nbsp;· ціни&nbsp;умовні</span></p>
+  <a class="island__link" href="../../sait-dlia-salonu-krasy/">Хочу такий сайт
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.2 12.3 8l-3.8 3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</aside>
+
+<main id="main">
+  <!-- 1 · Пасмо й ціна -->
+  <div class="stage stage--hero">
+    <section class="scene scene--hero" id="top" aria-labelledby="h1">
+      <div class="scene__in" id="hero-in">
+        <header class="top">
+          <a class="brand" href="#top" aria-label="Десять тонів — студія фарбування волосся (вигаданий бізнес)">
+            <span class="brand__name">Десять тонів</span>
+            <span class="brand__tones" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </a>
+          <nav class="nav" aria-label="Розділи">
+            <a href="#tekhniky">Техніки</a><a href="#dovzhyna">Довжина</a><a href="#foto">Фото</a><a href="#mizh-vizytamy">Між візитами</a><a href="#zapys">Запис</a>
+          </nav>
+        </header>
+
+        <div class="strandzone">
+          <div class="strandbox" id="strandbox">
+            <img class="poster" id="poster" src="assets/img/strand-poster.webp" width="470" height="978" decoding="async" fetchpriority="high" alt="Схема (намальовано кодом) — пасмо волосся після балаяжу: темний корінь, світлі пасма до кінчиків">
+            <!-- Ціна стоїть на позначці довжини пасма -->
+            <ol class="marks" id="marks" aria-label="Умовна ціна за довжиною">
+              <li class="chip chip--r" style="--t:.29"><button type="button" aria-pressed="false"><span class="chip__len">до підборіддя</span><span class="chip__price"><i>від</i> <b>4&nbsp;500</b>&nbsp;₴</span></button></li>
+              <li class="chip chip--l" style="--t:.48"><button type="button" aria-pressed="false"><span class="chip__len">до плечей</span><span class="chip__price"><i>від</i> <b>5&nbsp;500</b>&nbsp;₴</span></button></li>
+              <li class="chip chip--r" style="--t:.67"><button type="button" aria-pressed="false"><span class="chip__len">до лопаток</span><span class="chip__price"><i>від</i> <b>6&nbsp;150</b>&nbsp;₴</span></button></li>
+              <li class="chip chip--l" style="--t:.885"><button type="button" aria-pressed="false"><span class="chip__len">до пояса</span><span class="chip__price"><i>від</i> <b>7&nbsp;000</b>&nbsp;₴</span></button></li>
+            </ol>
+            <p class="hint" id="hint" aria-hidden="true"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3.1" fill="currentColor"/><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".5"/></svg>торкніться своєї довжини</p>
+          </div>
+        </div>
+
+        <div class="herotext" id="herotext">
+          <p class="eyebrow">Студія фарбування волосся</p>
+          <h1 class="title" id="h1">Скільки коштує <em class="ink" id="ink"><span class="ink__base">саме ваше</span></em> фарбування</h1>
+          <p class="sub" id="sub" aria-live="polite"><span>Оберіть техніку — ціну покаже пасмо. Точну суму назвуть за двома фото.</span></p>
+
+          <div class="rail" id="rail">
+            <div class="rail__scroll">
+              <div class="rail__track" role="radiogroup" aria-label="Техніка фарбування">
+                <button role="radio" type="button" aria-checked="true" data-tech="0"><i class="sw sw--0"></i>Балаяж</button>
+                <button role="radio" type="button" aria-checked="false" tabindex="-1" data-tech="1"><i class="sw sw--1"></i>Омбре</button>
+                <button role="radio" type="button" aria-checked="false" tabindex="-1" data-tech="2"><i class="sw sw--2"></i>Корені</button>
+                <button role="radio" type="button" aria-checked="false" tabindex="-1" data-tech="3"><i class="sw sw--3"></i>Однотонне</button>
+                <button role="radio" type="button" aria-checked="false" tabindex="-1" data-tech="4"><i class="sw sw--4"></i>Тонування</button>
+                <div class="rail__on" aria-hidden="true"><span><i class="sw sw--0"></i>Балаяж</span><span><i class="sw sw--1"></i>Омбре</span><span><i class="sw sw--2"></i>Корені</span><span><i class="sw sw--3"></i>Однотонне</span><span><i class="sw sw--4"></i>Тонування</span></div>
+              </div>
+              <script>/* повзунок «Балаяж» стоїть на місці з першого кадру */(function(){var t=document.querySelector('.rail__track'),b=t&&t.querySelector('[role="radio"]');if(b&&b.offsetWidth){t.style.setProperty('--cl',b.offsetLeft+'px');t.style.setProperty('--cr',(t.offsetWidth-b.offsetLeft-b.offsetWidth)+'px');}})();</script>
+            </div>
+            <button class="rail__more" id="railmore" type="button" aria-label="Показати інші техніки"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4.4 2.6 7.8 6 4.4 9.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+
+          <div class="heroact">
+            <button class="btn btn--primary" type="button" data-open-sheet>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9.2a2.2 2.2 0 0 1 2.2-2.2h1.2l1-1.6a1.4 1.4 0 0 1 1.2-.7h3.8a1.4 1.4 0 0 1 1.2.7l1 1.6h1.2a2.2 2.2 0 0 1 2.2 2.2v7.1a2.2 2.2 0 0 1-2.2 2.2H6.7a2.2 2.2 0 0 1-2.2-2.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12.6" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+              Надіслати фото волосся
+            </button>
+            <p class="heroact__sum"><span data-sum-label>Балаяж · усі довжини</span> <b><span data-sum-price>4&nbsp;500 – 7&nbsp;000&nbsp;₴</span></b></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 2 · П’ять технік -->
+  <section class="sheet sheet--tech" id="tekhniky" aria-labelledby="h2-tech">
+    <span class="sheet__grab" aria-hidden="true"></span>
+    <div class="wrap">
+      <div class="head">
+        <p class="pill">П’ять технік</p>
+        <h2 id="h2-tech">Що кожна техніка робить <em>із пасмом</em></h2>
+        <p class="lead">Скільки триває і скільки коштує на найкоротшу й найдовшу довжину. <span class="only-touch">Гортайте вбік.</span></p>
+      </div>
+    </div>
+
+    <div class="tscroll" id="tscroll" tabindex="0" role="region" aria-label="П’ять технік — гортайте вбік">
+      <div class="trow">
+        <article class="tcard is-open" data-tech="0">
+          <div class="tcard__swatch">
+            <img class="tcard__before" src="assets/img/tech-natural.webp" width="330" height="686" loading="lazy" decoding="async" alt="" aria-hidden="true">
+            <img class="tcard__after" src="assets/img/tech-balayage.webp" width="330" height="686" loading="lazy" decoding="async" alt="Схема (намальовано кодом) — пасмо після балаяжу: свій корінь, світлі пасма мазками">
+            <h3 class="tcard__name tn--0">Балаяж</h3>
+            <p class="tcard__from" aria-hidden="true">від <b>4&nbsp;500&nbsp;₴</b></p>
+            <button class="tcard__open" type="button" aria-expanded="true" aria-label="Розгорнути: Балаяж"></button>
+          </div>
+          <p class="tcard__desc">Світлі пасма розфарбовують вручну, мазками, без чіткої межі. Корінь лишається своїм.</p>
+          <ul class="tcard__facts">
+            <li><span>триває</span><b>3–5 год</b></li>
+            <li class="is-min"><span>до підборіддя</span><b><i>від</i> 4&nbsp;500&nbsp;₴</b></li>
+            <li><span>до пояса</span><b><i>від</i> 7&nbsp;000&nbsp;₴</b></li>
+          </ul>
+          <button class="tcard__pick" type="button" data-pick="0" aria-pressed="true"><span>Обрано</span></button>
+        </article>
+        <article class="tcard" data-tech="1">
+          <div class="tcard__swatch">
+            <img class="tcard__before" src="assets/img/tech-natural.webp" width="330" height="686" loading="lazy" decoding="async" alt="" aria-hidden="true">
+            <img class="tcard__after" src="assets/img/tech-ombre.webp" width="330" height="686" loading="lazy" decoding="async" alt="Схема (намальовано кодом) — пасмо після омбре: темний корінь, світлі кінці суцільною зоною">
+            <h3 class="tcard__name tn--1">Омбре</h3>
+            <p class="tcard__from" aria-hidden="true">від <b>4&nbsp;500&nbsp;₴</b></p>
+            <button class="tcard__open" type="button" aria-expanded="false" aria-label="Розгорнути: Омбре"></button>
+          </div>
+          <p class="tcard__desc">Перехід по всій ширині: темніший корінь, світліші кінці, межу розтягнуто вздовж довжини.</p>
+          <ul class="tcard__facts">
+            <li><span>триває</span><b>3–5 год</b></li>
+            <li class="is-min"><span>до підборіддя</span><b><i>від</i> 4&nbsp;500&nbsp;₴</b></li>
+            <li><span>до пояса</span><b><i>від</i> 7&nbsp;000&nbsp;₴</b></li>
+          </ul>
+          <button class="tcard__pick" type="button" data-pick="1" aria-pressed="false"><span>Обрати</span></button>
+        </article>
+        <article class="tcard" data-tech="2">
+          <div class="tcard__swatch">
+            <img class="tcard__before" src="assets/img/tech-roots-before.webp" width="330" height="686" loading="lazy" decoding="async" alt="" aria-hidden="true">
+            <img class="tcard__after" src="assets/img/tech-roots.webp" width="330" height="686" loading="lazy" decoding="async" alt="Схема (намальовано кодом) — пасмо після фарбування коренів: відрослу частину зрівняно з довжиною">
+            <h3 class="tcard__name tn--2">Корені</h3>
+            <p class="tcard__from" aria-hidden="true">від <b>1&nbsp;800&nbsp;₴</b></p>
+            <button class="tcard__open" type="button" aria-expanded="false" aria-label="Розгорнути: Корені"></button>
+          </div>
+          <p class="tcard__desc">Фарба лише на відрослу частину біля шкіри. Довжину не чіпають, тому ціна від неї не залежить.</p>
+          <ul class="tcard__facts">
+            <li><span>триває</span><b>близько 1,5 год</b></li>
+            <li class="is-min"><span>будь-яка довжина</span><b><i>від</i> 1&nbsp;800&nbsp;₴</b></li>
+          </ul>
+          <button class="tcard__pick" type="button" data-pick="2" aria-pressed="false"><span>Обрати</span></button>
+        </article>
+        <article class="tcard" data-tech="3">
+          <div class="tcard__swatch">
+            <img class="tcard__before" src="assets/img/tech-natural.webp" width="330" height="686" loading="lazy" decoding="async" alt="" aria-hidden="true">
+            <img class="tcard__after" src="assets/img/tech-solid.webp" width="330" height="686" loading="lazy" decoding="async" alt="Схема (намальовано кодом) — пасмо після однотонного фарбування: один колір від кореня до кінців">
+            <h3 class="tcard__name tn--3">Однотонне</h3>
+            <p class="tcard__from" aria-hidden="true">від <b>2&nbsp;400&nbsp;₴</b></p>
+            <button class="tcard__open" type="button" aria-expanded="false" aria-label="Розгорнути: Однотонне"></button>
+          </div>
+          <p class="tcard__desc">Один колір від кореня до кінців.</p>
+          <ul class="tcard__facts">
+            <li><span>триває</span><b>1,5–2 год</b></li>
+            <li class="is-min"><span>до підборіддя</span><b><i>від</i> 2&nbsp;400&nbsp;₴</b></li>
+            <li><span>до пояса</span><b><i>від</i> 4&nbsp;150&nbsp;₴</b></li>
+          </ul>
+          <button class="tcard__pick" type="button" data-pick="3" aria-pressed="false"><span>Обрати</span></button>
+        </article>
+        <article class="tcard" data-tech="4">
+          <div class="tcard__swatch">
+            <img class="tcard__before" src="assets/img/tech-toner-before.webp" width="330" height="686" loading="lazy" decoding="async" alt="" aria-hidden="true">
+            <img class="tcard__after" src="assets/img/tech-toner.webp" width="330" height="686" loading="lazy" decoding="async" alt="Схема (намальовано кодом) — пасмо після тонування: той самий блонд, холодніший відтінок">
+            <h3 class="tcard__name tn--4">Тонування</h3>
+            <p class="tcard__from" aria-hidden="true">від <b>1&nbsp;750&nbsp;₴</b></p>
+            <button class="tcard__open" type="button" aria-expanded="false" aria-label="Розгорнути: Тонування"></button>
+          </div>
+          <p class="tcard__desc">Змінює відтінок, а не рівень: той самий блонд стає холоднішим або теплішим.</p>
+          <ul class="tcard__facts">
+            <li><span>триває</span><b>близько 1,5 год</b></li>
+            <li class="is-min"><span>до підборіддя</span><b><i>від</i> 1&nbsp;750&nbsp;₴</b></li>
+            <li><span>до пояса</span><b><i>від</i> 3&nbsp;500&nbsp;₴</b></li>
+          </ul>
+          <button class="tcard__pick" type="button" data-pick="4" aria-pressed="false"><span>Обрати</span></button>
+        </article>
+      </div>
+    </div>
+    <div class="tdots" id="tdots" aria-hidden="true"><i class="is-on"></i><i></i><i></i><i></i><i></i></div>
+
+    <div class="wrap">
+      <div class="after">
+        <div>
+          <p class="note">Омбре й балаяж у київських прайсах зазвичай стоять одним рядком — тому й ціна однакова.</p>
+          <p class="fine fine--paper">Усі ціни й тривалості умовні: медіани публічних прайсів київських салонів, листопад 2026. Пасма намальовані кодом — це схема техніки, а не фото роботи.</p>
+        </div>
+        <figure class="ring">
+          <img src="assets/img/swatch-ring.webp" width="1000" height="1000" loading="lazy" decoding="async" alt="Ілюстрація (згенеровано) — кільце колориста: десять пучків волосся від чорного до платинового">
+          <figcaption>
+            <span class="ring__scale" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            Кільце зразків: десять пучків від 1 (чорний) до 10 (платиновий блонд). Цією шкалою колористи міряють глибину кольору — нею й названо студію.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · Ціна на вашу довжину -->
+  <div class="stage stage--len">
+    <section class="scene scene--len" id="dovzhyna" aria-labelledby="h2-len">
+      <div class="scene__in">
+        <div class="head head--dark">
+          <p class="pill pill--dark">Довжина</p>
+          <h2 id="h2-len">Ціна на <em>вашу</em> довжину</h2>
+          <p class="lead">Гортайте вздовж пасма або торкніться позначки — ціни всіх п’яти технік стануть у цей рядок.</p>
+        </div>
+
+        <div class="lenviz" aria-hidden="true">
+          <span class="lenviz__focus"></span>
+          <p class="lenviz__gap" id="lengap"><span>35–45&nbsp;см</span><i> — </i><span>за&nbsp;фото</span></p>
+        </div>
+
+        <div class="lenpanel">
+          <div class="seg seg--dark" id="lenseg" role="radiogroup" aria-label="Довжина волосся">
+            <button role="radio" type="button" aria-checked="true" data-len="0">Підборіддя</button>
+            <button role="radio" type="button" aria-checked="false" tabindex="-1" data-len="1">Плечі</button>
+            <button role="radio" type="button" aria-checked="false" tabindex="-1" data-len="2">Лопатки</button>
+            <button role="radio" type="button" aria-checked="false" tabindex="-1" data-len="3">Пояс</button>
+            <span class="seg__thumb" aria-hidden="true"></span>
+          </div>
+
+          <div class="lencards" id="lencards">
+            <article class="lencard" data-len="0">
+              <header><h3>до підборіддя</h3><p>до 15 см</p></header>
+              <ul>
+                <li data-tech="0"><i class="sw sw--0"></i><span>Балаяж</span><b><i>від</i> <span class="num">4&nbsp;500</span>&nbsp;₴</b></li>
+                <li data-tech="1"><i class="sw sw--1"></i><span>Омбре</span><b><i>від</i> <span class="num">4&nbsp;500</span>&nbsp;₴</b></li>
+                <li data-tech="2"><i class="sw sw--2"></i><span>Корені</span><b><i>від</i> <span class="num">1&nbsp;800</span>&nbsp;₴</b></li>
+                <li data-tech="3"><i class="sw sw--3"></i><span>Однотонне</span><b><i>від</i> <span class="num">2&nbsp;400</span>&nbsp;₴</b></li>
+                <li data-tech="4"><i class="sw sw--4"></i><span>Тонування</span><b><i>від</i> <span class="num">1&nbsp;750</span>&nbsp;₴</b></li>
+              </ul>
+              <p class="lencard__cap">Ціни «від», умовні.<span> Корені не залежать від довжини.</span></p>
+            </article>
+            <article class="lencard" data-len="1">
+              <header><h3>до плечей</h3><p>15–25 см</p></header>
+              <ul>
+                <li data-tech="0"><i class="sw sw--0"></i><span>Балаяж</span><b><i>від</i> <span class="num">5&nbsp;500</span>&nbsp;₴</b></li>
+                <li data-tech="1"><i class="sw sw--1"></i><span>Омбре</span><b><i>від</i> <span class="num">5&nbsp;500</span>&nbsp;₴</b></li>
+                <li data-tech="2"><i class="sw sw--2"></i><span>Корені</span><b><i>від</i> <span class="num">1&nbsp;800</span>&nbsp;₴</b></li>
+                <li data-tech="3"><i class="sw sw--3"></i><span>Однотонне</span><b><i>від</i> <span class="num">2&nbsp;750</span>&nbsp;₴</b></li>
+                <li data-tech="4"><i class="sw sw--4"></i><span>Тонування</span><b><i>від</i> <span class="num">2&nbsp;100</span>&nbsp;₴</b></li>
+              </ul>
+              <p class="lencard__cap">Ціни «від», умовні.<span> Корені не залежать від довжини.</span></p>
+            </article>
+            <article class="lencard" data-len="2">
+              <header><h3>до лопаток</h3><p>25–35 см</p></header>
+              <ul>
+                <li data-tech="0"><i class="sw sw--0"></i><span>Балаяж</span><b><i>від</i> <span class="num">6&nbsp;150</span>&nbsp;₴</b></li>
+                <li data-tech="1"><i class="sw sw--1"></i><span>Омбре</span><b><i>від</i> <span class="num">6&nbsp;150</span>&nbsp;₴</b></li>
+                <li data-tech="2"><i class="sw sw--2"></i><span>Корені</span><b><i>від</i> <span class="num">1&nbsp;800</span>&nbsp;₴</b></li>
+                <li data-tech="3"><i class="sw sw--3"></i><span>Однотонне</span><b><i>від</i> <span class="num">3&nbsp;100</span>&nbsp;₴</b></li>
+                <li data-tech="4"><i class="sw sw--4"></i><span>Тонування</span><b><i>від</i> <span class="num">2&nbsp;500</span>&nbsp;₴</b></li>
+              </ul>
+              <p class="lencard__cap">Ціни «від», умовні.<span> Корені не залежать від довжини.</span></p>
+            </article>
+            <article class="lencard" data-len="3">
+              <header><h3>до пояса</h3><p>від 45 см</p></header>
+              <ul>
+                <li data-tech="0"><i class="sw sw--0"></i><span>Балаяж</span><b><i>від</i> <span class="num">7&nbsp;000</span>&nbsp;₴</b></li>
+                <li data-tech="1"><i class="sw sw--1"></i><span>Омбре</span><b><i>від</i> <span class="num">7&nbsp;000</span>&nbsp;₴</b></li>
+                <li data-tech="2"><i class="sw sw--2"></i><span>Корені</span><b><i>від</i> <span class="num">1&nbsp;800</span>&nbsp;₴</b></li>
+                <li data-tech="3"><i class="sw sw--3"></i><span>Однотонне</span><b><i>від</i> <span class="num">4&nbsp;150</span>&nbsp;₴</b></li>
+                <li data-tech="4"><i class="sw sw--4"></i><span>Тонування</span><b><i>від</i> <span class="num">3&nbsp;500</span>&nbsp;₴</b></li>
+              </ul>
+              <p class="lencard__cap">Ціни «від», умовні.<span> Корені не залежать від довжини.</span></p>
+            </article>
+          </div>
+
+          <div class="lenfoot">
+            <button class="btn btn--glass" type="button" id="lenpick" aria-pressed="false"><span>Це моя довжина</span></button>
+            <p class="fine">Між лопатками й поясом (35–45&nbsp;см) ціну скаже колористка за фото.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 4 · Фото замість здогадок -->
+  <section class="sheet sheet--photo" id="foto" aria-labelledby="h2-foto">
+    <span class="sheet__grab" aria-hidden="true"></span>
+    <div class="wrap wrap--cols">
+      <div class="head">
+        <div class="shots" id="shots">
+          <figure class="shot shot--a" id="slot-a"><span class="shot__pic" aria-hidden="true"></span><figcaption><b>1</b>Корені</figcaption></figure>
+          <figure class="shot shot--b" id="slot-b"><span class="shot__pic" aria-hidden="true"></span><figcaption><b>2</b>Уся довжина</figcaption></figure>
+        </div>
+        <p class="fine fine--paper shots__cap">Кадри намальовані кодом — це зразки, а не фото клієнтки.</p>
+        <p class="pill">Фото замість здогадок</p>
+        <h2 id="h2-foto">Не знаєте свою техніку? <em>Покажіть волосся</em></h2>
+        <p class="lead">Довжина — половина ціни. Друга половина — що з волоссям зараз: чи фарбувалось, наскільки світлі кінці. Це видно на двох фото при денному світлі.</p>
+        <button class="btn btn--ink" type="button" data-open-sheet>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9.2a2.2 2.2 0 0 1 2.2-2.2h1.2l1-1.6a1.4 1.4 0 0 1 1.2-.7h3.8a1.4 1.4 0 0 1 1.2.7l1 1.6h1.2a2.2 2.2 0 0 1 2.2 2.2v7.1a2.2 2.2 0 0 1-2.2 2.2H6.7a2.2 2.2 0 0 1-2.2-2.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12.6" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          Надіслати фото волосся
+        </button>
+      </div>
+
+      <div class="thread" id="thread" aria-label="Приклад сценарію фото-консультації">
+        <p class="thread__tag">Приклад сценарію бота · без імен</p>
+        <p class="bubble bubble--me">Хочу балаяж. Два фото при денному світлі.</p>
+        <p class="bubble bubble--bot">Фарбувались за останні 6&nbsp;місяців?</p>
+        <p class="bubble bubble--me">Так, у темний.</p>
+        <p class="bubble bubble--bot">До куди довжина?</p>
+        <p class="bubble bubble--me">До лопаток.</p>
+        <p class="bubble bubble--bot bubble--price"><span>Колористка</span>Балаяж на вашу довжину — <b>6&nbsp;150–7&nbsp;000&nbsp;₴</b>. Точну суму назву на консультації перед фарбуванням.</p>
+      </div>
+
+      <figure class="tray">
+        <img src="assets/img/colour-tray.webp" width="1000" height="666" loading="lazy" decoding="async" alt="Ілюстрація (згенеровано) — таця колориста: чаша з освітлювачем, пензлик, фольга, гребінець">
+        <figcaption>Ілюстрація згенерована. У концепті нічого нікуди не надсилається — це приклад сценарію.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 5 · Між візитами -->
+  <div class="stage stage--grow">
+    <section class="scene scene--grow" id="mizh-vizytamy" aria-labelledby="h2-grow">
+      <div class="scene__in">
+        <div class="head head--dark">
+          <p class="pill pill--dark">Між візитами</p>
+          <h2 id="h2-grow">Корінь <em>відростає</em>: близько 1,2&nbsp;см за місяць</h2>
+        </div>
+
+        <div class="growviz" aria-hidden="true">
+          <p class="growtag" id="growtag"><i>близько</i> <b id="growcm">2,3&nbsp;см</b> нового кольору</p>
+        </div>
+
+        <div class="growpanel">
+          <div class="seg seg--dark" id="growseg" role="radiogroup" aria-label="Скільки минуло після фарбування">
+            <button role="radio" type="button" aria-checked="false" tabindex="-1" data-w="0">4 тижні</button>
+            <button role="radio" type="button" aria-checked="true" data-w="1">8 тижнів</button>
+            <button role="radio" type="button" aria-checked="false" tabindex="-1" data-w="2">12 тижнів</button>
+            <span class="seg__thumb" aria-hidden="true"></span>
+          </div>
+          <div class="growcards">
+            <article class="gcard">
+              <h3>Корені</h3>
+              <p>Волосся відростає приблизно на 1,2&nbsp;см за місяць. За <span id="growweeks">8 тижнів</span> біля шкіри — близько <span id="growcm2">2,3&nbsp;см</span> нового кольору.</p>
+              <p class="gcard__src">Джерело: American Academy of Dermatology (за L’Oréal Paris, 2021).</p>
+            </article>
+            <article class="gcard">
+              <h3>Тонування</h3>
+              <p>Його найчастіше оновлюють кожні 4–8 тижнів: залежить від того, як часто ви миєте голову і як швидко вимивається відтінок.</p>
+              <p class="gcard__src">Джерело: Wella Professionals, 22.06.2026.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Передача «Десять тонів»: десять кіл рівнів тону піднімаються знизу до платини -->
+  <div class="tones" id="tones" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+  <!-- 6 · Запис -->
+  <section class="sheet sheet--book" id="zapys" aria-labelledby="h2-book">
+    <div class="wrap wrap--cols">
+      <div class="head">
+        <p class="pill">Запис · рівень 10.1</p>
+        <h2 id="h2-book">Оберіть день і <em>час</em></h2>
+        <p class="lead">На справжньому сайті заявка може йти в Telegram-бот салону й у таблицю записів; що саме підключати, фіксуємо в пропозиції. Тут — демо: нічого нікуди не надсилається.</p>
+        <p class="fine fine--paper">10.1 — платиновий попелястий: цифра до крапки в коді тону — рівень, після крапки — відтінок.</p>
+        <figure class="chair">
+          <img src="assets/img/empty-chair.webp" width="1000" height="1250" loading="lazy" decoding="async" alt="Ілюстрація (згенеровано) — порожнє крісло перед дзеркалом у ранковому світлі">
+        </figure>
+      </div>
+
+      <form class="book" id="book" novalidate>
+        <p class="book__sum"><i class="sw" id="book-sw"></i><span id="book-sum">Балаяж · усі довжини</span><b id="book-price">4&nbsp;500 – 7&nbsp;000&nbsp;₴</b></p>
+        <fieldset class="pick">
+          <legend>День</legend>
+          <div class="pick__row pick__row--days" role="radiogroup" aria-label="День">
+            <button type="button" role="radio" aria-checked="false" data-day="Пн">Пн</button><button type="button" role="radio" aria-checked="false" data-day="Вт">Вт</button><button type="button" role="radio" aria-checked="false" data-day="Ср">Ср</button><button type="button" role="radio" aria-checked="false" data-day="Чт">Чт</button><button type="button" role="radio" aria-checked="false" data-day="Пт">Пт</button><button type="button" role="radio" aria-checked="false" data-day="Сб">Сб</button>
+          </div>
+        </fieldset>
+        <fieldset class="pick">
+          <legend>Час</legend>
+          <div class="pick__row" role="radiogroup" aria-label="Час">
+            <button type="button" role="radio" aria-checked="false" data-time="10:00">10:00</button><button type="button" role="radio" aria-checked="false" data-time="13:00">13:00</button><button type="button" role="radio" aria-checked="false" data-time="16:00">16:00</button>
+          </div>
+        </fieldset>
+        <p class="book__err" id="book-err" role="alert" hidden>Оберіть день і час — тоді покажемо маршрут заявки.</p>
+        <button class="btn btn--ink btn--wide" type="submit">Записатися — демо</button>
+        <p class="fine fine--paper">Імені й телефону тут не питаємо.</p>
+
+        <ol class="route" id="route" aria-label="Маршрут заявки на живому сайті">
+          <li><b>Сайт</b><span id="route-site">збирає заявку: техніка, довжина, день і час</span></li>
+          <li><b>Бот</b><span>«Надішліть два фото при денному світлі»</span></li>
+          <li><b>Таблиця</b><span id="route-row">рядок із технікою, довжиною, днем і часом</span></li>
+          <li><b>Колористка</b><span>бачить цей рядок і підтверджує час</span></li>
+        </ol>
+        <p class="book__done" id="book-done" role="status" hidden>Нічого не надіслано — це демо. На живому сайті колористка побачить цей рядок і підтвердить час.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot__card">
+    <p class="foot__lead">«Десять тонів» — вигаданий салон, концепт Velira. Адреси, телефону й майстрів немає навмисно. Склад вашого сайту й суму фіксуємо в пропозиції.</p>
+    <div class="foot__act">
+      <a class="btn btn--primary" href="../../sait-dlia-salonu-krasy/#contact">Хочу такий сайт
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.2 12.3 8l-3.8 3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a class="btn btn--glass" href="https://t.me/madbod_77" rel="noopener">Написати в Telegram</a>
+    </div>
+    <p class="fine">Зображення згенеровано ШІ або намальовано кодом: це ілюстрації, а не роботи салону. Ціни й тривалості умовні. Концепт і сайт — Velira, 2026.</p>
+  </div>
+</footer>
+
+<!-- Плаваюча нижня панель: орієнтир ціни й головна дія під великим пальцем -->
+<div class="dock" id="dock">
+  <p class="dock__sum"><span class="dock__label" data-sum-label>Балаяж · усі довжини</span><b class="dock__price"><span data-sum-price>4&nbsp;500 – 7&nbsp;000&nbsp;₴</span></b></p>
+  <button class="dock__cta" type="button" data-open-sheet aria-haspopup="dialog">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9.2a2.2 2.2 0 0 1 2.2-2.2h1.2l1-1.6a1.4 1.4 0 0 1 1.2-.7h3.8a1.4 1.4 0 0 1 1.2.7l1 1.6h1.2a2.2 2.2 0 0 1 2.2 2.2v7.1a2.2 2.2 0 0 1-2.2 2.2H6.7a2.2 2.2 0 0 1-2.2-2.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12.6" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+    Надіслати фото
+  </button>
+</div>
+
+<!-- Аркуш дії: два фото волосся. Демо — нічого нікуди не надсилається. -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__dim" data-close-sheet></div>
+  <div class="bsheet" id="bsheet" role="dialog" aria-modal="true" aria-labelledby="bs-title" tabindex="-1">
+    <div class="bsheet__grab" id="bs-grab"><span></span></div>
+    <button class="bsheet__x" type="button" data-close-sheet aria-label="Закрити"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+
+    <form class="bsform" id="bsform" novalidate>
+      <h2 class="bsheet__title" id="bs-title">Два фото — і колористка назве діапазон ціни</h2>
+      <p class="bsheet__lead">При денному світлі. У концепті фото не завантажуються: торкніться рамки — підставимо зразок.</p>
+      <div class="slots">
+        <button class="slot" type="button" data-slot="0" aria-pressed="false"><span class="slot__pic slot__pic--a" aria-hidden="true"></span><span class="slot__t"><b>1</b>Корені</span><span class="slot__s">додати</span></button>
+        <button class="slot" type="button" data-slot="1" aria-pressed="false"><span class="slot__pic slot__pic--b" aria-hidden="true"></span><span class="slot__t"><b>2</b>Уся довжина</span><span class="slot__s">додати</span></button>
+      </div>
+      <fieldset class="bsq">
+        <legend>Фарбувались за останні 6&nbsp;місяців?</legend>
+        <div class="seg seg--paper" id="dyedseg" role="radiogroup" aria-label="Фарбувались за останні 6 місяців?">
+          <button role="radio" type="button" aria-checked="false" data-dyed="Так">Так</button>
+          <button role="radio" type="button" aria-checked="false" tabindex="-1" data-dyed="Ні">Ні</button>
+          <span class="seg__thumb" aria-hidden="true"></span>
+        </div>
+      </fieldset>
+      <p class="bs__sum"><i class="sw" id="bs-sw"></i><span id="bs-sum">Балаяж · усі довжини</span><b id="bs-price">4&nbsp;500 – 7&nbsp;000&nbsp;₴</b></p>
+      <p class="bs__err" id="bs-err" role="alert" hidden>Додайте обидва фото й дайте відповідь на питання.</p>
+      <button class="btn btn--ink btn--wide" type="submit">Надіслати колористці</button>
+      <p class="fine fine--paper">Демо: нічого нікуди не надсилається.</p>
+    </form>
+
+    <div class="bsdone" id="bsdone" hidden>
+      <span class="bsdone__ok" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 12.5 4.2 4.2L18.5 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <h2 class="bsheet__title" tabindex="-1" id="bs-done-title">Це демо — нічого не надсилається</h2>
+      <p class="bsheet__lead">На справжньому сайті два фото й відповіді може отримати Telegram-бот салону, а колористка відповість діапазоном ціни.</p>
+      <p class="bs__sum"><i class="sw" id="bs-sw2"></i><span id="bs-sum2">Балаяж · усі довжини</span><b id="bs-dyed">фарбувались: так</b></p>
+      <button class="btn btn--ink btn--wide" type="button" data-close-sheet>Зрозуміло</button>
+      <a class="bsdone__link" href="../../sait-dlia-salonu-krasy/#contact">Хочу такий сайт для свого салону</a>
+    </div>
+  </div>
+</div>
+
+<!-- Два кадри, що летять із пасма в рамки розділу «Фото» -->
+<div class="fly" id="fly" aria-hidden="true"><i class="fly__a"></i><i class="fly__b"></i></div>
+
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/js/strand.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>

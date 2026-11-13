@@ -1,0 +1,315 @@
+/* ц.17 · M3 — гайд /skilky-koshtuie-landing/ і /pro-velira/. Той самий словник, що /landing/ і /tsiny/: Onest, ink / paper, знак V,
+   тонкі рамки, біле світло по лінії. Лише ці дві сторінки підключають цей файл. Рух — page.js (проява, лінія шарів, аркуші) + studio.js
+   (коло світла по рамці); анімуються лише transform / opacity / clip-path / filter. Без JS і з «зменшити рух» усе видно й на місці. */
+
+/* ---------- перший екран ---------- */
+.gd-h1 { font-size: clamp(32px, 4.1vw, 58px); line-height: 1.04; letter-spacing: -.04em; font-weight: 640; color: #dededb; max-width: 18ch; }
+.ab-h1 { max-width: 16ch; }
+.gd-by { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; margin: -4px 0 0; font-size: 14px; color: var(--tx-3); }
+.gd-by span { display: inline-block; }
+.gd-by span + span::before { content: ""; display: inline-block; vertical-align: middle; width: 3px; height: 3px; margin: -2px 12px 0; border-radius: 50%; background: currentColor; }
+.nw { white-space: nowrap; }
+.gd-by a { margin-left: .3em; color: var(--tx); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(255, 255, 255, .35); }
+.gd-ans { margin: 0; max-width: 62ch; font-size: clamp(16px, 1.25vw, 18.5px); line-height: 1.6; color: var(--tx-2); }
+.gd-ans b { color: var(--tx); font-weight: 600; white-space: nowrap; }
+.gd-hero .lp-hero__in, .ab-hero .lp-hero__in { align-items: end; }
+
+/* зміст статті (ПК ≥ 1080) */
+.gd-toc { display: none; }
+@media (min-width: 1080px) {
+  .gd-toc { display: block; width: 300px; margin-bottom: 6px; padding: 18px 22px 10px; border-radius: var(--r-lg); border: 1px solid var(--line-2);
+            background: linear-gradient(180deg, rgba(14, 14, 15, .92), rgba(6, 6, 7, .92)); }
+}
+.gd-toc__h { margin: 0 0 4px; font-size: 13px; font-weight: 600; color: var(--tx-3); }
+.gd-toc ul { margin: 0; padding: 0; list-style: none; }
+.gd-toc li + li { border-top: 1px solid var(--line); }
+.gd-toc a { display: flex; align-items: center; min-height: 42px; font-size: 15px; color: var(--tx-2); transition: color .15s var(--e-std); }
+.gd-toc a::before { content: ""; flex: none; width: 14px; height: 1px; margin-right: 12px; background: currentColor; opacity: .55; transform-origin: 0 50%;
+                    transition: transform .3s var(--e-mv), opacity .15s var(--e-std); }
+.gd-toc a:hover { color: var(--tx); }
+.gd-toc a:hover::before { transform: scaleX(1.7); opacity: 1; }
+
+/* ---------- ринок: таблиця з діапазонами й риской Spark ---------- */
+.gd-mkt { --max: 35000; position: relative; padding: 6px clamp(16px, 2.4vw, 32px) 18px; border-radius: var(--r-xl); border: 1px solid var(--p-line); background: #fbfbf9; }
+.gd-tbl { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 15px; line-height: 1.45; }
+.gd-tbl thead th:nth-child(1) { width: 23%; }
+.gd-tbl thead th:nth-child(2) { width: 31%; }
+.gd-tbl thead th:nth-child(3) { width: 17%; }
+.gd-tbl thead th:nth-child(4) { width: 29%; }
+.gd-tbl th, .gd-tbl td { text-align: left; vertical-align: top; padding: 17px 18px 17px 0; border-bottom: 1px solid rgba(0, 0, 0, .08); }
+.gd-tbl thead th { padding-block: 14px 12px; font-size: 13px; font-weight: 600; color: var(--p-tx-3); border-bottom-color: rgba(0, 0, 0, .2); }
+.gd-tbl tbody th { font-size: 16.5px; font-weight: 620; letter-spacing: -.012em; color: var(--p-tx); }
+.gd-tbl tbody th small, .gd-p small { display: block; margin-top: 3px; font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--p-tx-3); }
+.gd-tbl td { color: var(--p-tx-2); }
+.gd-tbl tbody tr:last-child > * { border-bottom: 0; }
+.gd-p b { font-size: 18.5px; font-weight: 650; letter-spacing: -.02em; color: var(--p-tx); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.gd-trk { position: relative; display: block; height: 10px; margin-top: 13px; border-radius: 5px; background: rgba(0, 0, 0, .06); }
+.gd-bar { position: absolute; top: 0; bottom: 0; left: calc(var(--a) / var(--max) * 100%); width: max(8px, calc((var(--b) - var(--a)) / var(--max) * 100%));
+          border-radius: 5px; background: #0a0a0a; transform-origin: 0 50%; }
+.gd-bar--dot { width: 10px; border-radius: 50%; }
+.gd-bar--open { width: calc((var(--max) - var(--a)) / var(--max) * 100%); border-radius: 5px 0 0 5px;
+                background: repeating-linear-gradient(135deg, rgba(0, 0, 0, .55) 0 2px, transparent 2px 6px); }
+.gd-bar--open::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; background: #0a0a0a;
+                        width: calc((var(--b) - var(--a)) / (var(--max) - var(--a)) * 100%); }
+/* риска Spark (6 225 ₴) у кожному рядку — разом вони читаються як одна вертикаль крізь таблицю */
+.gd-trk::after { content: ""; position: absolute; left: calc(6225 / var(--max) * 100%); top: -7px; bottom: -7px; width: 2px; margin-left: -1px;
+                 border-radius: 1px; background: #0a0a0a; box-shadow: 0 0 0 2px #fbfbf9; transform-origin: 50% 0; }
+.gd-axis { position: relative; height: 22px; margin: 2px 0 0 23%; width: calc(31% - 18px); border-top: 1px solid rgba(0, 0, 0, .14); font-size: 12px;
+           color: var(--p-tx-3); font-variant-numeric: tabular-nums; }
+.gd-axis span { position: absolute; top: 5px; left: calc(var(--v) / var(--max) * 100%); transform: translateX(-50%); white-space: nowrap; }
+.gd-axis span:first-child { transform: none; }
+.gd-mk { display: flex; align-items: center; gap: 10px; margin: 10px 0 0; padding-top: 12px; border-top: 1px solid rgba(0, 0, 0, .08); font-size: 13.5px; color: var(--p-tx-2); }
+.gd-mk__t { flex: none; width: 2px; height: 18px; border-radius: 1px; background: #0a0a0a; }
+.gd-ai { margin-top: 16px; max-width: 80ch; }
+.gd-method { margin-top: 22px; max-width: 82ch; padding: 18px 22px; border-left: 2px solid #0a0a0a; border-radius: 0 14px 14px 0; background: rgba(0, 0, 0, .035); }
+.gd-method h3 { margin: 0 0 6px; font-size: 16px; color: var(--p-tx); }
+.gd-method p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--p-tx-2); }
+.gd-method .tlink { display: inline; min-height: 0; }
+
+/* ---------- чинники ---------- */
+.gd-fac > div { grid-template-columns: minmax(0, 210px) minmax(0, 1fr); }
+.gd-fac dd { font-size: 15.5px; line-height: 1.55; }
+
+/* ---------- порівняльні таблиці на папері ---------- */
+.gd-cmp table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.5; }
+.gd-cmp th, .gd-cmp td { text-align: left; vertical-align: top; padding: 15px 20px 15px 0; border-bottom: 1px solid var(--p-line); }
+.gd-cmp thead th { padding-block: 0 12px; font-size: 13px; font-weight: 600; color: var(--p-tx-3); border-bottom-color: rgba(0, 0, 0, .28); }
+.gd-cmp tbody th { width: 22%; font-size: 16.5px; font-weight: 620; letter-spacing: -.012em; color: var(--p-tx); }
+.gd-cmp td { color: var(--p-tx-2); }
+/* колонка «У Velira» — тонке поле чорнила, щоб її було видно, але без «переможця» в таблиці */
+.gd-cmp:not(.gd-cmp--3) td:last-child, .gd-cmp:not(.gd-cmp--3) thead th:last-child { padding-left: 18px; background: rgba(0, 0, 0, .035); color: var(--p-tx); }
+.gd-cmp:not(.gd-cmp--3) thead th:last-child { padding-top: 12px; border-radius: 10px 10px 0 0; }
+.gd-cmp--3 tbody th { width: 19%; }
+.gd-note { margin-top: 16px; }
+
+/* ---------- Spark (чорнило) ---------- */
+.gd-spark__in { display: grid; gap: 22px; align-content: start; }
+.gd-sp { margin: 0; border-top: 1px solid var(--line-2); }
+.gd-sp > div { display: grid; grid-template-columns: minmax(0, 170px) minmax(0, 1fr); gap: 4px 24px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line-2); }
+.gd-sp dt { font-size: clamp(17px, 1.4vw, 20px); font-weight: 620; letter-spacing: -.015em; color: var(--tx); }
+.gd-sp dd { margin: 0; font-size: 15px; line-height: 1.45; color: var(--tx-2); }
+.gd-split { width: 100%; }
+.gd-orbit { margin: 0; padding-top: 14px; border-top: 1px solid var(--line-2); font-size: 15.5px; line-height: 1.55; color: var(--tx-2); }
+.gd-orbit b { color: var(--tx); font-weight: 600; }
+.gd-acts { display: flex; flex-wrap: wrap; gap: 12px; }
+.gd-spark .lp-lead .lp-p + .lp-p { margin-top: -4px; }
+
+/* ---------- чек-лист: темна картка на папері, коло світла, коли позначено всі 8 ---------- */
+.gd-chk { --d: 1200px; }
+.gd-chk__card { padding: clamp(20px, 2.6vw, 30px); color: var(--tx); }
+.gd-chk__h { margin: 0 0 6px; font-size: 16px; line-height: 1.4; font-weight: 600; color: var(--tx); }
+.gd-chk__list { margin: 0; padding: 0; list-style: none; }
+.gd-chk__list li + li { border-top: 1px solid var(--line); }
+.gd-chk__list label { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 14px; align-items: start; min-height: 44px; padding: 11px 0;
+                      cursor: pointer; font-size: 15px; line-height: 1.45; color: var(--tx-2); }
+.gd-chk__list b { color: var(--tx); font-weight: 600; }
+.gd-chk__list input { -webkit-appearance: none; appearance: none; display: grid; place-items: center; width: 22px; height: 22px; margin: 0; border-radius: 6px;
+                      border: 1.5px solid rgba(255, 255, 255, .34); background: transparent; cursor: pointer;
+                      transition: background-color .15s var(--e-std), border-color .15s var(--e-std); }
+.gd-chk__list input::after { content: ""; width: 10px; height: 5px; border-left: 2px solid #050505; border-bottom: 2px solid #050505;
+                             transform: translateY(-1px) rotate(-45deg) scale(0); transition: transform .3s var(--e-mv); }
+.gd-chk__list input:checked { background: var(--paper); border-color: var(--paper); }
+.gd-chk__list input:checked::after { transform: translateY(-1px) rotate(-45deg) scale(1); }
+.gd-chk__list input:checked + span { color: var(--tx); }
+.gd-chk__list input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
+.gd-chk__out { margin: 10px 0 0; padding-top: 12px; border-top: 1px solid var(--line-2); font-size: 15px; line-height: 1.45; font-weight: 600; color: var(--tx); }
+.gd-chk__f { margin: 12px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--tx-3); }
+.gd-chk__f .tlink { display: inline; min-height: 0; color: var(--tx); }
+
+/* ---------- джерела ---------- */
+.gd-src__list h3 { margin: 22px 0 4px; font-size: 15.5px; font-weight: 620; color: var(--p-tx); }
+.gd-src__list h3:first-child { margin-top: 0; }
+.gd-src__list p { margin: 0; max-width: 64ch; font-size: 14.5px; line-height: 1.55; color: var(--p-tx-2); }
+.gd-src__list ul { margin: 0; padding: 0; list-style: none; }
+.gd-src__list li { font-size: 14.5px; line-height: 1.45; color: var(--p-tx-3); }
+.gd-src__list a { display: inline-flex; align-items: center; min-height: 40px; font-weight: 560; color: var(--p-tx); text-decoration: underline;
+                  text-decoration-color: rgba(0, 0, 0, .3); text-underline-offset: 4px; transition: text-decoration-color .15s var(--e-std); }
+.gd-src__list a:hover { text-decoration-color: currentColor; }
+
+/* ---------- про студію: картка першого екрана ---------- */
+.ab-card { --d: 900px; width: 380px; max-width: 100%; }
+.ab-card__in { padding: 20px 24px 8px; color: var(--tx); }
+.ab-card__h { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-size: 18px; font-weight: 650; letter-spacing: -.015em; }
+.ab-card__h svg { width: 17px; height: 19px; fill: var(--tx); }
+.ab-card__h span { margin-left: auto; padding: 2px 7px; border-radius: 6px; border: 1px solid var(--line-3); font-size: 12.5px; font-weight: 500; letter-spacing: .01em; color: var(--tx-3); }
+.ab-card__dl { margin: 0; }
+.ab-card__dl > div { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 14.5px; line-height: 1.45; }
+.ab-card__dl dt { color: var(--tx-3); }
+.ab-card__dl dd { margin: 0; color: var(--tx); }
+.ab-card__dl dd a { display: flex; align-items: center; min-height: 40px; margin: -9px 0; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(255, 255, 255, .3); }
+.ab-card__dl dd a + a { margin-top: 0; }
+.ab-card__dl dd a:hover { text-decoration-color: currentColor; }
+
+/* маршрут і затверджений рядок */
+.ab-route > div { grid-template-columns: minmax(0, 210px) minmax(0, 1fr); }
+.ab-start { margin: 22px 0 0; max-width: 40ch; font-size: clamp(18px, 1.5vw, 21px); line-height: 1.4; font-weight: 560; letter-spacing: -.012em; color: var(--p-tx); }
+
+/* ---------- конвеєр: журнал етапів (етап · що робимо · що бачите ви) ---------- */
+.ab-steps__hd { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 5fr) minmax(0, 3.2fr); gap: 6px 32px; padding: 0 0 10px;
+                border-bottom: 1px solid rgba(0, 0, 0, .28); font-size: 13px; font-weight: 600; color: var(--p-tx-3); }
+.ab-steps { margin: 0; padding: 0; list-style: none; }
+.ab-steps li { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 5fr) minmax(0, 3.2fr); gap: 6px 32px; align-items: baseline;
+               padding: 19px 0; border-bottom: 1px solid var(--p-line); }
+.ab-steps h3 { font-size: clamp(18px, 1.55vw, 22px); line-height: 1.2; letter-spacing: -.02em; font-weight: 620; color: var(--p-tx); }
+.ab-steps p { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--p-tx-2); }
+.ab-steps .ab-you { font-weight: 500; color: var(--p-tx); }
+.ab-steps .ab-you--in { font-size: 14px; font-weight: 400; color: var(--p-tx-3); }
+
+/* ---------- заміри: оцінки критика з порогом 8 (фірмовий момент) ---------- */
+.ab-proof__grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+.ab-score { --lw: 150px; --vw: 46px; margin: 0; padding: clamp(20px, 2.6vw, 32px); border-radius: var(--r-xl); border: 1px solid var(--line-2);
+            background: radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, .05), rgba(255, 255, 255, 0) 52%), linear-gradient(180deg, #0d0d0e, #060607); }
+.ab-score figcaption { display: grid; gap: 3px; margin: 0 0 16px; }
+.ab-score figcaption b { font-size: 17px; font-weight: 620; letter-spacing: -.01em; color: var(--tx); }
+.ab-score figcaption span { font-size: 13.5px; color: var(--tx-3); }
+.ab-score__axis { position: relative; height: 22px; margin: 0 var(--vw) 0 var(--lw); border-bottom: 1px solid var(--line-2); font-size: 12.5px;
+                  color: var(--tx-3); font-variant-numeric: tabular-nums; }
+.ab-score__axis span { position: absolute; bottom: 6px; left: calc(var(--v) * 10%); transform: translateX(-50%); }
+.ab-score__axis span:first-child { transform: none; }
+.ab-score__axis span:last-child { transform: translateX(-100%); }
+.ab-score__axis .ab-score__th { color: var(--tx); font-weight: 650; }
+.ab-score__list { position: relative; margin: 0; padding: 6px 0 2px; list-style: none; }
+.ab-score__list li { display: grid; grid-template-columns: var(--lw) minmax(0, 1fr) var(--vw); align-items: center; min-height: 34px; }
+.ab-score__n { padding-right: 14px; font-size: 14.5px; line-height: 1.25; color: var(--tx-2); }
+.ab-score__t { position: relative; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .07); }
+.ab-score__t i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--v) * 10%); border-radius: 4px; transform-origin: 0 50%;
+                 background: linear-gradient(90deg, rgba(244, 244, 241, .3) 0 calc(800% / var(--v)), #f4f4f1 calc(800% / var(--v))); }
+.ab-score__list li b { text-align: right; font-size: 15px; font-weight: 640; color: var(--tx); font-variant-numeric: tabular-nums; }
+/* поріг 8 — одна вертикаль крізь усі рядки; по ній один раз пробігає світло */
+.ab-score__list::before, .ab-score__list::after { content: ""; position: absolute; top: 0; bottom: 0; left: calc(var(--lw) + (100% - var(--lw) - var(--vw)) * .8);
+                                                  width: 1px; margin-left: -.5px; pointer-events: none; }
+.ab-score__list::before { background: rgba(244, 244, 241, .5); transform-origin: 50% 0; }
+.ab-score__list::after { width: 2px; margin-left: -1px; background: #fff; box-shadow: 0 0 8px 2px rgba(255, 255, 255, .85), 0 0 22px 6px rgba(255, 255, 255, .25);
+                         clip-path: inset(100% -14px 0 -14px); }
+.ab-score__v { display: flex; align-items: center; gap: 10px; margin: 16px 0 0; padding-top: 14px; border-top: 1px solid var(--line-2); font-size: 14.5px; color: var(--tx-2); }
+.ab-score__v b { color: var(--tx); font-weight: 650; }
+.ab-score__dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 2px rgba(255, 255, 255, .7); }
+.ab-meas { padding: 0; border: 0; }
+.ab-meas > div:first-child { padding-top: 0; }
+.ab-story { margin: 18px 0 0; padding-top: 16px; border-top: 1px solid var(--line-2); font-size: 15.5px; line-height: 1.6; color: var(--tx-2); }
+.ab-live { margin-top: 20px; padding: 14px 0 0; border-top: 1px solid var(--line); }
+.ab-proof .lp-small { margin-top: 12px; color: var(--tx-3); }
+
+/* ---------- робота для клієнта ---------- */
+.ab-case__in { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: clamp(28px, 6vw, 96px); align-items: center; }
+.ab-phone { justify-self: center; width: min(100%, 290px); margin: 0; }
+.ab-phone__frame { padding: 7px; border-radius: 36px; background: #0a0a0a; box-shadow: 0 34px 60px -34px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .1); }
+.ab-phone__frame img { width: 100%; height: auto; aspect-ratio: 390 / 790; object-fit: cover; object-position: 50% 0; border-radius: 30px; background: #111; }
+.ab-phone figcaption { margin-top: 12px; text-align: center; font-size: 13px; color: var(--p-tx-3); }
+.ab-case__copy { display: grid; gap: 16px; justify-items: start; }
+.ab-case__copy .kicker { margin: 0; }
+.ab-case__copy h2 { max-width: 16ch; }
+.ab-tag { display: inline-flex; align-items: center; min-height: 26px; padding: 0 9px; border-radius: 7px; border: 1px solid rgba(0, 0, 0, .3); font-size: 13px; font-weight: 600; color: var(--p-tx); }
+.ab-case__dl { width: 100%; }
+.ab-case__dl > div { grid-template-columns: minmax(0, 150px) minmax(0, 1fr); }
+.ab-case__go { margin-top: 6px; }
+
+/* ---------- обіцянки й документи ---------- */
+.ab-prom { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px clamp(28px, 5vw, 72px); }
+.ab-prom h3 { margin-bottom: 10px; font-size: 20px; color: var(--p-tx); }
+.ab-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(0, 0, 0, .28); }
+.ab-list li { position: relative; padding: 13px 0 13px 28px; border-bottom: 1px solid var(--p-line); font-size: 15.5px; line-height: 1.5; color: var(--p-tx-2); }
+.ab-list li::before { content: ""; position: absolute; left: 2px; top: 24px; width: 13px; height: 1.5px; background: #0a0a0a; }
+.ab-list--no li::before { top: 20px; width: 9px; height: 9px; background: none; border: 1.5px solid rgba(0, 0, 0, .5); border-radius: 50%; }
+.ab-docs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px clamp(28px, 5vw, 72px); margin-top: clamp(36px, 5vw, 60px);
+           padding-top: 26px; border-top: 1px solid var(--p-line); }
+.ab-docs h3 { grid-column: 1 / -1; font-size: 20px; color: var(--p-tx); }
+.ab-docs p { margin: 0; max-width: 60ch; font-size: 15.5px; line-height: 1.6; color: var(--p-tx-2); }
+.ab-docs__list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--p-line); }
+.ab-docs__list li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 14px; border-bottom: 1px solid var(--p-line); }
+.ab-docs__list a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; color: var(--p-tx); text-decoration: underline;
+                   text-decoration-color: rgba(0, 0, 0, .3); text-underline-offset: 4px; }
+.ab-docs__list a:hover { text-decoration-color: currentColor; }
+.ab-docs__list small { padding-bottom: 6px; font-size: 13px; color: var(--p-tx-3); }
+.ab-ig { margin-top: -8px; }
+
+/* ---------- рух: лише з класом lp-motion (head-скрипт); стан — атрибут data-rv з page.js ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* таблиця ринку: смуги ростуть зліва (700 мс, стагер 80 мс), риска Spark опускається в кожному рядку слідом — одна вертикаль зверху вниз */
+  .lp-motion .gd-mkt[data-rv="pre"] .gd-bar { transform: scaleX(0); }
+  .lp-motion .gd-mkt[data-rv="pre"] .gd-trk::after { transform: scaleY(0); }
+  .lp-motion .gd-mkt[data-rv="pre"] .gd-mk { opacity: 0; }
+  .lp-motion .gd-mkt[data-rv="in"] .gd-bar { transition: transform .7s cubic-bezier(.2, .7, .2, 1) calc(.2s + var(--i) * 80ms); }
+  .lp-motion .gd-mkt[data-rv="in"] .gd-trk::after { transition: transform .32s var(--e-mv) calc(.75s + var(--i) * 90ms); }
+  .lp-motion .gd-mkt[data-rv="in"] .gd-mk { transition: opacity .4s var(--e-std) 1.3s; }
+  /* Spark: смуга 30/70 — з появою блоку, а не при завантаженні сторінки */
+  .lp-motion .gd-split .lp-split__a, .lp-motion .gd-split .lp-split__b { animation: none; }
+  .lp-motion .gd-split[data-rv="pre"] .lp-split__a, .lp-motion .gd-split[data-rv="pre"] .lp-split__b { transform: scaleX(0); }
+  .lp-motion .gd-split[data-rv="in"] .lp-split__a { transition: transform .7s cubic-bezier(.2, .7, .2, 1) .25s; }
+  .lp-motion .gd-split[data-rv="in"] .lp-split__b { transition: transform .7s cubic-bezier(.2, .7, .2, 1) .33s; }
+  /* оцінки критика: смуги до значення (700 мс, стагер 50 мс) → поріг 8 проводиться згори вниз → по ньому пробігає світло → крапка вердикту */
+  .lp-motion .ab-score[data-rv="pre"] .ab-score__t i { transform: scaleX(0); }
+  .lp-motion .ab-score[data-rv="pre"] .ab-score__list::before { transform: scaleY(0); }
+  .lp-motion .ab-score[data-rv="pre"] .ab-score__dot { opacity: 0; transform: scale(.4); }
+  .lp-motion .ab-score[data-rv="in"] .ab-score__t i { transition: transform .7s cubic-bezier(.2, .7, .2, 1) calc(.15s + var(--i) * 50ms); }
+  .lp-motion .ab-score[data-rv="in"] .ab-score__list::before { transition: transform .6s var(--e-mv) .55s; }
+  .lp-motion .ab-score[data-rv="in"] .ab-score__list::after { animation: ab-sweep 1.1s cubic-bezier(.4, 0, .2, 1) 1.15s both; }
+  .lp-motion .ab-score[data-rv="in"] .ab-score__dot { transition: opacity .3s var(--e-std) 2.15s, transform .3s var(--e-mv) 2.15s; }
+}
+@keyframes ab-sweep {
+  0% { clip-path: inset(0 -14px 100% -14px); }
+  14% { clip-path: inset(0 -14px 86% -14px); }
+  86% { clip-path: inset(86% -14px 0 -14px); }
+  100% { clip-path: inset(100% -14px 0 -14px); }
+}
+
+/* ---------- ширини ---------- */
+@media (max-width: 1079px) {
+  .ab-hero .lp-hero__in { align-items: start; }
+}
+@media (max-width: 899px) {
+  .ab-proof__grid, .ab-prom, .ab-docs { grid-template-columns: minmax(0, 1fr); }
+  .ab-case__in { grid-template-columns: minmax(0, 1fr); }
+  .ab-phone { order: 2; }
+  .ab-steps__hd { display: none; }
+  .ab-steps li { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 17px 0; }
+  .ab-steps .ab-you::before { content: "Для вас: "; color: var(--p-tx-3); font-weight: 400; }
+  .ab-steps .ab-you--in::before { content: none; }
+  .ab-steps .ab-you--in { display: none; }
+}
+@media (max-width: 719px) {
+  /* таблиця ринку → картки рядків: назва, ціна зі смугою на всю ширину, строк і що перевірити */
+  .gd-mkt { padding: 4px 16px 16px; }
+  .gd-tbl, .gd-tbl tbody, .gd-tbl tr, .gd-tbl th, .gd-tbl td { display: block; width: auto; }
+  .gd-tbl thead { display: none; }   /* назви колонок на телефоні — підписами в рядках («Строк:», «Дивитися:») */
+  .gd-tbl tr { padding: 16px 0; border-bottom: 1px solid rgba(0, 0, 0, .08); }
+  .gd-tbl tbody tr:last-child { border-bottom: 0; }
+  .gd-tbl th, .gd-tbl td { padding: 0; border: 0; }
+  .gd-tbl .gd-p { margin-top: 8px; }
+  .gd-tbl td:nth-child(3), .gd-tbl td:nth-child(4) { margin-top: 6px; font-size: 14px; }
+  .gd-tbl td:nth-child(3)::before { content: "Строк: "; color: var(--p-tx-3); }
+  .gd-tbl td:nth-child(4)::before { content: "Дивитися: "; color: var(--p-tx-3); }
+  .gd-axis { margin-left: 0; width: 100%; }
+  /* порівняння → блоки: назва рядка, під нею кожна колонка зі своїм підписом */
+  .gd-cmp table, .gd-cmp tbody, .gd-cmp tr, .gd-cmp th, .gd-cmp td { display: block; width: auto !important; }
+  .gd-cmp thead { display: none; }   /* назви колонок — підписами data-l над кожною клітинкою */
+  .gd-cmp tr { padding: 14px 0; border-bottom: 1px solid var(--p-line); }
+  .gd-cmp tbody tr:first-child { border-top: 1px solid rgba(0, 0, 0, .28); }
+  .gd-cmp th, .gd-cmp td { padding: 0; border: 0; }
+  .gd-cmp tbody th { margin-bottom: 6px; font-size: 16px; }
+  .gd-cmp td { padding: 4px 0; font-size: 14.5px; }
+  .gd-cmp td::before { content: attr(data-l); display: block; font-size: 12.5px; font-weight: 600; color: var(--p-tx-3); }
+  .gd-cmp:not(.gd-cmp--3) td:last-child { margin-top: 6px; padding: 8px 12px; border-radius: 10px; }
+}
+@media (max-width: 599px) {
+  .gd-h1 { font-size: clamp(28px, 8.4vw, 36px); letter-spacing: -.035em; }
+  .gd-ans { font-size: 16px; }
+  .gd-by { display: grid; gap: 2px; font-size: 13px; }
+  .gd-by span + span::before { content: none; }
+  .gd-fac > div, .ab-route > div, .ab-case__dl > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .gd-sp > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .gd-method { padding: 16px 16px 16px 18px; }
+  .gd-acts .btn { width: 100%; }
+  .ab-card { width: 100%; }
+  .ab-card__in { padding: 18px 18px 6px; }
+  .ab-card__dl > div { grid-template-columns: 84px minmax(0, 1fr); }
+  .ab-score { --lw: 116px; --vw: 38px; padding: 18px 16px; }
+  .ab-score__n { font-size: 13.5px; padding-right: 10px; }
+  .ab-score__list li b { font-size: 14px; }
+  .ab-case__go { width: 100%; }
+}
+@media (max-width: 359px) {
+  .ab-score { --lw: 104px; }
+  .ab-score__n { font-size: 13px; }
+  .gd-by span + span::before { margin: 0 8px; }
+}
