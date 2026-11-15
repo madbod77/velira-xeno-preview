@@ -94,6 +94,32 @@
     paintProg();
   });
 
+  /* ---------- смаки: на телефоні — рейка з прокруткою вбік, намистини показують і перемикають кадр (працює й без руху) ---------- */
+  var tRail = $('#tastes'), tDots = $$('.tdot'), tItems = $$('#tastes .slice');
+  if (tRail && tDots.length) {
+    var setDot = function (n) { tDots.forEach(function (d, k) { if (k === n) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); }); };
+    var tTick = false;
+    var paintDot = function () {
+      tTick = false;
+      var max = tRail.scrollWidth - tRail.clientWidth;
+      if (max < 2) return;
+      // найближчий до лівого краю кадр; у кінці рейки — останній
+      var x = tRail.scrollLeft, best = 0, bd = 1e9;
+      tItems.forEach(function (li, k) { var d = Math.abs(li.offsetLeft - tItems[0].offsetLeft - x); if (d < bd) { bd = d; best = k; } });
+      if (x >= max - 4) best = tItems.length - 1;
+      setDot(best);
+    };
+    tRail.addEventListener('scroll', function () { if (!tTick) { tTick = true; requestAnimationFrame(paintDot); } }, { passive: true });
+    tDots.forEach(function (d, k) {
+      d.addEventListener('click', function () {
+        var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var left = tItems[k].offsetLeft - tItems[0].offsetLeft;
+        try { tRail.scrollTo({ left: left, behavior: reduce ? 'auto' : 'smooth' }); } catch (e) { tRail.scrollLeft = left; }
+        setDot(k);
+      });
+    });
+  }
+
   /* ---------- намистини шва ---------- */
   var seamBox = $('.seam-beads');
   function layoutSeam() {
@@ -225,10 +251,15 @@
     gsap.from(el, { y: 22, duration: 0.7, ease: easeRise, immediateRender: false,
       scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
   });
-  var slices = $$('.slice.rise'), sd = [0, 0.08, 0.14, 0.19];
-  slices.forEach(function (el, i) {
-    gsap.from(el, { y: 26 + i * 6, duration: 0.7, delay: sd[i] || 0, ease: easeRise, immediateRender: false,
-      scrollTrigger: { trigger: '.slices', start: 'top 85%', once: true } });
+  /* Смаки: фото розкривається до країв рамки (clip-path із CSS-стану .motion-ok; вміст видно й до прокрутки), трохи осідає
+     (масштаб фото 1.08 → 1); хвиля по чотирьох кадрах, підписи під кадрами видно завжди */
+  $$('.taste-ph').forEach(function (ph, i) {
+    var img = ph.querySelector('img');
+    gsap.set(img, { scale: 1.08 });
+    var tl = gsap.timeline({ delay: i * 0.09, scrollTrigger: { trigger: '.slices', start: 'top 85%', once: true },
+      onComplete: function () { ph.classList.add('is-cut'); gsap.set(img, { clearProps: 'clipPath' }); } });
+    tl.fromTo(img, { clipPath: 'inset(6% 5% 6% 5% round 22px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', duration: 0.9, ease: easeRise })
+      .to(img, { scale: 1, duration: 1.1, ease: easeRise }, 0);
   });
 
   });

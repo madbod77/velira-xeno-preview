@@ -1,166 +1,205 @@
-/* Barber Home concept (Velira) — motion: strands twist into the pole, the pole docks into booking, the curl springs off the rod. */
+/* Barber Home — концепт Velira v2. «Дзеркало показує новий образ». */
 (function () {
   'use strict';
-  var doc = document.documentElement;
-  var reduce = !doc.classList.contains('motion');
-  var hasGsap = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
-  if (!hasGsap) { doc.classList.remove('motion'); reduce = true; }
+  var html = document.documentElement;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; };
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
 
-  /* ---- hours: the pole turns only within the hours from their bio (10:00–20:00, Kyiv) ---- */
-  var open = false;
-  function kyivNow() {
+  /* ---- години з біо: 10:00–20:00 за Києвом (дні тижня в біо не названі) ---- */
+  function status() {
+    var el = $('[data-status]'); if (!el) return;
     try {
-      var f = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
-      var parts = f.formatToParts(new Date()), hh = 0, mm = 0;
-      parts.forEach(function (x) { if (x.type === 'hour') hh = +x.value; if (x.type === 'minute') mm = +x.value; });
-      return { h: hh, m: mm, txt: (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm };
-    } catch (e) { return null; }
+      var parts = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+      var h = +parts.filter(function (p) { return p.type === 'hour'; })[0].value;
+      var m = +parts.filter(function (p) { return p.type === 'minute'; })[0].value;
+      var mins = h * 60 + m, open = mins >= 600 && mins < 1200;
+      var hh = (h < 10 ? '0' : '') + h, mm = (m < 10 ? '0' : '') + m;
+      $('.status-t', el).textContent = 'Зараз ' + hh + ':' + mm + ' у Києві — ' + (open ? 'у межах годин з біо' : 'поза годинами з біо');
+      el.classList.toggle('open', open);
+    } catch (e) { /* лишається статичний текст */ }
   }
-  function updateHours() {
-    var el = $('#hours'), now = kyivNow(); if (!el || !now) return;
-    var mins = now.h * 60 + now.m; open = mins >= 600 && mins < 1200;
-    el.classList.toggle('is-open', open); el.classList.toggle('is-closed', !open);
-    $('.hours__text', el).textContent = 'У Києві ' + now.txt + ' — ' + (open ? 'у межах годин з біо, 10:00–20:00' : 'поза годинами з біо, 10:00–20:00');
+  status(); setInterval(status, 30000);
+
+  var motion = html.classList.contains('motion');
+  if (!motion) return;
+  if (!window.gsap || !window.ScrollTrigger) { html.classList.remove('motion'); return; }
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ---------------- сцена: дзеркало ---------------- */
+  var stage = $('.stage'), wrap = $('.stage-wrap'), after = $('.layer.after'), mirror = $('.mirror');
+  var ui = $('.hero-ui'), curly = $('.mark.curly'), straight = $('.mark.straight'), newlook = $('.newlook');
+  var beforeImg = $('.layer.before .bg'), glint = $('.mirror .glint');
+  var canPath = !!(window.CSS && CSS.supports && (CSS.supports('clip-path', 'path("M0 0L1 1Z")') || CSS.supports('-webkit-clip-path', 'path("M0 0L1 1Z")')));
+
+  var W = 0, H = 0, rx0 = 100, anchor = { x: 0, y: 0 }, amp = { x: 0, y: 0 };
+  function measure() {
+    W = stage.clientWidth; H = stage.clientHeight;
+    rx0 = W < 760 ? 0.25 * W : W < 1100 ? 0.17 * W : 0.115 * W;
+    mirror.style.width = (rx0 * 2.5) + 'px';
+    mirror.style.transformOrigin = (rx0 * 1.25) + 'px ' + (rx0 * 1.4) + 'px';
+    var sr = stage.getBoundingClientRect(), mr = straight.getBoundingClientRect();
+    var top = mr.top - sr.top, mh = mr.height;
+    if (W < 760) { anchor = { x: 0.6 * W, y: top + mh * 0.6 }; amp = { x: 0.16 * W, y: 12 }; }
+    else { anchor = { x: 0.55 * W, y: top + mh * 0.5 }; amp = { x: 0.3 * W, y: 0.025 * H }; }
   }
-  updateHours(); setInterval(updateHours, 30000);
+  measure();
 
-  /* ---- the pole ---- */
-  var poleCanvas = $('.pole__canvas'), pole = null, poleVisible = true;
-  if (poleCanvas && window.Helix && poleCanvas.getContext) {
-    pole = new window.Helix(poleCanvas, { mode: 'pole', colors: ['#d6283b', '#f5f6f7', '#2453c9', '#f5f6f7', '#d6283b', '#f5f6f7', '#2453c9', '#f5f6f7'] });
-    pole.state.k = reduce ? 1 : 0; pole.state.rot = 0.35; pole.draw();
-    var startPoster = document.querySelector('.pole__start'); if (startPoster) startPoster.classList.add('is-off');
-  } else { doc.classList.remove('js'); }
-
-  var curlCanvas = $('.curl__canvas'), curl = null;
-  if (curlCanvas && window.Helix && curlCanvas.getContext) {
-    curl = new window.Helix(curlCanvas, { mode: 'curl', colors: ['#7a5640'] });
-    curl.state.p = reduce ? 1 : 0; curl.draw();
+  var pos = { x: anchor.x, y: anchor.y }, tgt = { x: anchor.x, y: anchor.y };
+  var mode = 'drift', lastInput = -10, rotS = -3, prevX = pos.x, t0 = performance.now() / 1000;
+  function driftAt(t) {
+    var a = (t - t0) * Math.PI * 2;
+    return { x: anchor.x + amp.x * Math.sin(a / 16), y: anchor.y + amp.y * Math.sin(a / 8) };
   }
 
-  var rz; window.addEventListener('resize', function () {
-    clearTimeout(rz); rz = setTimeout(function () { if (pole) { pole.resize(); pole.draw(); } if (curl) { curl.resize(); curl.draw(); } }, 120);
+  /* курсор (ПК) */
+  stage.addEventListener('pointermove', function (e) {
+    if (e.pointerType !== 'mouse' || dragging) return;
+    var r = stage.getBoundingClientRect();
+    tgt.x = clamp(e.clientX - r.left, 0.12 * W, 0.92 * W);
+    tgt.y = clamp(e.clientY - r.top, anchor.y - 0.12 * H, anchor.y + 0.12 * H);
+    mode = 'pointer'; lastInput = performance.now() / 1000;
   });
+  stage.addEventListener('pointerleave', function () { if (!dragging) lastInput = -10; });
 
-  // services spiral line geometry (also static without motion)
-  function buildSpiral() {
-    var svg = $('.spiral__line'), list = $('.spiral__list'); if (!svg || !list) return;
-    var w = svg.getBoundingClientRect().width, h = list.offsetHeight, rows = $$('.svc'), rowH = h / Math.max(1, rows.length);
-    svg.setAttribute('viewBox', '0 0 ' + w.toFixed(1) + ' ' + h.toFixed(1));
-    var d = '', amp = w / 2 - 10, cx = w / 2;
-    for (var y = -10; y <= h + 10; y += 6) {
-      var x = cx + amp * Math.sin((y / rowH) * Math.PI + 0.6);
-      d += (d ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+  /* палець (телефон): горизонтально, вертикаль лишається прокрутці */
+  var dragging = false, dragStart = null;
+  stage.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'mouse' || (e.target.closest && e.target.closest('a,button'))) return;
+    dragging = true; mode = 'drag'; dragStart = { px: e.clientX, x: pos.x };
+  });
+  stage.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    tgt.x = clamp(dragStart.x + (e.clientX - dragStart.px), 0.18 * W, 0.86 * W);
+    tgt.y = pos.y; lastInput = performance.now() / 1000;
+  });
+  function release() { if (!dragging) return; dragging = false; mode = 'pointer'; lastInput = performance.now() / 1000; shine(0); }
+  stage.addEventListener('pointerup', release);
+  stage.addEventListener('pointercancel', release);
+
+  /* блиск скла */
+  function shine(delay) {
+    gsap.fromTo(glint, { attr: { x: -140 } }, { attr: { x: 260 }, duration: 0.9, ease: 'power2.inOut', delay: delay || 0, overwrite: true });
+  }
+
+  /* інтро: дзеркало піднімають у кадр */
+  var intro = { lift: 0 };
+  gsap.to(intro, { lift: 1, duration: 1.1, ease: 'back.out(1.3)', delay: 0.14 });
+  gsap.fromTo(beforeImg, { filter: 'brightness(.42) saturate(.8) blur(8px)', scale: 1.04 },
+    { filter: 'brightness(.42) saturate(.8) blur(0px)', scale: 1, duration: 0.6, ease: 'power2.out', clearProps: 'transform' });
+  shine(1.15);
+
+  /* прокрутка: дзеркало підносять ближче — проліт у новий образ */
+  var prog = { p: 0 };
+  gsap.to(prog, { p: 1, ease: 'none', scrollTrigger: { trigger: wrap, start: 'top top', end: 'bottom bottom', scrub: 0.5 } });
+
+  function ellipsePath(cx, cy, rx, ry, rot) {
+    var a = rot * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
+    var x1 = (cx + rx * c).toFixed(1), y1 = (cy + rx * s).toFixed(1), x2 = (cx - rx * c).toFixed(1), y2 = (cy - rx * s).toFixed(1);
+    var R = rx.toFixed(1) + ' ' + ry.toFixed(1) + ' ' + rot.toFixed(2);
+    return 'path("M' + x1 + ' ' + y1 + 'A' + R + ' 1 1 ' + x2 + ' ' + y2 + 'A' + R + ' 1 1 ' + x1 + ' ' + y1 + 'Z")';
+  }
+
+  var visible = true, last = { ui: -1, cur: -1, q: -1 };
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }).observe(wrap);
+  var prevT = performance.now() / 1000;
+  html.classList.add('live');
+
+  function render() {
+    var now = performance.now() / 1000, dt = Math.min(0.05, Math.max(0.001, now - prevT)); prevT = now;
+    if (!visible || document.hidden) return;
+    var k;
+    if (mode === 'drag') k = 0.35;
+    else if (mode === 'pointer' && now - lastInput < 2.5) k = 0.09;
+    else { mode = 'drift'; var d = driftAt(now); tgt.x = d.x; tgt.y = d.y; k = 0.035; }
+    var f = 1 - Math.pow(1 - k, dt * 60);
+    pos.x += (tgt.x - pos.x) * f; pos.y += (tgt.y - pos.y) * f;
+    var vx = (pos.x - prevX) / dt; prevX = pos.x;
+    rotS += ((-3 + clamp(vx * 0.012, -7, 7)) - rotS) * (1 - Math.pow(0.9, dt * 60));
+
+    var L = intro.lift, op = clamp(L * 3.2);
+    var p = prog.p, z = clamp(p / 0.55), ze = z < 0.5 ? 2 * z * z : 1 - Math.pow(-2 * z + 2, 2) / 2;
+    var rxCover = Math.sqrt(Math.pow(W / 2, 2) + Math.pow(H / 2 / 1.275, 2)) * 1.04;
+    var cx = lerp(pos.x, W / 2, ze), cy = lerp(pos.y + (1 - L) * 0.18 * H, H / 2, ze);
+    var rx = lerp(rx0 * (0.86 + 0.14 * L), rxCover, Math.pow(ze, 1.3)), ry = rx * 1.275;
+    var rot = lerp(rotS + (1 - L) * 17, 0, ze);
+
+    var clip = canPath ? ellipsePath(cx, cy, rx, ry, rot) : 'ellipse(' + rx.toFixed(1) + 'px ' + ry.toFixed(1) + 'px at ' + cx.toFixed(1) + 'px ' + cy.toFixed(1) + 'px)';
+    after.style.clipPath = clip; after.style.webkitClipPath = clip;
+    after.style.opacity = op;
+    mirror.style.transform = 'translate3d(' + (cx - rx0 * 1.25).toFixed(1) + 'px,' + (cy - rx0 * 1.4).toFixed(1) + 'px,0) rotate(' + rot.toFixed(2) + 'deg) scale(' + (rx / rx0).toFixed(4) + ')';
+    mirror.style.opacity = (op * (1 - clamp((z - 0.3) / 0.3))).toFixed(3);
+    mirror.style.visibility = z >= 0.6 ? 'hidden' : 'visible';
+
+    var u = clamp(p / 0.3);
+    if (Math.abs(u - last.ui) > 0.001) {
+      last.ui = u;
+      ui.style.opacity = (1 - u).toFixed(3);
+      ui.style.transform = u > 0 ? 'translate3d(0,' + (-24 * u).toFixed(1) + 'px,0)' : '';
+      ui.style.visibility = u >= 0.98 ? 'hidden' : 'visible';
     }
-    $('path', svg).setAttribute('d', d);
-  }
-  buildSpiral(); window.addEventListener('resize', buildSpiral);
-
-  // stripes inside «Як нас знайти!?»
-  (function () {
-    var g = $('.word__stripes'); if (!g) return;
-    var ns = 'http://www.w3.org/2000/svg', cols = ['#d6283b', '#f5f6f7', '#2453c9', '#f5f6f7'], sw = 34;
-    for (var i = 0, x = -700; x < 1700; i++, x += sw) {
-      var r = document.createElementNS(ns, 'rect');
-      r.setAttribute('x', x); r.setAttribute('y', -200); r.setAttribute('width', sw + 0.6); r.setAttribute('height', 780);
-      r.setAttribute('fill', cols[i % 4]); g.appendChild(r);
+    var c = 1 - clamp((p - 0.4) / 0.12);
+    if (Math.abs(c - last.cur) > 0.001) { last.cur = c; curly.style.opacity = c.toFixed(3); }
+    var q = clamp((p - 0.5) / 0.18);
+    if (Math.abs(q - last.q) > 0.001) {
+      last.q = q;
+      newlook.style.opacity = q.toFixed(3);
+      newlook.style.filter = q < 1 ? 'blur(' + (10 * (1 - q)).toFixed(2) + 'px)' : 'none';
+      newlook.style.transform = 'translate3d(0,calc(-50% + ' + (24 * (1 - q)).toFixed(1) + 'px),0) scale(' + (0.96 + 0.04 * q).toFixed(4) + ')';
     }
-    if (reduce) g.setAttribute('transform', 'translate(500 190) skewX(-32) translate(-500 -190)');
-  })();
-
-  if (reduce || !hasGsap) {
-    if (pole) { pole.state.k = 1; pole.draw(); }
-    return;
   }
+  gsap.ticker.add(render);
 
-  /* ================= motion ================= */
-  var gsap = window.gsap, ST = window.ScrollTrigger;
-  gsap.registerPlugin(ST);
-  var EASE = 'cubic-bezier(.2,.7,.2,1)';
-  gsap.config({ nullTargetWarn: false });
-  var easeIn = function (t) { var u = 1 - t; return 1 - u * u * u; }; // close to cubic-bezier(.2,.7,.2,1)
+  var rT;
+  window.addEventListener('resize', function () { clearTimeout(rT); rT = setTimeout(function () { measure(); wipeNow(); }, 120); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); ScrollTrigger.refresh(); });
 
-  // spin ticker (only open hours, only on screen, only while the tab is visible)
-  var lastT = 0;
-  gsap.ticker.add(function (time) {
-    var dt = lastT ? time - lastT : 0; lastT = time;
-    if (!pole || !poleVisible || document.hidden) return;
-    if (open && pole.spinning) pole.state.rot -= dt * (Math.PI * 2 / 9);
-    if (pole.spinning || pole.twisting) pole.draw();
-  });
-  if ('IntersectionObserver' in window && pole) {
-    new IntersectionObserver(function (es) { poleVisible = es[0].isIntersecting; }, { rootMargin: '80px' }).observe(poleCanvas);
+  /* ---------------- док запису ---------------- */
+  var dock = $('.dock');
+  ScrollTrigger.create({ trigger: '#services', start: 'top 82%', onEnter: function () { dock.classList.add('on'); }, onLeaveBack: function () { dock.classList.remove('on'); } });
+
+  /* ---------------- проява рядків і рамок ---------------- */
+  var items = $$('.rows li, .frames li');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (en) {
+      en.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -20% 0px' });
+    items.forEach(function (el) { io.observe(el); });
+  } else items.forEach(function (el) { el.classList.add('in'); });
+
+  /* ---------------- відблиск скла → срібло ---------------- */
+  var silver = $('.silver'), bar = $('.glint-bar');
+  var wipeT = 0;
+  function wipe(t) {
+    wipeT = t;
+    if (t >= 0.999) { silver.style.clipPath = 'none'; silver.style.webkitClipPath = 'none'; bar.style.opacity = 0; return; }
+    /* діагональ проходить видиму частину розділу: від верху розділу до низу екрана */
+    var w = silver.clientWidth, vh = window.innerHeight, top = silver.getBoundingClientRect().top;
+    var vis = Math.max(60, vh - top), D = Math.min(0.42 * w, 0.8 * vis);
+    var X = t * (w + D);
+    var poly = 'polygon(0px 0px, ' + X.toFixed(1) + 'px 0px, ' + (X - D).toFixed(1) + 'px ' + vis.toFixed(1) + 'px, ' + (X - D).toFixed(1) + 'px 100%, 0px 100%)';
+    silver.style.clipPath = poly; silver.style.webkitClipPath = poly;
+    var ang = Math.atan2(D, vis) * 180 / Math.PI, bw = bar.offsetWidth;
+    bar.style.transform = 'translate3d(' + (X - bw / 2).toFixed(1) + 'px,0,0) skewX(' + (-ang).toFixed(2) + 'deg) scaleY(' + (vis / 100).toFixed(3) + ')';
+    bar.style.opacity = (Math.sin(Math.PI * t) * 0.9).toFixed(3);
   }
+  function wipeNow() { wipe(wipeT); }
+  /* поза діапазоном переходу (розділ ще нижче екрана) кліп знято: повна сторінка й «без прокрутки» бачать срібло цілим */
+  function wipeSt(s) { if (s.progress <= 0 && !s.isActive) { wipeT = 1; silver.style.clipPath = 'none'; silver.style.webkitClipPath = 'none'; bar.style.opacity = 0; } else wipe(s.progress); }
+  ScrollTrigger.create({ trigger: silver, start: 'top bottom', end: 'top 30%', onUpdate: wipeSt, onRefresh: wipeSt, onToggle: wipeSt });
 
-  // 1. signature: strands twist into the pole (lead), glass appears with it
-  if (pole) {
-    pole.twisting = true;
-    gsap.fromTo(poleCanvas, { opacity: 0.8 }, { opacity: 1, duration: 0.6, delay: 0.12, ease: easeIn });
-    // straight strands hang for a beat, wind on (power2.inOut), overshoot a little and settle back like a spring
-    gsap.timeline({ delay: 0.12, onComplete: function () { pole.twisting = false; pole.spinning = true; pole.draw(); } })
-      .to(pole.state, { k: 1.07, duration: 1.25, delay: 0.2, ease: 'power2.inOut' })
-      .to(pole.state, { k: 1, duration: 0.4, ease: 'back.out(2.2)' });
+  /* ---------------- дзеркало «Біозавивки» відкривається ---------------- */
+  var ovalIn = $('.oval-in'), ovalImg = $('.oval-in img');
+  var ovalTl = gsap.timeline({ paused: true })
+    .fromTo(ovalIn, { clipPath: 'ellipse(14% 9% at 50% 50%)' }, { clipPath: 'ellipse(50% 50% at 50% 50%)', ease: 'none' }, 0)
+    .fromTo(ovalImg, { scale: 1.12 }, { scale: 1, ease: 'none' }, 0);
+  var ovalP = { v: 0 };
+  /* вікно закрите лише в діапазоні прокрутки; нижче екрана (і на повній сторінці) — відкрите */
+  function ovalSt(s) {
+    if (!s.isActive && s.progress <= 0) { ovalTl.progress(1); return; }
+    gsap.to(ovalP, { v: s.progress, duration: 0.5, ease: 'power3.out', overwrite: true, onUpdate: function () { ovalTl.progress(ovalP.v); } });
   }
-
-  // 2. T02: the pole flies into the booking dock
-  var stage = $('.pole__stage'), dockPole = $('.dock__stripes'), dockSlot = $('.dock__pole'), hero = $('#top');
-  if (stage && dockPole && hero) {
-    var geo = {};
-    var measure = function () {
-      var hr = hero.getBoundingClientRect(), sy = window.scrollY || window.pageYOffset;
-      var fig = $('#pole');
-      var stTop = hr.top + sy + fig.offsetTop + stage.offsetTop, stLeft = hr.left + fig.offsetLeft + stage.offsetLeft;
-      var sw = stage.offsetWidth, sh = stage.offsetHeight;
-      var d = dockSlot.getBoundingClientRect();
-      var end = Math.max(240, hr.bottom + sy - window.innerHeight * 0.12);
-      geo = { end: end, x: (d.left + d.width / 2) - (stLeft + sw / 2), y: (d.top + d.height / 2) - (stTop + sh / 2 - end), s: Math.max(0.04, d.height / (sh * 0.94)) };
-    };
-    measure();
-    gsap.set(dockPole, { opacity: (window.scrollY || 0) > geo.end ? 1 : 0 });
-    gsap.fromTo(stage, { x: 0, y: 0, scale: 1 }, {
-      x: function () { return geo.x; }, y: function () { return geo.y; }, scale: function () { return geo.s; },
-      ease: 'power1.inOut', transformOrigin: '50% 50%', immediateRender: false,
-      scrollTrigger: { start: 0, end: function () { return geo.end; }, scrub: 0.35, invalidateOnRefresh: true,
-        onRefreshInit: measure,
-        onUpdate: function (self) {
-          var p = self.progress, f = Math.min(1, Math.max(0, (p - 0.86) / 0.14));
-          stage.style.opacity = String(1 - f); dockPole.style.opacity = String(f);
-        } }
-    });
-    gsap.to('.pole__cap', { opacity: 0, ease: 'none', scrollTrigger: { start: 0, end: 160, scrub: true } });
-  }
-
-  // 3. services: names drift along the strand (scrubbed, always visible), the strand draws through them
-  $$('.svc__name').forEach(function (el, i) {
-    // drift in from the right by a different distance per row, never past the column edge (no clipping on 320 px)
-    var off = function () { var room = el.parentNode.clientWidth - el.offsetWidth - parseFloat(getComputedStyle(el).paddingLeft || 0) - 2;
-      return Math.max(0, Math.min([64, 36, 52, 28][i] || 24, room)); };
-    gsap.fromTo(el, { x: off }, { x: 0, ease: 'none', immediateRender: true,
-      scrollTrigger: { trigger: el, start: 'top 98%', end: 'top 55%', scrub: 0.4, invalidateOnRefresh: true } });
-  });
-  gsap.fromTo('.spiral__line path', { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: 'none',
-    scrollTrigger: { trigger: '.spiral', start: 'top 85%', end: 'bottom 55%', scrub: 0.4 } });
-
-  // 4. T06: the white field grows from the rod's cross-section
-  var gutPx = function () { var w = window.innerWidth; return w >= 1520 ? 64 : Math.max(16, w * 0.042); };
-  var zin = function () { return Math.max(6, Math.min(gutPx() - 8, window.innerWidth * 0.045)); };
-  gsap.fromTo('.zav', { clipPath: function () { return 'inset(0px ' + zin() + 'px 0px ' + zin() + 'px round 56px)'; } }, { clipPath: 'inset(0px 0px 0px 0px round 0px)', ease: 'none',
-    scrollTrigger: { trigger: '.zav', start: 'top 98%', end: 'top 25%', scrub: 0.4 } });
-
-  // 5. echo: the rod is pulled out, the strand springs into a ringlet
-  if (curl) {
-    ST.create({ trigger: '#curl', start: 'top 72%', end: 'bottom 45%', scrub: 0.3,
-      onUpdate: function (self) { curl.state.p = self.progress; curl.draw(); } });
-  }
-
-  // 6. the cape: the neckline straightens as the price list comes up
-  gsap.fromTo('.cape', { scaleY: 1 }, { scaleY: 0, ease: 'none', scrollTrigger: { trigger: '.price', start: 'top 92%', end: 'top 38%', scrub: 0.4 } });
-
-  // 7. stripes inside «Як нас знайти!?» twist from straight to the pole's helix
-  gsap.fromTo('.word__stripes', { skewX: 0, x: 0 }, { skewX: -32, x: -136, svgOrigin: '500 190', ease: 'none',
-    scrollTrigger: { trigger: '.find', start: 'top 85%', end: 'top 10%', scrub: 0.4 } });
-
-  window.addEventListener('load', function () { buildSpiral(); ST.refresh(); });
+  ScrollTrigger.create({ trigger: '.oval', start: 'top bottom', end: 'top 30%', onUpdate: ovalSt, onRefresh: ovalSt,
+    onToggle: function (s) { if (s.isActive) { ovalP.v = s.progress; ovalTl.progress(s.progress); } ovalSt(s); } });
 })();

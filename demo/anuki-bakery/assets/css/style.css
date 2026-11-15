@@ -166,25 +166,38 @@ h1 .ln>span{display:inline-block}
   .lead-beads{display:block;height:8px;background:radial-gradient(circle,#E58FAE 2.6px,transparent 3.2px) 0 50%/14px 8px repeat-x;opacity:.9}
 }
 
-/* начинки */
-.split{display:grid;gap:var(--s4)}
-.slices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.slice{display:grid;gap:10px}
-.cut{display:block;height:180px;border-radius:26px 26px 18px 18px;box-shadow:inset 0 -10px 0 rgba(0,0,0,.06),0 18px 30px -24px rgba(61,8,21,.6)}
-.s1 .cut{background:linear-gradient(#FFF6EE 0 12%,#F3D27A 12% 30%,#FFF4E8 30% 38%,#F0C865 38% 58%,#FFF4E8 58% 66%,#EFC35E 66% 88%,#E5B04A 88%)}
-.s2 .cut{background:linear-gradient(#FFF6F2 0 12%,#B5122F 12% 30%,#FFF3EE 30% 38%,#A80F2A 38% 58%,#FFF3EE 58% 66%,#B01430 66% 88%,#8E0C23 88%)}
-.s3 .cut{background:linear-gradient(#FFF7F1 0 12%,#7FA24A 12% 30%,#FFF4EC 30% 38%,#6E9640 38% 58%,#E2264B 58% 63%,#FFF4EC 63% 68%,#78A045 68% 88%,#5E8236 88%)}
-.s4 .cut{background:linear-gradient(#FFF4F0 0 12%,#3B1A12 12% 30%,#9C1530 30% 37%,#F5E3DA 37% 42%,#3B1A12 42% 62%,#9C1530 62% 68%,#F5E3DA 68% 72%,#3B1A12 72% 90%,#2A110B 90%)}
-.sl-t{font:650 16px/1.25 var(--text)}
-.sl-t small{display:block;font-weight:400;font-size:14px;color:var(--ink-2)}
-.slice .slot{justify-self:start}
+/* начинки: великі кадри смаків; телефон — рейка вбік зі «snap», ПК — чотири кадри сходинкою */
+.fill-head{display:grid;gap:0}
+.tastes{margin-top:var(--s4);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:20px;
+  overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tastes::-webkit-scrollbar{display:none}
+.slices{display:flex;gap:14px;width:max-content;padding:0 20px 6px}
+.slice{flex:none;width:min(78vw,340px);min-width:0;scroll-snap-align:start;scroll-snap-stop:always}
+.taste{display:grid;gap:0}
+.taste-ph{position:relative;aspect-ratio:4/5;border-radius:30px;overflow:hidden;background:var(--card);
+  box-shadow:0 34px 48px -38px rgba(61,8,21,.7),0 2px 6px -2px rgba(61,8,21,.12);transform:translateZ(0)}
+.taste-ph::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(61,8,21,.07);pointer-events:none}
+.taste-ph img{width:100%;height:100%;object-fit:cover;transform-origin:50% 70%}
+.motion-ok .taste-ph:not(.is-cut) img{clip-path:inset(6% 5% 6% 5% round 22px)}
+.taste figcaption{display:grid;justify-items:start;gap:8px;padding:16px 4px 0}
+.taste-n{font:700 22px/1.1 var(--display);letter-spacing:-.02em;color:var(--ink)}
+.taste-d{font-size:15px;line-height:1.4;color:var(--ink-2)}
+.taste-gen{display:inline-flex;align-items:flex-start;gap:7px;font-size:13px;line-height:1.35;color:var(--ink-2)}
+.taste-gen::before{content:"";flex:0 0 auto;margin-top:.5em;width:7px;height:7px;border-radius:50%;background:#E58FAE;box-shadow:0 0 0 2px rgba(229,143,174,.3)}
+.taste-dots{display:flex;gap:2px;margin-top:10px;margin-left:-10px}
+.tdot{display:grid;place-items:center;width:40px;height:40px;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tdot i{display:block;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 38% 34%,#fff,#FCE6EC 60%,#EDB0C3);
+  box-shadow:0 1px 0 rgba(61,8,21,.18);transition:transform .25s var(--ease),background-color .25s var(--ease)}
+.tdot[aria-current="true"] i{transform:scale(1.5);background:radial-gradient(circle at 38% 34%,#8a2a45,var(--ink) 70%)}
+@media (prefers-reduced-motion:reduce){.tdot i{transition:none}}
 @media (min-width:960px){
-  .split{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:end}
-  .slices{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
-  .cut{height:280px}
-  .slices{align-items:end}
-  .slice:nth-child(2){margin-bottom:28px}
-  .slice:nth-child(4){margin-bottom:14px}
+  .fill-head{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);column-gap:40px;align-items:end}
+  .fill-head .lead{margin-top:0;justify-self:end}
+  .tastes{overflow:visible;scroll-snap-type:none;margin-top:var(--s5)}
+  .slices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;width:auto;max-width:1180px;margin:0 auto;padding:0 40px;align-items:start}
+  .slice{width:auto}
+  .slice:nth-child(2n){margin-top:56px}
+  .taste-dots{display:none}
 }
 
 /* ламбет: помаранчеве поле з відсадженим швом */

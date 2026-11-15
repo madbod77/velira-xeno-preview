@@ -17,7 +17,7 @@
   --display:"Montserrat","Montserrat Fallback",system-ui,sans-serif; --text:"Onest",system-ui,sans-serif;
   --ease-in:cubic-bezier(.16,1,.3,1); --ease-move:cubic-bezier(.65,0,.35,1); --ease-state:cubic-bezier(.4,0,.2,1);
   --r-sheet:40px; --r-panel:28px;
-  --mw:236px; --mh:262px; --rim:22px;
+  --mw:236px; --mh:262px; --rim:22px; --band:22px;
   --gut:16px;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -53,7 +53,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 .bar{position:fixed;inset:0 0 auto;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:10px var(--gut);padding-top:max(10px, env(safe-area-inset-top));color:#fff;
   transition:background-color .3s var(--ease-state),color .3s var(--ease-state)}
-.bar.solid{background:rgba(29,59,208,.72);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
+.bar.solid{background:#1a36c8;-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
 .bar.light{background:rgba(255,255,255,.78);color:var(--ink);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4)}
 .mark{display:inline-flex;align-items:center;gap:9px;text-decoration:none;font:500 17px/1 var(--display);letter-spacing:-.01em;min-height:44px}
 .mark b{font-weight:600}
@@ -63,7 +63,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 
 /* --- перший екран --- */
 .hero{position:relative;color:#fff;background:var(--cobalt);
-  background-image:radial-gradient(120% 70% at 50% 42%, #2a4be6 0%, var(--cobalt) 46%, var(--cobalt-deep) 100%);
+  background-image:linear-gradient(180deg, rgba(13,29,120,0) 72%, var(--cobalt-deep) 100%),radial-gradient(120% 70% at 50% 42%, #2a4be6 0%, var(--cobalt) 46%, var(--cobalt-deep) 100%);
   padding:calc(64px + env(safe-area-inset-top)) var(--gut) 28px;min-height:100svh;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden}
 .concept{display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px 8px;max-width:100%;
   padding:7px 14px;border-radius:18px;background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
@@ -78,6 +78,8 @@ ul,ol{list-style:none;margin:0;padding:0}
 .hero-left .actions{order:-1;margin:0 0 14px}
 .lead{font:300 21px/1.3 var(--display);letter-spacing:-.02em;text-wrap:balance;max-width:30ch}
 .src{margin-top:4px;font-size:13px;color:#c9d4ff}
+/* рядки цитати й підпису лампи — цілими сегментами: перенос не залежить від того, чи вже приїхав шрифт (без перескоку 3→2 рядки) */
+.seg{display:inline-block}
 .src.dark{color:var(--ink-2)}
 .actions{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .addr{display:inline-flex;gap:10px;align-items:flex-start;text-align:left;font:500 15px/1.35 var(--text)}
@@ -91,7 +93,12 @@ ul,ol{list-style:none;margin:0;padding:0}
   box-shadow:0 40px 60px -30px rgba(3,8,50,.75), inset 0 -10px 18px rgba(29,59,208,.16), inset 0 2px 0 #fff}
 .lamp-mouth{grid-area:1/1;align-self:end;position:relative;width:var(--mw);height:var(--mh);border-radius:999px 999px 0 0;overflow:hidden;
   background:#0d1d78;box-shadow:inset 0 6px 14px rgba(5,12,60,.45);isolation:isolate}
-.lamp-mouth picture,.lamp-photo{position:absolute;inset:0;width:100%;height:100%}
+/* фото лежить під лампою; світлодіоди — на темній стелі лампи (смуга --band), не поверх руки.
+   clip-path дублює overflow: iOS Safari не завжди обрізає радіусом композитні шари (blur/scale інтро) */
+.lamp-mouth{clip-path:inset(0 round 999px 999px 0 0)}
+.lamp-mouth picture{position:absolute;inset:var(--band) var(--band) 0;border-radius:999px 999px 0 0;overflow:hidden;clip-path:inset(0 round 999px 999px 0 0);
+  box-shadow:inset 0 0 0 1px rgba(157,184,255,.22)}
+.lamp-photo{position:absolute;inset:0;width:100%;height:100%}
 .lamp-photo{object-fit:cover;object-position:50% 74%}
 .cone{position:absolute;inset:0;background:radial-gradient(70% 55% at 50% 4%, rgba(214,226,255,.55), rgba(214,226,255,0) 70%);mix-blend-mode:screen;pointer-events:none}
 .gloss{position:absolute;inset:-10% -40%;background:linear-gradient(104deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%);
@@ -99,7 +106,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 .leds{position:absolute;left:50%;top:calc(var(--mw) / 2);width:0;height:0}
 .leds li{--a:calc(180deg - var(--i) * 16.3636deg);position:absolute;left:0;top:0;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;
   background:var(--led);box-shadow:0 0 6px 2px rgba(157,184,255,.9),0 0 16px 4px rgba(157,184,255,.45);
-  transform:rotate(calc(var(--a) * -1)) translateX(calc(var(--mw) / 2 - 13px));
+  transform:rotate(calc(var(--a) * -1)) translateX(calc(var(--mw) / 2 - var(--band) / 2));
   transition:opacity .4s var(--ease-state)}
 .leds li::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid #fff;opacity:0;transform:scale(.6);
   transition:opacity .35s var(--ease-state),transform .35s var(--ease-in)}
@@ -117,6 +124,11 @@ ul,ol{list-style:none;margin:0;padding:0}
 .lamp-base span{position:absolute;top:20px;font:600 12px/1 var(--text);color:#dbe3ff;font-variant-numeric:tabular-nums}
 .lamp-base span:first-child{left:6px}.lamp-base span:last-child{right:6px}
 .lamp figcaption{margin-top:28px;font-size:12.5px;line-height:1.35;color:#e6ebff;max-width:40ch}
+/* два речення — два рядки; висота зарезервована, тож пізній шрифт не зсуває кнопки (було 3→2 рядки й «студії ·» окремим рядком) */
+.lamp figcaption .cl{display:block;text-wrap:balance}
+.lamp{grid-template-columns:minmax(0,1fr)}
+.lamp figcaption{--capw:min(calc(100vw - 2 * var(--gut)), 340px);min-height:calc(2 * 1.35em);width:var(--capw);max-width:none;
+  justify-self:start;margin-left:calc((var(--mw) + 2 * var(--rim) - var(--capw)) / 2)}
 
 .portal{position:absolute;inset:0;background:var(--sheet);pointer-events:none;opacity:0;z-index:5;overflow:hidden}
 .portal-img{position:absolute;max-width:none;object-fit:cover;object-position:50% 74%;border-radius:999px 999px 0 0;transform-origin:50% 50%;will-change:transform,opacity}
@@ -253,11 +265,11 @@ ul,ol{list-style:none;margin:0;padding:0}
 .mx .nail{z-index:2;border-radius:var(--r-sheet) var(--r-sheet) 0 0}
 
 /* фірмовий момент: лампа запікає покриття */
-@keyframes led{from{opacity:.22;transform:rotate(calc(var(--a) * -1)) translateX(calc(var(--mw) / 2 - 13px)) scale(.55)}to{opacity:1;transform:rotate(calc(var(--a) * -1)) translateX(calc(var(--mw) / 2 - 13px)) scale(1)}}
+@keyframes led{from{opacity:.22;transform:rotate(calc(var(--a) * -1)) translateX(calc(var(--mw) / 2 - var(--band) / 2)) scale(.55)}to{opacity:1;transform:rotate(calc(var(--a) * -1)) translateX(calc(var(--mw) / 2 - var(--band) / 2)) scale(1)}}
 @keyframes cone{from{opacity:0}to{opacity:1}}
 @keyframes cure{from{filter:blur(7px) brightness(.55) saturate(.65);transform:scale(1.04)}to{filter:blur(0) brightness(1) saturate(1);transform:scale(1)}}
 @keyframes gloss{0%{opacity:1;transform:translateX(-130%)}85%{opacity:1}100%{opacity:0;transform:translateX(130%)}}
-.mx .leds li{animation:led .38s var(--ease-in) both;animation-delay:calc(120ms + var(--d, 0ms))}
+.mx .leds li{animation:led .38s var(--ease-in) backwards;animation-delay:calc(120ms + var(--d, 0ms))}
 .mx .cone{animation:cone .7s var(--ease-state) .56s both}
 .mx .lamp-photo{animation:cure .9s var(--ease-in) .6s both}
 .mx .gloss{animation:gloss .65s var(--ease-move) 1.35s both}
@@ -267,6 +279,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 
 /* сцена прольоту крізь лампу */
 /* висоту сцени й точку прилипання задає JS (hero може бути вищим за екран — тоді спершу дочитується) */
+.mx .scene{background:var(--cobalt-deep)}
 .mx .scene .hero{position:sticky;top:var(--stick, 0px)}
 
 /* ширше */
@@ -278,7 +291,7 @@ ul,ol{list-style:none;margin:0;padding:0}
   .contacts{grid-column:1 / -1;grid-template-columns:repeat(4,minmax(0,1fr))}
 }
 @media (min-width: 900px){
-  :root{--mw:396px;--mh:420px;--rim:28px}
+  :root{--mw:396px;--mh:420px;--rim:28px;--band:30px}
   .bar{padding-inline:32px}
   .hero{padding-top:84px}
   .hero h1{max-width:none;font-size:clamp(52px, 5.2vw, 76px)}
@@ -297,6 +310,10 @@ ul,ol{list-style:none;margin:0;padding:0}
   .rows{max-width:760px}
   .dock{bottom:20px}
 }
+/* 360–389 px (iPhone SE/mini): обидві кнопки першого екрана в один ряд — hero нижчий, адреса видна до прольоту */
+@media (min-width: 360px) and (max-width: 389px){ .hero .actions .cap{padding:0 15px} .hero .actions{gap:8px} .concept{font-size:12px;padding-inline:12px} }
+/* позначка концепту: перше речення одним рядком (≥ 360 px), щоб пізній шрифт не робив з 2 рядків 3 і не зсував перший екран */
+@media (min-width: 360px){ .concept > span:first-child{white-space:nowrap} }
 @media (max-width: 359px){
   .dock a{width:52px}
   .rows .svc{font-size:19px}
@@ -312,7 +329,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 .hero .hrs{display:none}
 @media (min-width: 900px){ .hero .hrs{display:inline-flex} }
 
-@media (max-width: 430px) and (max-height: 780px){ :root{--mw:206px;--mh:222px;--rim:20px} .hero h1{font-size:31px} }
+@media (max-width: 430px) and (max-height: 780px){ :root{--mw:214px;--mh:232px;--rim:18px;--band:20px} .hero h1{font-size:31px} }
 @media (min-width: 900px){
   .hero-left{display:block}
   .hero-left .actions{margin:14px 0 0}
@@ -335,4 +352,22 @@ ul,ol{list-style:none;margin:0;padding:0}
   .plates{justify-content:flex-end;gap:48px;padding:0}
   .plates .nailp{width:clamp(120px, 11vw, 170px)}
   .plates-note{text-align:right}
+}
+
+/* ПК: кнопка запису — одразу під смугою заголовка, цитата нижче (CTA — другий фокус після H1, а не четвертий) */
+@media (min-width: 1024px){
+  .hero-left{display:flex;flex-direction:column;align-items:flex-start;align-self:start;padding:84px 0 0}
+  .hero-left .actions{order:-1;margin:0 0 30px;justify-content:flex-start}
+  .hero-left .lead{font-size:26px}
+}
+/* ПК «Студія»: заголовок і порожнє місце для фото ліворуч на 7/12, підзаголовок і зручності праворуч — без порожньої правої половини */
+@media (min-width: 900px){ .studio-side{grid-column:1 / -1} }
+@media (min-width: 1024px){
+  .studio .wrap{grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-rows:auto auto 1fr;column-gap:64px;align-items:start}
+  .studio .kick{grid-column:1;grid-row:1}
+  .studio h2{grid-column:1;grid-row:2;max-width:none;font-size:54px;margin-bottom:0}
+  .studio-side{grid-column:2;grid-row:1 / span 3;padding-top:44px}
+  .studio .amen{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:22px}
+  .studio .amen li:last-child{grid-column:1 / -1}
+  .studio .photo-slot{grid-column:1;grid-row:3;margin-top:40px;max-width:560px}
 }

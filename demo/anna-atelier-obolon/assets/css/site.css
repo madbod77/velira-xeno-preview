@@ -45,14 +45,16 @@ p{margin:0}
 .hero{position:relative;min-height:100svh;min-height:max(100svh,640px);overflow:hidden;isolation:isolate;display:flex;align-items:flex-end;padding:130px 0 222px}
 .hero-cloth{position:absolute;inset:0;z-index:-2}
 .hero-cloth img{width:100%;height:100%;object-fit:cover;object-position:30% 50%}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(100deg,rgba(27,18,13,.55) 0%,rgba(27,18,13,.12) 55%,rgba(27,18,13,0) 80%),linear-gradient(0deg,rgba(27,18,13,.55),rgba(27,18,13,0) 40%)}
-.lapel{position:absolute;right:4%;bottom:12%;height:calc(88% - 140px);width:auto;aspect-ratio:520/900;z-index:0;overflow:visible}
-.lapel .chalk{opacity:.55}
-.lapel .lbl-b{opacity:0}
-.lapel .fly .fl{opacity:0}
-.motion .hero-stage{height:calc(max(100svh,640px) + 70svh)}
-.motion .hero{position:sticky;top:0}
-.motion .lapel .lbl{opacity:0}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(100deg,rgba(22,13,9,.62) 0%,rgba(22,13,9,.3) 50%,rgba(22,13,9,.12) 80%),linear-gradient(0deg,rgba(22,13,9,.6),rgba(22,13,9,0) 42%),linear-gradient(180deg,rgba(22,13,9,.5),rgba(22,13,9,0) 22%)}
+.seamwork{position:absolute;right:max(2%,calc(50% - 700px));top:28px;bottom:5%;width:min(44vw,600px);z-index:0;pointer-events:none}
+.seamwork svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+@media (min-width:761px){.seamwork{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 15%);mask-image:linear-gradient(180deg,transparent 0,#000 15%)}} /* нитка приходить з-за краю тканини, не впирається в навігацію */
+.sw-chalk .ck{opacity:.5}
+.sw-live .lbl-b{opacity:0}
+.js .sw-static{display:none}
+.motion .hero-stage::after{content:"";display:block;height:85svh} /* хвіст прокрутки під закріпленим першим екраном (padding не підходить: sticky обмежений вмістом батька) */
+.motion .hero{position:sticky;top:var(--hero-top,0px)} /* перший екран вищий за вікно (малі телефони) — закріплюється низом, щоб підпис і шов не ховались */
+.motion .sw-live{visibility:hidden}
 .hero-in{position:relative;z-index:1;width:100%;max-width:1280px;margin:0 auto;padding:0 var(--gut)}
 .kicker{font-size:15px;font-weight:600;letter-spacing:.02em;color:var(--on-dark-2);margin-bottom:var(--s2)}
 h1{font-size:clamp(60px,10.6vw,168px);line-height:.92;font-weight:500;max-width:11ch}
@@ -61,7 +63,8 @@ h1 .ln>span{display:inline-block}
 h1 .ln2{font-size:.5em;line-height:1.05;margin-top:.12em;font-weight:500}
 .hero-lede{max-width:34ch;margin-top:var(--s3);font-size:clamp(17px,1.35vw,20px);line-height:1.55;color:var(--on-dark)}
 .hero-act{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2);margin-top:var(--s4)}
-.status{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 4px;color:var(--on-dark);text-decoration:none;font-size:15px;font-weight:500}
+.status{display:inline-flex;align-items:center;gap:11px;min-height:56px;padding:0 6px;color:var(--on-dark);text-decoration:none;font-size:16.5px;font-weight:500}
+.status .dot{width:10px;height:10px}
 .status:hover .status-t{text-decoration:underline;text-underline-offset:4px}
 .dot{width:9px;height:9px;border-radius:50%;background:var(--seam);flex:none;box-shadow:0 0 0 4px rgba(199,147,97,.18)}
 [data-open="1"] .dot,.dot[data-open="1"]{background:#9fc28b;box-shadow:0 0 0 4px rgba(159,194,139,.2)}
@@ -184,8 +187,7 @@ blockquote{margin:0}
 
 /* рух: початкові стани лише з JS і без reduced motion */
 .motion .hero h1 .ln>span{transform:translateY(105%)}
-.motion .hero .chalk{opacity:0}
-.motion .hero .needle,.motion .hero .thread{visibility:hidden}
+.motion .sw-chalk{opacity:0}
 .motion .hero-lede,.motion .hero-act,.motion .kicker{opacity:0}
 
 @media (max-width:1100px){
@@ -209,10 +211,12 @@ blockquote{margin:0}
   .top{top:54px;padding:10px var(--gut)}
   .top-ig span{display:none}
   .top-ig{width:44px;justify-content:center;padding:0}
-  .hero{align-items:flex-start;padding:86px 0 calc(112px + env(safe-area-inset-bottom));min-height:max(calc(100svh - 56px),600px)}
-  .motion .hero-stage{height:calc(max(calc(100svh - 56px),600px) + 70svh)}
-  .hero::after{background:linear-gradient(180deg,rgba(27,18,13,.35) 0%,rgba(27,18,13,.05) 45%,rgba(27,18,13,.6) 100%)}
-  .lapel{right:6px;bottom:calc(112px + env(safe-area-inset-bottom));height:min(330px,40svh);width:auto}
+  .hero{align-items:stretch;padding:80px 0 calc(96px + env(safe-area-inset-bottom));min-height:max(calc(100svh - 56px),540px)}
+  .motion .hero-stage::after{height:80svh}
+  .hero::after{background:linear-gradient(180deg,rgba(22,13,9,.55) 0%,rgba(22,13,9,.28) 45%,rgba(22,13,9,.62) 100%)}
+  /* телефон: шов — у потоці між абзацом і підписом, займає весь вільний простір; не заходить на текст на жодній висоті екрана */
+  .seamwork{position:relative;order:1;left:auto;right:auto;top:auto;bottom:auto;width:100%;flex:1 1 0;min-height:128px;max-height:300px;margin:10px 0 6px}
+  .seamwork svg{overflow:hidden}
   h1{font-size:clamp(56px,22vw,92px)}
   h1 .ln2{font-size:.56em}
   .hero-lede{max-width:26ch;font-size:16.5px}
@@ -249,6 +253,14 @@ blockquote{margin:0}
   .dock-btn{min-height:48px;padding:0 20px;border-radius:15px;flex:none}
   .motion .dock{opacity:0}
 }
+@media (max-width:760px) and (max-height:760px){
+  /* низькі телефони (Safari з панелями ≈ 390×664): щільніший перший екран, щоб шов і підпис вмістились над панеллю запису */
+  .hero{padding-top:70px}
+  .kicker{margin-bottom:10px;font-size:14px}
+  h1{font-size:clamp(50px,17vw,66px)}
+  .hero-lede{margin-top:14px;font-size:15.5px;line-height:1.5}
+  .seamwork{min-height:104px;margin:6px 0 4px}
+}
 @media (max-width:360px){
   h1{font-size:50px}
   .ds-2{font-size:12px}
@@ -263,14 +275,12 @@ blockquote{margin:0}
 }
 @media (min-width:1024px){
   .hero-note{max-width:none;white-space:nowrap;bottom:72px}
-  .motion .hero-stage{height:calc(max(100svh,640px) + 90svh)} /* висмикування наметки триває ≈ пів екрана прокрутки */
+  .motion .hero-stage::after{height:110svh} /* наметку знімають довше за екран прокрутки — політ стібків видно й на швидкому колесі */
 }
 @media (max-width:600px){
   /* підпис про згенероване — тихо внизу, над панеллю запису, нижче за малюнок лацкана */
-  .hero-note{position:absolute;left:20px;right:20px;bottom:calc(84px + env(safe-area-inset-bottom) + var(--hero-below));max-width:none;margin:0;font-size:11px;line-height:1.35;opacity:.85} /* .85, не .7: при .7 контраст 3,9:1 на світлішій тканині — нижче AA для 11 px; при .85 ≥ 4,9:1 */
-  .lapel{bottom:calc(126px + env(safe-area-inset-bottom) + var(--hero-below));height:calc(min(330px,40svh) - var(--hero-below) - 14px)} /* верх лацкана лишається там, де був; низ звільняє місце підпису */
+  .hero-note{position:relative;order:2;left:auto;right:auto;bottom:auto;max-width:none;margin:0 var(--gut);font-size:11px;line-height:1.35;opacity:.85} /* .85, не .7: при .7 контраст 3,9:1 на світлішій тканині — нижче AA для 11 px; при .85 ≥ 4,9:1 */
   /* на низьких екранах перший екран (мін. 600 px) довший за вікно — піднімаємо підпис і лацкан на цю різницю, щоб не ховались за панеллю */
-  .hero{--hero-below:max(0px, calc(656px - 100svh))}
 }
 @media (prefers-reduced-motion:reduce){
   *{scroll-behavior:auto!important}

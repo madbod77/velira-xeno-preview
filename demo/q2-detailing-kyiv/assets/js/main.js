@@ -47,10 +47,13 @@
     var req = H ? H.request : function () {};
 
     // 1. Фірмовий момент: прохід полірувального круга, потім відблиск уздовж рівних ліній
-    var pass = gsap.timeline({ delay: .2 });
-    pass.to(S, { u: 1, duration: 2.2, ease: 'power2.inOut', onUpdate: req })
-        .to(S, { g: 1, duration: .95, ease: 'none', onUpdate: req }, '>-0.05')
+    // цикл 2: повільніший, «дорожчий» жест — 3,2 с з м'яким розгоном і довгим доведенням; старт — коли фото лаку готове
+    var pass = gsap.timeline({ paused: true });
+    pass.to(S, { u: 1, duration: 3.2, ease: 'power3.inOut', onUpdate: req })
+        .to(S, { g: 1, duration: 1.5, ease: 'power1.inOut', onUpdate: req }, '>-0.15')
         .add(function () { S.polished = true; req(); });
+    if (H && H.onReady) H.onReady(function () { gsap.delayedCall(.45, function () { if (pass.progress() === 0) pass.play(); }); });
+    else pass.play();
 
     // 2. Передача «лінії лягають у шари»: сцена закріплена CSS sticky, scrub прогресом секції
     var hero = document.querySelector('.hero'), concept = document.querySelector('.concept'),
@@ -69,11 +72,11 @@
         if (concept) concept.style.opacity = 1 - out;
         if (cap) cap.style.opacity = 1 - out;
         if (scrim) scrim.style.opacity = 1 - clamp(q / .6);
-        if (title) title.style.opacity = clamp((q - .25) / .3);
-        // нерівний стагер: верхній шар першим, затримки зменшуються
-        var d = [0, .07, .12, .16, .19];
+        if (title) title.style.opacity = clamp((q - .3) / .3);
+        // підпис шару з'являється, коли його лінія вже лягла (не перекреслюється прольотом)
+        var d = [0, .03, .06, .08, .1];
         items.forEach(function (el, k) {
-          var o = clamp((q - .32 - d[k]) / .3);
+          var o = clamp((q - .46 - d[k] * .6) / .12);
           el.style.opacity = o;
           el.style.transform = 'translate3d(0,' + ((1 - o) * 14).toFixed(1) + 'px,0)';
         });
@@ -87,16 +90,31 @@
       if (armed) return; armed = true;
       window.removeEventListener('scroll', arm);
       // 3. Проява рядків прайсу: +18 px, 700 мс, тригер 0.8, нерівний стагер
-      var revealSel = '.row, .said--small, .shot, .gap, .note, .group__layer, .h3, .book__phone';
+      var revealSel = '.row, .said--small, .gap, .note, .group__layer, .h3, .shot figcaption';
       var els = gsap.utils.toArray(revealSel).filter(function (el) { return el.getBoundingClientRect().top > innerHeight; });
-      gsap.set(els, { autoAlpha: 0, y: 18 });
+      gsap.set(els, { autoAlpha: 0, y: 26 });
       var steps = [0, .07, .12, .16, .19, .21];
       ScrollTrigger.batch(els, {
         start: 'top 80%', once: true,
         onEnter: function (batch) {
-          gsap.to(batch, { autoAlpha: 1, y: 0, duration: .7, ease: 'power3.out', overwrite: true,
+          gsap.to(batch, { autoAlpha: 1, y: 0, duration: 1.1, ease: 'expo.out', overwrite: true,
             stagger: function (i) { return steps[Math.min(i, steps.length - 1)]; } });
         }
+      });
+
+      // 3b. Кадри відкриваються, як світло з-за краю боксу: маска з округлими кутами розходиться, фото осідає з 1.1 до 1
+      gsap.utils.toArray('.shot__img').filter(function (el) { return el.getBoundingClientRect().top > innerHeight; })
+        .forEach(function (el) {
+          var im = el.querySelector('img');
+          gsap.set(el, { clipPath: 'inset(14% 10% 14% 10% round 32px)' }); gsap.set(im, { scale: 1.12 });
+          ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: function () {
+            gsap.to(el, { clipPath: 'inset(0% 0% 0% 0% round 0px)', duration: 1.8, ease: 'expo.out' });
+            gsap.to(im, { scale: 1, duration: 2.4, ease: 'expo.out' });
+          } });
+        });
+      // 3c. По панелі з чорного лаку один раз проходить відблиск лампи
+      gsap.utils.toArray('.group').forEach(function (g) {
+        ScrollTrigger.create({ trigger: g, start: 'top 72%', once: true, onEnter: function () { g.classList.add('is-lit'); } });
       });
 
       // 4. Передача «край плівки»: салон відкривається діагоналлю, по краю — яскрава лінія
@@ -114,20 +132,21 @@
       }
       lay();
       wipe = gsap.to(film, { p: 1, ease: 'none', onUpdate: lay,
-        scrollTrigger: { trigger: salon, start: 'top 95%', end: 'top 32%', scrub: .5 } });
+        scrollTrigger: { trigger: salon, start: 'top 95%', end: 'top 32%', scrub: .9 } });
 
       // 5. Передача «круг стає полем запису»: помаранчевий диск з першого екрана розростається з-під номера
       // зміст поля проступає лише в останні 40 % — рання фаза читається як чистий диск
-      call = gsap.timeline({ scrollTrigger: { trigger: '#zapys', start: 'top 92%', end: 'top 10%', scrub: .4, invalidateOnRefresh: true } })
+      call = gsap.timeline({ scrollTrigger: { trigger: '#zapys', start: 'top 92%', end: 'top 10%', scrub: .8, invalidateOnRefresh: true } })
         .fromTo('#zapys', { clipPath: 'circle(40px at 50% 200px)' },
           { clipPath: function () { return 'circle(' + Math.round(Math.hypot(innerWidth, innerHeight) * 1.25) + 'px at 50% 200px)'; },
             ease: 'power2.in', duration: 1 }, 0)
-        .fromTo('#zapys .wrap', { autoAlpha: 0 }, { autoAlpha: 1, ease: 'none', duration: .4 }, .6);
+        // зміст поля повністю видно, коли круг ще розростається (≈70 % радіуса) — номер ніколи не напівпрозорий на заповненому полі
+        .fromTo('#zapys .wrap', { autoAlpha: 0 }, { autoAlpha: 1, ease: 'none', duration: .25 }, .45);
 
       // 6. Передача «денне світло»: світла секція адреси стоїть вікном і розкривається на весь екран
       day = gsap.fromTo('#adresa', { clipPath: 'inset(7% 5% 0% 5% round 40px)' },
         { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
-          scrollTrigger: { trigger: '#adresa', start: 'top 100%', end: 'top 40%', scrub: .5 } });
+          scrollTrigger: { trigger: '#adresa', start: 'top 100%', end: 'top 40%', scrub: .9 } });
       ScrollTrigger.refresh();
       if (window.__cutUpdate) window.__cutUpdate();
     }

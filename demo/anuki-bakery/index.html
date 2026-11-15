@@ -181,19 +181,64 @@ setTimeout(function(){if(!window.__anuki){h.classList.remove('motion-ok')}},3000
 
 <section class="sec sec-pink" id="fillings" aria-labelledby="fill-h">
   <div class="wrap">
-    <div class="split">
-      <div class="rise">
-        <h2 id="fill-h" class="h2">Начинки</h2>
-        <p class="lead">У стрічці є ваш допис «Як обрати ідеальну начинку» — чотири зрізи. Назви живуть у хайлайті «НАЧИНКИ»; тут вони стануть підписами.</p>
-      </div>
-      <ul class="slices" role="list">
-        <li class="slice s1 rise"><span class="cut" aria-hidden="true"></span><span class="sl-t">Зріз 1<small>світлий бісквіт</small></span><span class="slot">назва — ?</span></li>
-        <li class="slice s2 rise"><span class="cut" aria-hidden="true"></span><span class="sl-t">Зріз 2<small>червоний оксамит</small></span><span class="slot">назва — ?</span></li>
-        <li class="slice s3 rise"><span class="cut" aria-hidden="true"></span><span class="sl-t">Зріз 3<small>зелений бісквіт</small></span><span class="slot">назва — ?</span></li>
-        <li class="slice s4 rise"><span class="cut" aria-hidden="true"></span><span class="sl-t">Зріз 4<small>темний, з вишнею</small></span><span class="slot">назва — ?</span></li>
-      </ul>
+    <div class="fill-head rise">
+      <h2 id="fill-h" class="h2">Начинки</h2>
+      <p class="lead">У стрічці є ваш допис «Як обрати ідеальну начинку» — чотири зрізи. Тут кожен смак отримає великий кадр, а назву й склад — з хайлайту «НАЧИНКИ».</p>
     </div>
-    <p class="fine">Шари намальовано кодом за кольорами зрізів з допису — це схема, не фото.</p>
+  </div>
+  <div class="tastes" id="tastes">
+    <ul class="slices" role="list" aria-label="Чотири смаки — гортай вбік">
+        <li class="slice s1" id="taste-1">
+          <figure class="taste">
+            <div class="taste-ph"><img src="assets/img/fill1-560.webp" srcset="assets/img/fill1-560.webp 560w, assets/img/fill1-900.webp 900w" sizes="(min-width: 960px) 25vw, min(78vw, 340px)" width="900" height="1125" loading="lazy" decoding="async" alt="Згенероване зображення: шматок торта з золотистим бісквітом, білим кремом і жовтим фруктовим курдом, рожеве тло. Не торт Anuki."></div>
+            <figcaption>
+              <span class="taste-n">Смак 1</span>
+              <span class="slot">назву додасть Anuki</span>
+              <span class="taste-d">світлий бісквіт — як зріз 1 у вашому дописі</span>
+              <span class="taste-gen">Згенероване зображення, не торт Anuki</span>
+            </figcaption>
+          </figure>
+        </li>
+        <li class="slice s2" id="taste-2">
+          <figure class="taste">
+            <div class="taste-ph"><img src="assets/img/fill2-560.webp" srcset="assets/img/fill2-560.webp 560w, assets/img/fill2-900.webp 900w" sizes="(min-width: 960px) 25vw, min(78vw, 340px)" width="900" height="1125" loading="lazy" decoding="async" alt="Згенероване зображення: шматок торта з червоним оксамитовим бісквітом і білим вершковим кремом, рожеве тло. Не торт Anuki."></div>
+            <figcaption>
+              <span class="taste-n">Смак 2</span>
+              <span class="slot">назву додасть Anuki</span>
+              <span class="taste-d">червоний оксамит — як зріз 2 у вашому дописі</span>
+              <span class="taste-gen">Згенероване зображення, не торт Anuki</span>
+            </figcaption>
+          </figure>
+        </li>
+        <li class="slice s3" id="taste-3">
+          <figure class="taste">
+            <div class="taste-ph"><img src="assets/img/fill3-560.webp" srcset="assets/img/fill3-560.webp 560w, assets/img/fill3-900.webp 900w" sizes="(min-width: 960px) 25vw, min(78vw, 340px)" width="900" height="1125" loading="lazy" decoding="async" alt="Згенероване зображення: шматок торта із зеленим бісквітом, білим кремом і шаром малинового джему, рожеве тло. Не торт Anuki."></div>
+            <figcaption>
+              <span class="taste-n">Смак 3</span>
+              <span class="slot">назву додасть Anuki</span>
+              <span class="taste-d">зелений бісквіт — як зріз 3 у вашому дописі</span>
+              <span class="taste-gen">Згенероване зображення, не торт Anuki</span>
+            </figcaption>
+          </figure>
+        </li>
+        <li class="slice s4" id="taste-4">
+          <figure class="taste">
+            <div class="taste-ph"><img src="assets/img/fill4-560.webp" srcset="assets/img/fill4-560.webp 560w, assets/img/fill4-900.webp 900w" sizes="(min-width: 960px) 25vw, min(78vw, 340px)" width="900" height="1125" loading="lazy" decoding="async" alt="Згенероване зображення: шматок торта з темним шоколадним бісквітом і вишневою начинкою, рожеве тло. Не торт Anuki."></div>
+            <figcaption>
+              <span class="taste-n">Смак 4</span>
+              <span class="slot">назву додасть Anuki</span>
+              <span class="taste-d">темний, з вишнею — як зріз 4 у вашому дописі</span>
+              <span class="taste-gen">Згенероване зображення, не торт Anuki</span>
+            </figcaption>
+          </figure>
+        </li>
+    </ul>
+  </div>
+  <div class="wrap">
+    <div class="taste-dots" role="group" aria-label="Перейти до смаку">
+      <button type="button" class="tdot" data-i="1" aria-label="Смак 1" aria-current="true"><i></i></button><button type="button" class="tdot" data-i="2" aria-label="Смак 2"><i></i></button><button type="button" class="tdot" data-i="3" aria-label="Смак 3"><i></i></button><button type="button" class="tdot" data-i="4" aria-label="Смак 4"><i></i></button>
+    </div>
+    <p class="fine">Чотири кадри згенеровано за кольорами зрізів з вашого допису — для настрою сторінки. Це не ваші торти й не ваші начинки; на їхнє місце стануть ваші фото й назви.</p>
   </div>
 </section>
 
@@ -317,7 +362,7 @@ setTimeout(function(){if(!window.__anuki){h.classList.remove('motion-ok')}},3000
   <div class="wrap foot-in">
     <p class="foot-brand">Anuki Bakery</p>
     <p>Концепт Velira для Anuki Bakery. Не офіційний сайт · <a href="https://www.instagram.com/anuki.bakery/" target="_blank" rel="noopener">Instagram @anuki.bakery</a></p>
-    <p class="fine">Два фото позначені як згенеровані. Шрифти Unbounded і Geologica (OFL). Зроблено <a href="https://veliraweb.com.ua/" target="_blank" rel="noopener">Velira</a>.</p>
+    <p class="fine">Шість фото позначені як згенеровані (чотири смаки й два кадри «Ламбет»). Шрифти Unbounded і Geologica (OFL). Зроблено <a href="https://veliraweb.com.ua/" target="_blank" rel="noopener">Velira</a>.</p>
   </div>
 </footer>
 

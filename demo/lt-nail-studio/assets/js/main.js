@@ -86,15 +86,28 @@
   var rows = [].slice.call(document.querySelectorAll('#rows li'));
 
   var nailSec = document.getElementById('nail');
+  var photoBox = mouth.querySelector('picture') || mouth;
+  var lampEl = document.getElementById('lamp');
   var sceneStart = 0, sceneRest = 0, sceneTravel = 1;
+  /* стабільна висота екрана (100svh): на iPhone панель Safari ховається під час гортання і змінює innerHeight —
+     перерахунок сцени на кожну таку зміну смикав сторінку й кадр руки посеред прольоту */
+  var probe = document.createElement('div');
+  probe.setAttribute('aria-hidden', 'true');
+  probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
+  document.body.appendChild(probe);
+  function stableVh() { return probe.offsetHeight || window.innerHeight; }
+  function offTop(el) { var y = 0; while (el && el !== hero) { y += el.offsetTop; el = el.offsetParent; } return y; }
   function measureScene() {
     if (!MX) return;
-    var vh = window.innerHeight, hh = hero.offsetHeight;
+    var vh = stableVh(), hh = hero.offsetHeight;
     /* останній рядок hero має стояти в смузі ≤ 78 % екрана, поки hero нерухомий (правило передачі, що накриває) */
     var last = hero.querySelector('.hero-right'), lb = 0, el = last;
     while (el && el !== hero) { lb += el.offsetTop; el = el.offsetParent; }
     lb += last.offsetHeight;
     var over = Math.max(0, Math.round(lb - .78 * vh));
+    /* але арка лампи з капсулою стану не ховається під панель: на низьких телефонах (375×667) лампа важливіша */
+    var lampTop = offTop(status) - bar.offsetHeight - 10;
+    over = Math.max(0, Math.min(over, lampTop));
     hero.style.setProperty('--stick', (-over) + 'px');
     scene.style.height = (hh + 1.4 * vh) + 'px'; /* 0,7 екрана спокою + 0,7 екрана розкриття */
     sceneStart = scene.offsetTop + over;
@@ -105,9 +118,10 @@
   }
   function measureMouth() {
     /* розмір отвору без трансформацій: offset-координати відносно hero */
-    var x = 0, y = 0, el = mouth;
+    /* міряємо саме кадр руки (picture під смугою світлодіодів), а не весь отвір */
+    var x = 0, y = 0, el = photoBox;
     while (el && el !== hero) { x += el.offsetLeft; y += el.offsetTop; el = el.offsetParent; }
-    mouthBox = { x: x, y: y, w: mouth.offsetWidth, h: mouth.offsetHeight };
+    mouthBox = { x: x, y: y, w: photoBox.offsetWidth, h: photoBox.offsetHeight };
     /* копія кадру руки точно на місці отвору: проліт починається без стрибка */
     pimg.style.left = x + 'px'; pimg.style.top = y + 'px';
     pimg.style.width = mouthBox.w + 'px'; pimg.style.height = mouthBox.h + 'px';
@@ -124,7 +138,8 @@
     /* док на телефоні ховається, поки гортаєш вниз, і повертається при русі вгору */
     var dy = window.scrollY - lastY;
     if (Math.abs(dy) > 4) { dock.classList.toggle('tuck', dy > 0); lastY = window.scrollY; }
-    bar.classList.toggle('light', window.scrollY > (MX ? sceneStart + sceneRest + sceneTravel * .35 : heroEnd));
+    /* біле скло панелі — лише коли отвір лампи вже накрив її (p ≥ .8); раніше крізь біле скло просвічував заголовок hero */
+    bar.classList.toggle('light', window.scrollY > (MX ? sceneStart + sceneRest + sceneTravel * .8 : heroEnd));
     dock.classList.toggle('show', !MX || window.scrollY > sceneStart + sceneRest + sceneTravel * .8);
 
     if (MX) {
@@ -136,11 +151,29 @@
         var right = (hw - mouthBox.x - mouthBox.w) * (1 - e), bottom = (hh - mouthBox.y - mouthBox.h) * (1 - e);
         var r = (mouthBox.w / 2) * (1 - e);
         portal.style.opacity = p > 0 ? 1 : 0;
-        /* рука росте разом з отвором до всього екрана (проліт до нігтів) і тане в останній чверті — далі білий аркуш */
-        var fill = Math.max(hw / mouthBox.w, hh / mouthBox.h) * 1.08;
-        var tx = (hw / 2 - (mouthBox.x + mouthBox.w / 2)) * e, ty = (hh / 2 - (mouthBox.y + mouthBox.h / 2)) * e;
-        pimg.style.transform = 'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px) scale(' + (1 + (fill - 1) * e).toFixed(4) + ')';
-        pimg.style.opacity = clamp((1 - p) / .25, 0, 1).toFixed(3);
+        /* проліт веде до нігтів. Кадр росте навколо точки OY (на телефоні ≤ 480 px — 80 % висоти, кінчики бордо-нігтів),
+           і ця точка їде у верхню третину видимого екрана (VC = 36 %): нижче вже піднімається білий аркуш «Nail».
+           На телефоні збільшення ≤ ×2,4 (було ×3,7 від усього hero) — нігті лишаються в кадрі, кадр чіткіший.
+           На ПК: центр масштабу — центр кадру, точка FY .72 (нігті) веде у ту саму третину екрана. */
+        var small = hw <= 480, VC = .36, vhS = sceneRest / .7, hr = hero.getBoundingClientRect();
+        var vcY = vhS * VC - hr.top, OY = small ? .8 : .5, FY = small ? .8 : .72;
+        var fill = small ? Math.min(2.4, Math.max(hw / mouthBox.w * 1.06, 1.6))
+                         : Math.max(hw / mouthBox.w, VC * vhS / (FY * mouthBox.h)) * 1.08;
+        var s = 1 + (fill - 1) * e;
+        var tx = (hw / 2 - (mouthBox.x + mouthBox.w / 2)) * e;
+        var ty = (vcY - (mouthBox.y + OY * mouthBox.h) - (FY - OY) * mouthBox.h * s) * e;
+        pimg.style.transformOrigin = '50% ' + (OY * 100) + '%';
+        pimg.style.transform = 'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px) scale(' + s.toFixed(4) + ')';
+        /* кадр тане раніше (p .35 → .75, було .75 → 1): велике збільшення видно лише напівпрозорим */
+        pimg.style.opacity = clamp((.75 - p) / .4, 0, 1).toFixed(3);
+        /* отвір не більший за сам кадр: інакше під кадром, що їде вгору до нігтів, світилась біла смуга поверх основи лампи */
+        var oy = mouthBox.y + OY * mouthBox.h + ty;
+        top = Math.max(top, oy - OY * mouthBox.h * s);
+        bottom = Math.max(bottom, hh - (oy + (1 - OY) * mouthBox.h * s));
+        /* сама лампа (обід, світлодіоди, основа) розчиняється, поки кадр вилітає з неї — під кадром не лишається її уламків */
+        lampEl.style.opacity = p > 0 ? clamp(1 - (p - .04) / .3, 0, 1).toFixed(3) : '';
+        left = Math.max(left, mouthBox.x + mouthBox.w / 2 + tx - mouthBox.w * s / 2);
+        right = Math.max(right, hw - (mouthBox.x + mouthBox.w / 2 + tx + mouthBox.w * s / 2));
         portal.style.clipPath = 'inset(' + top + 'px ' + right + 'px ' + bottom + 'px ' + left + 'px round ' + r + 'px ' + r + 'px 0 0)';
       } else { portal.style.opacity = 0; }
 
@@ -185,12 +218,20 @@
     });
   }
   function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
-  function onResize() { measureScene(); measureMouth(); onScroll(); }
+  var lastW = window.innerWidth, lastVh = stableVh();
+  function remeasure() { measureScene(); measureMouth(); onScroll(); }
+  function onResize() {
+    /* зміна лише висоти панелі браузера (iOS) — без перерахунку геометрії */
+    var w = window.innerWidth, v = stableVh();
+    if (w === lastW && Math.abs(v - lastVh) < 2) { onScroll(); return; }
+    lastW = w; lastVh = v; remeasure();
+  }
 
   measureScene();
   measureMouth();
   frame();
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onResize);
-  window.addEventListener('load', onResize);
+  window.addEventListener('load', remeasure);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
 })();

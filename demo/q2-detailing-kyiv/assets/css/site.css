@@ -257,3 +257,207 @@ svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:
   .row{flex-wrap:wrap;row-gap:2px}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* =====================================================================
+   Цикл 2 · «більше преміально» (Богдан 15.11): матеріал лаку, світло, повітря, легша типографіка.
+   Концепт і структура ті самі; цей шар лише перевизначає матеріали, кеглі, відступи.
+   ===================================================================== */
+:root{
+  --ink:#08090a; --panel:#111315; --panel2:#0f1012;
+  --s9:clamp(96px,9vw,136px); --s10:clamp(128px,13vw,208px);
+  --r-l:32px; --r-xl:44px;
+  --lacquer:radial-gradient(130% 90% at 88% -20%,rgba(255,255,255,.075),rgba(255,255,255,0) 52%),
+            linear-gradient(180deg,#15171a 0%,#0d0e10 62%,#0a0b0c 100%);
+  --rim:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.55);
+  --deep:0 50px 90px -50px rgba(0,0,0,.9),0 18px 40px -24px rgba(0,0,0,.7);
+  --ease-lux:cubic-bezier(.16,1,.3,1);
+}
+body{background:var(--ink);font-weight:400;letter-spacing:-.003em}
+/* зерно плівки — глибина чорного, статичне */
+body::after{content:"";position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* шапка: тонше скло, світла крайка замість лінії */
+.bar{background:linear-gradient(180deg,rgba(8,9,10,.62),rgba(8,9,10,.38));border-bottom:0;
+  -webkit-backdrop-filter:blur(24px) saturate(1.6);backdrop-filter:blur(24px) saturate(1.6)}
+.bar::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.14) 30%,rgba(255,255,255,.14) 70%,rgba(255,255,255,0))}
+.bar__brand{font-weight:420;letter-spacing:.005em}
+.bar__q{font-weight:720}
+.bar__nav a{font-weight:460}
+
+/* кнопки: помаранчевий лак і скло з крайкою світла */
+.btn{font-weight:560;letter-spacing:0;border-radius:18px;
+  transition:background-color .4s var(--ease-state),border-color .4s var(--ease-state),box-shadow .4s var(--ease-state),transform .14s var(--ease-state)}
+.btn--hot,.bar__call{background:linear-gradient(180deg,#ff8a4a 0%,#ff6b1f 48%,#ee5b10 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(120,30,0,.35),0 14px 34px -14px rgba(255,107,31,.75)}
+.btn--hot:hover{background:linear-gradient(180deg,#ff9658 0%,#ff7428 48%,#f2600f 100%)}
+.bar__call{font-weight:600;border-radius:14px}
+.btn--glass{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.04));border-color:rgba(255,255,255,.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.btn--glass:hover{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));border-color:rgba(255,255,255,.24)}
+
+/* перший екран: лак — це фото-пластина, яку малює canvas; постер = те саме фото */
+.hood{background:#060708}
+.hood__poster{opacity:1;background:#060708 url(../img/lacquer-900.jpg) 50% 50%/cover no-repeat}
+@media (min-width:900px){.hood__poster{background-image:url(../img/lacquer.jpg)}}
+.js .hood canvas{opacity:0;transition:opacity 1.4s cubic-bezier(.16,1,.3,1)}
+.js .hood canvas.is-ready{opacity:1}
+.hood__scrim{background:
+  linear-gradient(180deg,rgba(6,7,8,.5) 0%,rgba(6,7,8,0) 22%,rgba(6,7,8,0) 38%,rgba(6,7,8,.78) 62%,rgba(6,7,8,.97) 100%)}
+.hood::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(120% 90% at 50% 40%,rgba(0,0,0,0) 55%,rgba(0,0,0,.55) 100%)}
+.hero__kicker{font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#b9bcc1;margin-bottom:var(--s5)}
+.hero__title{font-size:clamp(46px,8.4vw,140px);line-height:.9;font-weight:600;letter-spacing:-.058em;max-width:14ch}
+.hero__lede{margin-top:var(--s6);font-size:clamp(17px,1.3vw,20px);line-height:1.6;color:#c4c7cb;font-weight:400}
+.hero__cta{margin-top:var(--s7);gap:var(--s3)}
+.hood__cap{font-size:12px;letter-spacing:.01em;color:#8e9298}
+.concept{background:rgba(8,9,10,.5);border-color:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+
+/* шари в передачі: підпис не перекреслюється лінією, що пролітає */
+.layers__item span{font-weight:560;letter-spacing:-.03em;text-shadow:0 0 6px #08090a,0 0 14px #08090a}
+.layers__item b{font-weight:500;text-shadow:0 0 6px #08090a}
+.layers__title{letter-spacing:.14em;text-transform:uppercase;font-size:12px;font-weight:500}
+
+/* типографіка секцій: легша вага, щільніший трекінг, більше повітря */
+.h2{font-weight:600;letter-spacing:-.052em;line-height:.94}
+.h3{font-weight:580;letter-spacing:-.04em}
+.h3--sm{font-weight:560}
+.price__lede,.book__lede,.day__street{line-height:1.6}
+.said{font-weight:460;letter-spacing:-.02em;border-left:0;padding-left:0;position:relative;padding-top:var(--s5)}
+.said::before{content:"";position:absolute;left:0;top:0;width:44px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--hot),rgba(255,107,31,0))}
+.group__layer{font-size:12px;font-weight:560;letter-spacing:.14em;text-transform:uppercase}
+
+/* групи прайсу — панелі з чорного лаку з крайкою світла; при появі по них один раз проходить відблиск лампи */
+.group{position:relative;isolation:isolate;overflow:hidden;padding:clamp(28px,4.2vw,56px);border-radius:var(--r-l);
+  background:var(--lacquer);border:1px solid rgba(255,255,255,.055);box-shadow:var(--rim),var(--deep)}
+.group + .group{margin-top:clamp(20px,2.4vw,32px);padding-top:clamp(28px,4.2vw,56px)}
+.group::after{content:"";position:absolute;inset:-20% -30%;z-index:-1;pointer-events:none;
+  background:linear-gradient(104deg,rgba(255,255,255,0) 42%,rgba(255,255,255,.075) 49%,rgba(255,255,255,.11) 50%,rgba(255,255,255,.075) 51%,rgba(255,255,255,0) 58%);
+  transform:translate3d(-70%,0,0);transition:transform 2.4s var(--ease-lux)}
+.group.is-lit::after{transform:translate3d(70%,0,0)}
+.rows{border-top:0}
+.row{padding:22px 0;border-bottom:0;
+  background:linear-gradient(90deg,rgba(236,235,230,.16),rgba(236,235,230,.05) 70%,rgba(236,235,230,0)) left bottom/100% 1px no-repeat}
+.row:last-child{background:none;padding-bottom:4px}
+.row__name{font-weight:420;color:#dcdcd7}
+.row__price{font-size:clamp(24px,2.2vw,32px);font-weight:520;letter-spacing:-.035em}
+.row__price small{font-weight:400;letter-spacing:.02em}
+.note{color:#8e9298}
+
+/* кадри: рамка з крайкою світла і глибокою тінню */
+.shot{border-radius:var(--r-l);background:#0b0c0d;border:1px solid rgba(255,255,255,.07);box-shadow:var(--rim),var(--deep);isolation:isolate}
+.shot__img{overflow:hidden;position:relative}
+.shot__img::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0) 30%,rgba(0,0,0,0) 70%,rgba(0,0,0,.35))}
+.shot img{transform-origin:50% 60%}
+.shot figcaption{padding:16px 22px 20px;font-size:12.5px;letter-spacing:.005em;color:#8e9298}
+.shot--bead{margin:clamp(24px,3vw,36px) 0 0}
+
+/* салон і запис */
+.salon{background:radial-gradient(90% 60% at 100% 0%,rgba(255,107,31,.07),rgba(255,107,31,0) 60%),linear-gradient(180deg,#121316,#0b0c0e)}
+.gap{border-radius:24px;background:rgba(255,255,255,.02)}
+.book{background:radial-gradient(80% 70% at 18% 0%,rgba(255,190,140,.55),rgba(255,140,80,0) 60%),
+  radial-gradient(70% 60% at 100% 100%,rgba(150,40,0,.35),rgba(150,40,0,0) 70%),
+  linear-gradient(165deg,#ff7a33 0%,#ff6b1f 45%,#ee5b10 100%)}
+.book__phone{font-weight:640;letter-spacing:-.06em}
+.book__phone span:first-child{color:rgba(12,13,15,.78)}
+.book .btn--glass{box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.day{background:radial-gradient(90% 80% at 85% 0%,#f8f7f4 0%,rgba(248,247,244,0) 60%),linear-gradient(180deg,#ecebe7,#e2e1dc)}
+.day__title{font-weight:620;letter-spacing:-.06em}
+.day__kicker{letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+.btn--ink{background:linear-gradient(180deg,#24262a,#0c0d0f);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 14px 30px -14px rgba(0,0,0,.6)}
+.foot__brand{font-weight:420}
+
+@media (min-width:960px){
+  .cut__band{border-radius:18px}
+  .price__head{margin-bottom:clamp(96px,9vw,144px)}
+}
+@media (max-width:640px){
+  .hero__title{font-size:clamp(40px,11.6vw,64px);letter-spacing:-.055em;line-height:.92}
+  .hero__kicker{font-size:11.5px;letter-spacing:.12em;margin-bottom:var(--s4)}
+  .hero__lede{margin-top:var(--s4);font-size:16px}
+  .hero__cta{margin-top:var(--s6)}
+  .group{padding:24px 20px 20px;border-radius:26px}
+  .group + .group{padding-top:24px}
+  .row{padding:18px 0}
+  .price{padding-top:var(--s10)}
+  .book,.day{padding:var(--s10) 0}
+  .hood__cap{display:block;left:var(--gut);right:auto;top:calc(var(--bar) + 76px);bottom:auto;max-width:300px;text-align:left;font-size:11px;color:#9a9ea4}
+}
+@media (max-width:1100px) and (min-width:641px){.hood__cap{display:block;bottom:auto;top:calc(var(--bar) + 76px);left:var(--gut);right:auto;text-align:left}}
+@media (prefers-reduced-motion:reduce){.group::after{display:none}}
+.rm .group::after{display:none}
+/* текст першого екрана стоїть у тіні: лінії ламп ідуть угорі й праворуч */
+@media (min-width:641px){
+  .hood__scrim{background:
+    radial-gradient(ellipse 78% 78% at 0% 100%,rgba(6,7,8,.97) 0%,rgba(6,7,8,.9) 38%,rgba(6,7,8,.55) 66%,rgba(6,7,8,0) 100%),
+    linear-gradient(180deg,rgba(6,7,8,.55) 0%,rgba(6,7,8,0) 18%)}
+}
+@media (max-width:640px){
+  .hood__cap{top:calc(var(--bar) + 84px);padding:5px 10px;border-radius:10px;background:rgba(6,7,8,.6);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);color:#b4b8bd}
+  .hood__cap-more{display:none}
+}
+@media (max-width:360px){.hood__cap{top:calc(var(--bar) + 108px)}}
+.rm .hood__cap,.no-js .hood__cap{display:block;top:calc(var(--bar) + 76px);bottom:auto;left:var(--gut);right:auto;text-align:left}
+@media (max-width:640px){.rm .hood__cap,.no-js .hood__cap{top:calc(var(--bar) + 84px)}}
+@media (max-width:360px){.rm .hood__cap,.no-js .hood__cap{top:calc(var(--bar) + 108px)}}
+/* лінії ламп проходять ЗА текстом: густий графітовий ореол навколо літер */
+.hero__title{text-shadow:0 0 18px rgba(6,7,8,.7),0 0 48px rgba(6,7,8,.55)}
+.hero__kicker,.hero__lede{text-shadow:0 0 10px rgba(6,7,8,.9),0 0 22px rgba(6,7,8,.7)}
+.layers__item span,.layers__item b,.layers__title{text-shadow:0 0 3px #060708,0 0 8px #060708,0 0 16px #060708,0 0 24px #060708}
+@media (min-width:641px){
+  .hood__scrim{background:
+    radial-gradient(ellipse 100% 92% at 0% 100%,rgba(6,7,8,.96) 0%,rgba(6,7,8,.86) 42%,rgba(6,7,8,.5) 68%,rgba(6,7,8,0) 92%),
+    linear-gradient(180deg,rgba(6,7,8,.55) 0%,rgba(6,7,8,0) 18%)}
+}
+/* світло спадає за текстом: темна хмара позаду блоку першого екрана, лінії в ній розчиняються */
+.js:not(.rm) .hero::before{content:"";position:absolute;z-index:-1;pointer-events:none;left:-12%;bottom:-18%;width:96%;height:128%;
+  background:radial-gradient(closest-side,rgba(6,7,8,.92) 0%,rgba(6,7,8,.78) 50%,rgba(6,7,8,0) 100%)}
+@media (max-width:640px){.js:not(.rm) .hero::before{left:-20%;width:140%;height:118%;bottom:-8%}}
+/* ПК: підпис про згенероване — угорі праворуч, навпроти позначки концепту (не налазить на заголовок на низьких екранах) */
+@media (min-width:1101px){
+  .hood__cap{top:calc(var(--bar) + var(--s4));bottom:auto;right:var(--gut);max-width:330px;text-align:right;
+    text-shadow:0 0 8px rgba(6,7,8,.95),0 0 18px rgba(6,7,8,.8)}
+}
+.hood__cap-more{display:block}
+@media (max-width:640px){.hood__cap-more{display:none}}
+
+/* ---------- зріз кузова, що живе через увесь прайс (критик r1-1: структура несе ідею, не лише передача) ----------
+   Ті самі п'ять ламп першого екрана: кожен шар — підпис над лінією світла; активний шар — лінія горить помаранчем. */
+.cut__title{display:none}
+.cut__band::after{content:"";position:absolute;left:14px;right:14px;bottom:5px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.38) 50%,rgba(255,255,255,.05));
+  transition:background .5s var(--ease-state),box-shadow .5s var(--ease-state)}
+.cut__band.is-on::after{background:linear-gradient(90deg,rgba(255,106,26,.25),#ff6a1a 40%,#ff8a4a 60%,rgba(255,106,26,.25));
+  box-shadow:0 0 10px rgba(255,106,26,.7)}
+@media (min-width:960px){
+  .cut{gap:0;padding-top:4px}
+  .cut__title{display:block;font-size:12px;font-weight:560;letter-spacing:.14em;text-transform:uppercase;color:#8e9298;margin:0 0 10px}
+  .cut__band,.cut__band:nth-child(n){height:auto;min-height:44px;padding:14px 0 18px;background:none!important;border:0!important;
+    border-radius:0;box-shadow:none!important;font-size:15px;font-weight:480;color:#9a9ea4;align-items:flex-end}
+  /* відстань між лампами = товщина шару: плівка найтовща, бруд найтонший */
+  .cut__band[data-cut="0"]{padding-top:10px}
+  .cut__band[data-cut="1"]{padding-top:22px}
+  .cut__band[data-cut="2"]{padding-top:40px}
+  .cut__band[data-cut="3"]{padding-top:30px}
+  .cut__band[data-cut="4"]{padding-top:18px}
+  .cut__band::after{left:0;right:0;bottom:0;height:2px;
+    background:linear-gradient(90deg,rgba(255,255,255,.55),rgba(255,255,255,.22) 70%,rgba(255,255,255,.04));
+    box-shadow:0 0 8px rgba(255,255,255,.18)}
+  .cut__band.is-on{color:var(--text);font-weight:560}
+  .cut__band.is-on::before{display:none}
+  .cut__band.is-on::after{height:2px;background:linear-gradient(90deg,#ff8a4a,#ff6a1a 60%,rgba(255,106,26,.15));
+    box-shadow:0 0 12px rgba(255,106,26,.75),0 0 2px rgba(255,160,110,.9)}
+  .cut__band:hover{color:var(--text)}
+}
+/* ПК: обидва згенеровані кадри стоять у липкій колонці праворуч — колонка не порожніє під першим кадром */
+.price__aside{display:grid;gap:clamp(20px,2vw,28px);align-content:start}
+.price__aside .shot{margin-top:0}
+@media (max-width:1199px){.price__aside{margin-top:var(--s6)}}
+@media (min-width:1200px){.price__aside .shot figcaption{padding:12px 16px 14px}}
+/* скло шапки й смуги шарів щільніше: рядки прайсу не просвічують крізь них на телефоні */
+.bar{background:linear-gradient(180deg,rgba(8,9,10,.84),rgba(8,9,10,.7))}
+@media (max-width:959px){.cut{background:rgba(8,9,10,.9)}}

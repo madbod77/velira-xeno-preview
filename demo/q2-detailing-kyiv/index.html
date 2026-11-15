@@ -19,6 +19,7 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/fonts/wix-cyr.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/wix-lat.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/img/lacquer.jpg" as="image">
 <link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body>
@@ -42,7 +43,7 @@
   <div class="stage__pin">
     <div class="hood" aria-hidden="true">
       <div class="hood__poster"></div>
-      <canvas id="hood"></canvas>
+      <canvas id="hood" data-plate="assets/img/lacquer.jpg"></canvas>
       <div class="hood__scrim"></div>
     </div>
 
@@ -51,7 +52,7 @@
     </a>
 
     <div class="hero">
-      <p class="hero__kicker">Детейлінг · Оклейка в плівку · Мийка · Полірування</p>
+      <p class="hero__kicker">Детейлінг <span class="nb">·&nbsp;Оклейка в&nbsp;плівку</span> <span class="nb">·&nbsp;Мийка</span> <span class="nb">·&nbsp;Полірування</span></p>
       <h1 id="h1" class="hero__title">Детейлінг на&nbsp;Коновальця, <span class="nb">32-Г</span></h1>
       <p class="hero__lede">Мийка, полірування, віск і кераміка, захисна плівка, тонування, шумоізоляція. Ціни «від» — нижче, у&nbsp;доларах, як у&nbsp;прайсі студії.</p>
       <div class="hero__cta">
@@ -70,7 +71,7 @@
       </div>
     </div>
 
-    <p class="hood__cap" aria-hidden="true">Капот і лампи боксу намальовані кодом: так детейлер перевіряє лак — пряма лампа має дати пряму лінію</p>
+    <p class="hood__cap">Капот — згенероване зображення, не авто клієнта&nbsp;Q2.<span class="hood__cap-more">Круг і подряпини намальовані кодом: так детейлер перевіряє лак — пряма лампа має дати пряму лінію</span></p>
 
     <div class="layers" aria-label="Зріз кузова: шари й мінімальні ціни">
       <p class="layers__title">Зріз кузова — від верхнього шару до салону</p>
@@ -94,6 +95,7 @@
 
   <div class="price__grid wrap">
     <nav class="cut" aria-label="Шари кузова">
+      <p class="cut__title">Зріз кузова</p>
       <a class="cut__band" href="#l-myika" data-cut="0"><span>Мийка</span></a>
       <a class="cut__band" href="#l-keramika" data-cut="1"><span>Віск і кераміка</span></a>
       <a class="cut__band" href="#l-plivka" data-cut="2"><span>Плівка</span></a>
@@ -141,11 +143,15 @@
         <p class="note">Те, що відбувається на першому екрані: павутинка подряпин зникає, відблиски ламп стають рівними.</p>
       </section>
     </div>
-    <aside class="price__aside" aria-label="Атмосферний кадр до розділу «Захисна плівка»">
+    <aside class="price__aside" aria-label="Атмосферні кадри до розділів «Захисна плівка» і «Віск і кераміка»">
       <figure class="shot shot--film">
-        <img src="assets/img/film.jpg" srcset="assets/img/film-900.jpg 900w, assets/img/film.jpg 1600w" sizes="(min-width: 1200px) 360px, 92vw" width="1600" height="1067" decoding="async" alt="Згенероване зображення: рука в чорній рукавичці притискає ракелем прозору плівку до чорного крила авто, у лаку відбиваються лінійні лампи.">
+        <div class="shot__img"><img src="assets/img/film.jpg" loading="lazy" srcset="assets/img/film-900.jpg 900w, assets/img/film.jpg 1600w" sizes="(min-width: 1200px) 360px, 92vw" width="1600" height="1067" decoding="async" alt="Згенероване зображення: рука в чорній рукавичці притискає ракелем прозору плівку до чорного крила авто, у лаку відбиваються лінійні лампи."></div>
         <figcaption><b>Згенероване зображення</b> до розділу «Захисна плівка» — атмосфера, не робота Q2. Фото їхніх робіт — в Instagram студії.</figcaption>
       </figure>
+      <figure class="shot shot--bead">
+          <div class="shot__img"><img src="assets/img/beading.jpg" srcset="assets/img/beading-900.jpg 900w, assets/img/beading.jpg 1600w" sizes="(min-width: 1200px) 340px, 92vw" width="1600" height="1067" loading="lazy" decoding="async" alt="Згенероване зображення: круглі краплі води на чорному глянцевому лаку, у кожній відбиваються лінійні лампи."></div>
+          <figcaption><b>Згенероване зображення</b> до розділу «Віск і кераміка» — атмосфера, не робота Q2.</figcaption>
+        </figure>
     </aside>
   </div>
 </section>
@@ -185,7 +191,7 @@
     </div>
 
     <figure class="shot shot--seat">
-      <img src="assets/img/seat.jpg" width="960" height="1200" decoding="async" alt="Згенероване зображення: бічна подушка чорного шкіряного сидіння з помаранчевими вставками й строчкою, поруч складений сірий рушник з мікрофібри.">
+      <div class="shot__img"><img src="assets/img/seat.jpg" width="960" height="1200" loading="lazy" decoding="async" alt="Згенероване зображення: бічна подушка чорного шкіряного сидіння з помаранчевими вставками й строчкою, поруч складений сірий рушник з мікрофібри."></div>
       <figcaption><b>Згенероване зображення</b> — у кольорах сидінь з їхніх фото, але не їхнє авто.</figcaption>
     </figure>
   </div>
@@ -245,7 +251,7 @@
       <li><a href="https://www.threads.net/@q2_detailing_kyiv" rel="noopener" target="_blank">Threads</a></li>
       <li><a href="https://veliraweb.com.ua/" rel="noopener" target="_blank">Зроблено Velira</a></li>
     </ul>
-    <p class="foot__small">Два фото на сторінці згенеровані; капот з лампами намальований кодом. Ціни — з q2detailing.com/cziny станом на 15.11.2026.</p>
+    <p class="foot__small">Чотири фото на сторінці згенеровані (капот у першому екрані, плівка, краплі, сидіння) — це не роботи Q2; рух круга й ліній намальований кодом. Ціни — з q2detailing.com/cziny станом на 15.11.2026.</p>
   </div>
 </footer>
 

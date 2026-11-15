@@ -25,13 +25,13 @@
       return { open: true, day: n.day, long: 'Зараз відчинено, до ' + hm(t[1]), short: 'Відчинено до ' + hm(t[1]), d1: 'Відчинено', d2: 'сьогодні до ' + hm(t[1]) };
     }
     if (t && n.min < t[0]) {
-      return { open: false, day: n.day, long: 'Зараз зачинено. Відчинять сьогодні\u00a0о\u00a0' + hm(t[0]), short: 'Зачинено до ' + hm(t[0]), d1: 'Зачинено', d2: 'відчинять\u00a0о\u00a0' + hm(t[0]) };
+      return { open: false, day: n.day, long: 'Зараз зачинено. Відчинять\u00a0сьогодні\u00a0о\u00a0' + hm(t[0]), short: 'Зачинено до ' + hm(t[0]), d1: 'Зачинено', d2: 'відчинять\u00a0о\u00a0' + hm(t[0]) };
     }
     for (var i = 1; i <= 7; i++) {
       var d = (n.day + i) % 7, x = HOURS[d];
       if (x) {
         var when = i === 1 ? 'завтра' : DAY_ACC[d];
-        return { open: false, day: n.day, long: 'Зараз зачинено. Відчинять ' + when + '\u00a0о\u00a0' + hm(x[0]), short: 'Зачинено до ' + (i === 1 ? 'завтра' : DAY_SHORT[d]) + ' ' + hm(x[0]), d1: 'Зачинено', d2: (i === 1 ? 'завтра' : DAY_ACC[d]) + ' з ' + hm(x[0]) };
+        return { open: false, day: n.day, long: 'Зараз зачинено. Відчинять\u00a0' + when.replace(' ', '\u00a0') + '\u00a0о\u00a0' + hm(x[0]) /* рядок ламається лише після «зачинено.» */, short: 'Зачинено до ' + (i === 1 ? 'завтра' : DAY_SHORT[d]) + ' ' + hm(x[0]), d1: 'Зачинено', d2: (i === 1 ? 'завтра' : DAY_ACC[d]) + ' з ' + hm(x[0]) };
       }
     }
     return null;
@@ -51,65 +51,154 @@
   paintStatus();
   setInterval(paintStatus, 60000);
 
-  /* ---------- нитка: малювання (d) і висмикування (s) ---------- */
-  var thread = document.querySelector('.lapel .thread');
-  var mkThread = document.querySelector('.lapel .mk-thread');
-  var mkSeam = document.querySelector('.lapel .mk-seam');
-  var needle = document.querySelector('.lapel .needle');
-  var flies = Array.prototype.slice.call(document.querySelectorAll('.lapel .fly .fl'));
-  var lblG = document.querySelector('.lapel .lbl');
-  var lapelSvg = document.querySelector('.lapel');
-  function needleScale() { var h = lapelSvg ? lapelSvg.getBoundingClientRect().height : 900; var px = 134 * h / 900; return px > 0 && px < 72 ? 72 / px : 1; }
-  var NK = 1, SC = 1;
-  function measure() {
-    NK = needleScale();
-    SC = lapelSvg ? lapelSvg.getBoundingClientRect().height / 900 : 1; if (!(SC > 0)) SC = 1;
-    var mob = window.innerWidth < 761, wpx = mob ? 6 : (window.innerWidth >= 1024 ? 8.75 : 7); /* ПК: стібки в польоті ×1.25 */
-    flies.forEach(function (g) {
-      g.querySelector('.fc').setAttribute('stroke-width', (wpx / SC / NK).toFixed(2));
-      g.querySelector('.fh').setAttribute('stroke-width', ((wpx + 2) / SC / NK).toFixed(2));
-    });
-    if (lblG) lblG.setAttribute('font-size', Math.max(22, 13 / SC).toFixed(1)); /* підпис не менше 13 px на екрані */
-  }
-  measure();
-  window.addEventListener('resize', function () { measure(); render(); });
-  var L = thread ? thread.getTotalLength() : 0;
+  /* ---------- шов першого екрана: наметку кладуть (d) і знімають, а голка шиє остаточний шов (s) ---------- */
+  var NS = 'http://www.w3.org/2000/svg';
+  var swRoot = document.querySelector('.seamwork');
+  var swLive = swRoot && swRoot.querySelector('.sw-live'), swChalk = swRoot && swRoot.querySelector('.sw-chalk');
+  var GEO = {
+    wide: { vb: [600, 800], d: 'M566 -40 C546 130 432 250 332 360 C224 478 142 566 134 690 L132 770',
+      st: [30, 16], w: 4.4, nk: 1, lbl: 0.43, lo: 34, ticks: [0.26, 0.52, 0.76], allow: 24, lift: 1.15, fly: 0.25 }, /* ПК: стібки в польоті більші й далі — читаються на 1440 */
+    phone: { vb: [400, 240], d: 'M432 26 C346 38 286 78 240 120 C194 162 130 198 44 212',
+      st: [22, 12], w: 3.1, nk: 0.8, lbl: 0.47, lo: 24, ls: -1, ticks: [0.3, 0.64], allow: 18, lift: 0.75 },
+    short: { vb: [400, 170], d: 'M432 18 C350 26 290 56 240 86 C190 116 128 142 44 152',
+      st: [22, 12], w: 3.1, nk: 0.78, lbl: 0.5, lo: 20, ls: -1, ticks: [0.3, 0.66], allow: 16, lift: 0.6 }
+  };
+  var G = null, L = 0, PATH = null, stitches = [], SC = 1, NK = 1, lblLen = 0;
+  var nd = swLive && swLive.querySelector('.nd'), ndSh = swLive && swLive.querySelector('.nd-shadow');
+  var ndTail = swLive && swLive.querySelector('.nd-tail'), ndTailIn = swLive && swLive.querySelector('.nd-tail-in');
+  var mk = swLive && swLive.querySelector('.sw-mk');
+  var lblA = swLive && swLive.querySelector('.lbl-a'), lblB = swLive && swLive.querySelector('.lbl-b'), lead = swLive && swLive.querySelector('.sw-lead');
   var st = { d: 1, s: 0 };
+  function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+  function smooth(e0, e1, x) { var t = clamp((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); }
+  function tan(len) { var a = PATH.getPointAtLength(clamp(len - 1.5, 0, L)), b = PATH.getPointAtLength(clamp(len + 1.5, 0, L)); var dx = b.x - a.x, dy = b.y - a.y, m = Math.hypot(dx, dy) || 1; return { x: dx / m, y: dy / m }; }
+  function f1(v) { return v.toFixed(1); }
+
+  function build() {
+    if (!swLive) return;
+    var mode = 'wide';
+    if (window.innerWidth < 761) { var br = swRoot.getBoundingClientRect(); mode = br.width && br.height / br.width < 0.52 ? 'short' : 'phone'; }
+    var par = mode === 'wide' ? 'xMidYMax meet' : 'xMidYMid meet';
+    swLive.setAttribute('preserveAspectRatio', par); swChalk.setAttribute('preserveAspectRatio', par);
+    if (G === GEO[mode] && L) { scale(); return; }
+    G = GEO[mode];
+    var vb = '0 0 ' + G.vb[0] + ' ' + G.vb[1];
+    swLive.setAttribute('viewBox', vb); swChalk.setAttribute('viewBox', vb);
+    swRoot.setAttribute('data-mode', mode);
+    swRoot.querySelectorAll('.sw-path, .sq, .sw-mk, .ck-line').forEach(function (p) { p.setAttribute('d', G.d); });
+    PATH = swLive.querySelector('.sw-path'); L = PATH.getTotalLength();
+    /* крейда: лінія шва + припуск пунктиром + контрольні насічки (як на справжньому крої) */
+    var allow = '', ticks = '';
+    for (var a = 0; a <= L; a += 8) {
+      var p = PATH.getPointAtLength(a), t = tan(a);
+      allow += (a ? ' L' : 'M') + f1(p.x + t.y * G.allow) + ' ' + f1(p.y - t.x * G.allow);
+    }
+    G.ticks.forEach(function (f) {
+      [0].forEach(function (o) {
+        var p = PATH.getPointAtLength(f * L + o), t = tan(f * L + o), n = { x: -t.y, y: t.x };
+        ticks += 'M' + f1(p.x + n.x * 11) + ' ' + f1(p.y + n.y * 11) + ' L' + f1(p.x - n.x * (G.allow + 9)) + ' ' + f1(p.y - n.y * (G.allow + 9)) + ' ';
+      });
+    });
+    swChalk.querySelector('.ck-allow').setAttribute('d', allow);
+    swChalk.querySelector('.ck-ticks').setAttribute('d', ticks);
+    /* стібки наметки — кожен окремою ниткою: тінь і проколи на тканині, тіло, скрутка, відблиск */
+    var gSh = swLive.querySelector('.sw-shadows'), gSt = swLive.querySelector('.sw-stitches');
+    gSh.textContent = ''; gSt.textContent = ''; stitches = [];
+    var per = G.st[0] + G.st[1], n = Math.floor((L - 24) / per), off = 12 + ((L - 24) - n * per + G.st[1]) / 2;
+    for (var k = 0; k < n; k++) {
+      var a0 = off + k * per, a1 = a0 + G.st[0], P0 = PATH.getPointAtLength(a0), P1 = PATH.getPointAtLength(a1);
+      var mx = (P0.x + P1.x) / 2, my = (P0.y + P1.y) / 2, ang = Math.atan2(P1.y - P0.y, P1.x - P0.x), len = Math.hypot(P1.x - P0.x, P1.y - P0.y), h = len / 2;
+      var line = 'M' + f1(-h) + ' 0 L' + f1(h) + ' 0';
+      var sh = el('g', {}, gSh);
+      var shp = el('path', { d: line, stroke: 'rgba(8,4,2,.5)', 'stroke-width': (G.w + 1.4).toFixed(1), 'stroke-linecap': 'round', fill: 'none' }, sh);
+      var holes = el('g', { fill: 'rgba(8,4,2,.6)' }, sh);
+      el('circle', { cx: f1(-h), cy: 0, r: (G.w * 0.6).toFixed(2) }, holes); el('circle', { cx: f1(h), cy: 0, r: (G.w * 0.6).toFixed(2) }, holes);
+      var g = el('g', { fill: 'none', 'stroke-linecap': 'round' }, gSt);
+      var body = el('path', { d: line, stroke: '#f3ede2', 'stroke-width': G.w }, g);
+      var tw = el('path', { d: line, stroke: 'rgba(120,96,72,.18)', 'stroke-width': G.w, 'stroke-dasharray': '0.9 2.6', 'stroke-linecap': 'butt' }, g);
+      var hl = el('path', { d: 'M' + f1(-h + 1.5) + ' ' + (-G.w * 0.24).toFixed(2) + ' L' + f1(h - 1.5) + ' ' + (-G.w * 0.24).toFixed(2), stroke: '#fff', 'stroke-width': (G.w * 0.3).toFixed(2), opacity: '.85' }, g);
+      stitches.push({ a0: a0, a1: a1, mx: mx, my: my, ang: ang, h: h, len: len, sh: sh, shp: shp, holes: holes, g: g, body: body, tw: tw, hl: hl, k: k, curl: -1 });
+    }
+    lblLen = G.lbl * L;
+    var lp = PATH.getPointAtLength(lblLen), lt = tan(lblLen), sg = G.ls || 1, ln = { x: lt.y * sg, y: -lt.x * sg }; /* ПК — бік від тексту; телефон — над швом, щоб голка не перекривала підпис */
+    lead.setAttribute('d', 'M' + f1(lp.x + ln.x * 9) + ' ' + f1(lp.y + ln.y * 9) + ' L' + f1(lp.x + ln.x * (G.lo - 6)) + ' ' + f1(lp.y + ln.y * (G.lo - 6)));
+    [lblA, lblB].forEach(function (t) { t.setAttribute('x', f1(lp.x + ln.x * G.lo)); t.setAttribute('y', f1(lp.y + ln.y * G.lo + 5)); t.setAttribute('text-anchor', ln.x < 0 ? 'end' : 'start'); });
+    scale();
+  }
+  function scale() {
+    if (!swLive) return;
+    var r = swLive.getBoundingClientRect();
+    SC = Math.min(r.width / G.vb[0], r.height / G.vb[1]); if (!(SC > 0)) SC = 1;
+    NK = G.nk * clamp(118 / (150 * SC * G.nk), 1, 1.35); /* голка на екрані не коротша за ≈ 118 px */
+    swLive.querySelector('.sw-lbl').setAttribute('font-size', Math.max(13.5 / SC, 13).toFixed(1));
+  }
+
+  function placeNeedle(pos, back, flip) {
+    pos = clamp(pos, 0, L);
+    var p = PATH.getPointAtLength(pos), t = tan(pos), ang = Math.atan2(t.y, t.x) * 180 / Math.PI + 180 * flip;
+    /* голка пірнає під тканину між стібками: тінь ближча, коли вістря внизу */
+    var per = G.st[0] + G.st[1], ph = (((pos - (stitches[0] ? stitches[0].a0 : 0)) % per) + per) % per / per;
+    var depth = 0.62 + 0.38 * Math.cos(ph * Math.PI * 2);
+    var tr = ' rotate(' + f1(ang) + ') scale(' + NK.toFixed(3) + ')';
+    nd.setAttribute('transform', 'translate(' + f1(p.x) + ' ' + f1(p.y) + ')' + tr);
+    ndSh.setAttribute('transform', 'translate(' + f1(p.x + 2.4 * depth / SC * 0.9) + ' ' + f1(p.y + 3.8 * depth / SC * 0.9) + ')' + tr);
+    var col = back ? '#d29a62' : '#f3ede2';
+    ndTail.setAttribute('stroke', col); ndTailIn.setAttribute('stroke', col);
+  }
+
   function render() {
     if (!L) return;
-    var NL = 118, needleAt, back = false;
-    if (st.s <= 0) {
-      /* інтро: голка йде згори вниз, нитка тягнеться за вушком */
-      var b = Math.max(st.d * L, 0), tEnd = Math.max(0, b - NL);
-      mkThread.setAttribute('stroke-dasharray', tEnd.toFixed(1) + ' ' + (L + 40).toFixed(0));
-      thread.setAttribute('stroke-dashoffset', '0');
-      mkSeam.setAttribute('stroke-dasharray', '0 ' + (L + 40).toFixed(0));
-      needleAt = Math.min(Math.max(b, 2), L);
-    } else {
-      /* висмикування: наметку тягнуть за хвіст угору — стібки ковзають до верхнього кінця й вилітають,
-         голка повертається вгору на голові нитки й лишає за собою остаточний шов */
-      var a = st.s * L, head = L - a;
-      mkThread.setAttribute('stroke-dasharray', Math.max(head, 0).toFixed(1) + ' ' + (L + 40).toFixed(0));
-      thread.setAttribute('stroke-dashoffset', a.toFixed(1));
-      mkSeam.setAttribute('stroke-dasharray', '0 ' + head.toFixed(1) + ' ' + a.toFixed(1) + ' ' + (L + 40).toFixed(0));
-      needleAt = Math.min(Math.max(head, 2), L); back = true;
+    var RL = 130 * G.lift + 30; /* відстань, на якій стібок відлітає */
+    var intro = st.s <= 0, head = intro ? clamp(st.d * L, 0, L) : (L + RL) * (1 - st.s) - RL;
+    for (var i = 0; i < stitches.length; i++) {
+      var s = stitches[i], txf = 'translate(' + f1(s.mx) + ' ' + f1(s.my) + ') rotate(' + f1(s.ang * 180 / Math.PI) + ')';
+      if (intro) {
+        /* голка кладе стібок: нитка росте від проколу до вістря */
+        var grow = clamp(head - s.a0, 0, s.len), done = grow >= s.len ? 1 : 0;
+        var dash = grow >= s.len ? 'none' : (grow.toFixed(1) + ' 999');
+        s.g.setAttribute('transform', txf); s.g.style.opacity = grow > 0 ? '1' : '0';
+        s.body.setAttribute('stroke-dasharray', dash); s.hl.setAttribute('stroke-dasharray', dash); s.shp.setAttribute('stroke-dasharray', dash);
+        s.tw.style.opacity = done; s.holes.style.opacity = done;
+        s.sh.setAttribute('transform', txf + ' translate(' + f1(1.6 * Math.cos(-s.ang) - 2.4 * Math.sin(-s.ang)) + ' ' + f1(1.6 * Math.sin(-s.ang) + 2.4 * Math.cos(-s.ang)) + ')');
+        s.shp.style.opacity = grow > 0 ? '1' : '0';
+        if (s.curl !== 0) { s.body.setAttribute('d', 'M' + f1(-s.h) + ' 0 L' + f1(s.h) + ' 0'); s.tw.setAttribute('d', 'M' + f1(-s.h) + ' 0 L' + f1(s.h) + ' 0'); s.curl = 0; }
+      } else {
+        /* голка повертається вгору: щойно вона минає стібок, той відривається від тканини й злітає */
+        var t = clamp((s.a1 - head) / RL, 0, 1), e = t * t * (3 - 2 * t);
+        var tg = tan((s.a0 + s.a1) / 2), side = s.k % 2 ? 1 : -1;
+        var dx = (-tg.x * 70 - tg.y * 22 * side) * G.lift * e, dy = (-tg.y * 70 + tg.x * 22 * side) * G.lift * e - 34 * G.lift * e * e;
+        s.g.setAttribute('transform', 'translate(' + f1(s.mx + dx) + ' ' + f1(s.my + dy) + ') rotate(' + f1(s.ang * 180 / Math.PI + side * 24 * e) + ') scale(' + (1 + (G.fly || 0.1) * e).toFixed(3) + ')');
+        s.g.style.opacity = (1 - smooth(0.62, 1, t)).toFixed(3);
+        ['body', 'hl', 'shp'].forEach(function (k) { s[k].setAttribute('stroke-dasharray', 'none'); });
+        s.tw.style.opacity = 1;
+        var c = (side * 9 * e).toFixed(2), dc = 'M' + f1(-s.h) + ' 0 Q0 ' + c + ' ' + f1(s.h) + ' 0';
+        if (s.curl !== +c) { s.body.setAttribute('d', dc); s.tw.setAttribute('d', dc); s.curl = +c; }
+        /* тінь лишається на тканині, відходить і тане; проколи гаснуть повільніше */
+        var ox = 1.6 + 7 * e, oy = 2.4 + 11 * e;
+        s.sh.setAttribute('transform', txf + ' translate(' + f1(ox * Math.cos(-s.ang) - oy * Math.sin(-s.ang)) + ' ' + f1(ox * Math.sin(-s.ang) + oy * Math.cos(-s.ang)) + ')');
+        s.shp.style.opacity = (1 - smooth(0, 0.6, t)).toFixed(3);
+        s.holes.style.opacity = (1 - 0.7 * smooth(0.2, 1, t)).toFixed(3);
+      }
     }
-    var p = thread.getPointAtLength(needleAt), q = thread.getPointAtLength(Math.max(needleAt - 3, 0));
-    var ang = Math.atan2(p.y - q.y, p.x - q.x) * 180 / Math.PI + (back ? 180 : 0);
-    needle.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ') rotate(' + ang.toFixed(1) + ') scale(' + NK.toFixed(2) + ')');
-    /* три стібки в польоті: вилітають з тканини там, де голка (голова нитки), вперед за її вістрям */
-    var live = st.s > 0.004 && st.s < 0.995;
-    var hd = Math.min(Math.max(L - st.s * L, 4), L), H0 = thread.getPointAtLength(hd), H1 = thread.getPointAtLength(hd - 4);
-    var ea = Math.atan2(H1.y - H0.y, H1.x - H0.x), ex = Math.cos(ea), ey = Math.sin(ea);
-    var env = Math.min(1, (st.s - 0.004) * 40) * Math.min(1, (0.995 - st.s) * 40);
-    flies.forEach(function (ln, k) {
-      if (!live || k > 2) { ln.style.opacity = '0'; return; }
-      var ph = ((st.s * L / 30) + k / 3) % 1, dist = (24 + ph * 126) / SC, side = (k === 1 ? 1 : -1) * ph * 26 / SC;
-      ln.setAttribute('transform', 'translate(' + (H0.x + ex * dist - ey * side).toFixed(1) + ' ' + (H0.y + ey * dist + ex * side).toFixed(1) + ') rotate(' + (ea * 180 / Math.PI + (k === 1 ? 1 : -1) * (20 + ph * 40)).toFixed(1) + ') scale(' + NK.toFixed(2) + ')');
-      ln.style.opacity = ((ph < 0.75 ? 1 : (1 - ph) / 0.25) * env).toFixed(2);
-    });
+    /* остаточний шов відкривається за голкою */
+    var hm = clamp(head, 0, L);
+    mk.setAttribute('stroke-dasharray', intro ? '0 ' + (L + 200).toFixed(0) : ('0 ' + hm.toFixed(1) + ' ' + (L - hm + 2).toFixed(1) + ' ' + (L + 200).toFixed(0)));
+    var flip = intro ? 0 : smooth(0, 0.07, st.s);
+    var onStage = intro ? head > 2 : head > 1;
+    nd.style.opacity = ndSh.style.opacity = onStage ? '1' : '0';
+    if (onStage) placeNeedle(head, !intro, flip);
+    /* підпис: «наметка» зʼявляється, коли голка минула його; «остаточний шов» — коли шов дійшов до нього */
+    var la = intro ? smooth(lblLen + 10, lblLen + 60, head) : 1;
+    var kb = intro ? 0 : smooth(lblLen + 20, lblLen - 30, head);
+    lblA.style.opacity = (la * (1 - kb)).toFixed(2); lblB.style.opacity = kb.toFixed(2); lead.style.opacity = (0.7 * Math.max(la, kb)).toFixed(2);
   }
-  render();
+  function heroTop() {
+    var h = document.querySelector('.hero'); if (!h) return;
+    doc.style.setProperty('--hero-top', Math.min(0, window.innerHeight - h.offsetHeight) + 'px');
+  }
+  heroTop(); build(); render();
+  window.addEventListener('resize', function () { heroTop(); build(); render(); });
 
   /* ---------- рух ---------- */
   if (!doc.classList.contains('motion')) return;
@@ -123,32 +212,35 @@
     var hero = document.querySelector('.hero');
     var stage = document.querySelector('.hero-stage');
     var heroIn = document.querySelector('.hero-in');
-    var lblA = document.querySelector('.lapel .lbl-a'), lblB = document.querySelector('.lapel .lbl-b');
 
     /* інтро першого екрана */
     st.d = 0; render();
     var tl = gsap.timeline({ defaults: { ease: EXPO } });
     tl.fromTo('.hero h1 .ln > span', { yPercent: 105, y: 0 }, { yPercent: 0, y: 0, duration: 0.9, stagger: 0.12 }, 0.05)
-      .fromTo('.hero .chalk', { opacity: 0 }, { opacity: 0.55, duration: 0.6, ease: 'power1.out' }, 0.15)
+      .fromTo('.sw-chalk', { opacity: 0 }, { opacity: 1, duration: 0.9, ease: 'power1.out' }, 0.1)
       .fromTo('.kicker', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6 }, 0.12)
       .fromTo('.hero-lede', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6 }, 0.35)
       .fromTo('.hero-act', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6 }, 0.47)
       .fromTo('.dock', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5 }, 0.6)
-      .set('.hero .needle, .hero .thread', { visibility: 'visible' }, 0.45)
-      .fromTo('.lapel .lbl', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.out' }, 1.5);
-    var draw = gsap.to(st, { d: 1, duration: 1.4, ease: 'power2.inOut', delay: 0.45, onUpdate: render });
+      .set('.sw-live', { visibility: 'visible' }, 0.4);
+    /* голка кладе наметку: рівний темп кравчині з м'яким стартом і зупинкою */
+    var draw = gsap.to(st, { d: 1, duration: 2.1, ease: 'power1.inOut', delay: 0.4, onUpdate: render });
 
-    /* висмикування наметки прокруткою */
+    /* наметку знімають прокруткою: голка йде назад угору й шиє остаточний шов; власне згладжування (без ривка, коли
+       гортають під час інтро — інтро тоді прискорюється й передає естафету) */
+    var sTarget = 0;
+    var WIDE = window.innerWidth >= 1024;
+    /* ПК: довше згладжування — стібки летять ще ≈ 1 с після зупинки колеса */
+    var sTo = gsap.quickTo(st, 's', { duration: WIDE ? 1.0 : 0.7, ease: 'power3.out', onUpdate: render });
+    draw.eventCallback('onComplete', function () { sTo(sTarget); });
     window.ScrollTrigger.create({
       trigger: stage, start: 0,
       end: function () { return stage.offsetTop + stage.offsetHeight - window.innerHeight; },
-      scrub: 0.5,
       onUpdate: function (self) {
-        if (self.progress > 0.002 && draw.isActive()) { draw.progress(1); }
         heroIn.style.transform = 'translate3d(0,' + (-24 * self.progress).toFixed(2) + 'px,0)';
-        st.s = Math.min(1, self.progress / 0.55); render();
-        var k = Math.min(Math.max((st.s - 0.55) / 0.25, 0), 1);
-        lblA.style.opacity = (1 - k).toFixed(2); lblB.style.opacity = k.toFixed(2);
+        sTarget = Math.min(1, self.progress / (WIDE ? 0.6 : 0.82)); /* ПК: політ завершується на 60 % закріплення */
+        if (draw.isActive()) { if (sTarget > 0.001) draw.timeScale(4); return; }
+        sTo(sTarget);
       }
     });
 
@@ -157,7 +249,7 @@
     function sew() {
       seamLine.style.clipPath = 'inset(0 ' + (100 - sw.p * 100).toFixed(2) + '% 0 0)';
       /* вістря йде за швом; svg голки (78 px) не виходить за межі смуги — інакше розширює сторінку на телефоні */
-      var sew_w = seamEdge.clientWidth, sx = Math.min(sw.p * sew_w - 72, sew_w - 78);
+      var sew_w = seamEdge.clientWidth, sx = Math.min(sw.p * sew_w - 94, sew_w - 96);
       seamNeedle.style.transform = 'translateX(' + sx.toFixed(1) + 'px)';
       seamNeedle.style.opacity = (sw.p > 0.01 && sw.p < 0.985 ? 1 : 0);
     }

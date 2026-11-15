@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Крапка.Кави — кав'ярня на Софіївській 3, Київ · концепт</title>
-<meta name="description" content="Концепт сайту Velira для кав'ярні Крапка.Кави: адреса Софіївська 3, графік пн–пт 7:30–20:00, сб–нд 9:00–21:00, меню й читацький Book&amp;Coffee Club.">
+<meta name="description" content="Концепт сайту Velira для кав'ярні Крапка.Кави: легендарне дзеркало, дев'ять кітиків на поличках, значки про Харків, читацький клуб і графік — Софіївська 3.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://veliraweb.com.ua/demo/krapka-kavy/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="uk_UA">
 <meta property="og:url" content="https://veliraweb.com.ua/demo/krapka-kavy/">
 <meta property="og:title" content="Крапка.Кави — концепт сайту від Velira">
-<meta property="og:description" content="Софіївська 3 · пн–пт 7:30–20:00 · сб–нд 9:00–21:00. Меню, читацький клуб і маршрут — без «пишіть в особисті».">
+<meta property="og:description" content="Софіївська 3 · пн–пт 7:30–20:00 · сб–нд 9:00–21:00. Дзеркало, кітики, значки про Харків і читацький клуб.">
 <meta property="og:image" content="https://veliraweb.com.ua/demo/krapka-kavy/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -21,12 +21,12 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/unbounded-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/geologica-var-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/img/ig/cat-pot.webp" as="image" type="image/webp">
 <script>
   (function () {
     var d = document.documentElement;
     d.classList.add('js');
     try { if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('mo'); } catch (e) {}
-    /* живий статус за київським часом — ще до першого малювання картки */
     window.__ks = function (el) {
       try {
         var H = { 0: [9, 21], 1: [7.5, 20], 2: [7.5, 20], 3: [7.5, 20], 4: [7.5, 20], 5: [7.5, 20], 6: [9, 21] };
@@ -35,7 +35,7 @@
           .formatToParts(new Date()).forEach(function (p) { o[p.type] = p.value; });
         var wd = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[o.weekday], h = +o.hour + o.minute / 60, t = H[wd];
         var open = h >= t[0] && h < t[1];
-        var txt = open ? 'Зараз відчинено · до ' + f(t[1]) : (h < t[0] ? 'Зараз зачинено · сьогодні з ' + f(t[0]) : 'Зараз зачинено · завтра з ' + f(H[(wd + 1) % 7][0]));
+        var txt = open ? 'Відчинено · до ' + f(t[1]) : (h < t[0] ? 'Зачинено · сьогодні з ' + f(t[0]) : 'Зачинено · завтра з ' + f(H[(wd + 1) % 7][0]));
         el.classList.add(open ? 'is-open' : 'is-closed'); el.querySelector('[data-status-text]').textContent = txt;
       } catch (e) {}
     };
@@ -44,22 +44,14 @@
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
-  <defs>
-    <filter id="goo" filterUnits="userSpaceOnUse" x="-60" y="-30" width="120" height="60" color-interpolation-filters="sRGB">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="3.6" result="b"/>
-      <feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="g"/>
-      <feComposite in="SourceGraphic" in2="g" operator="atop"/>
-    </filter>
-  </defs>
-</svg>
-
-<a class="skip" href="#menu">До меню</a>
+<a class="skip" href="#shelf">Пропустити дзеркало</a>
 
 <header class="bar" data-bar>
   <nav class="bar__in" aria-label="Головна навігація">
     <a class="bar__brand" href="#top" aria-label="Крапка.Кави — на початок"><span class="bar__dot" aria-hidden="true"></span><span>Крапка.Кави</span></a>
     <span class="bar__links">
+      <a class="bar__link" href="#shelf">Кітики</a>
+      <a class="bar__link" href="#pins">Значки</a>
       <a class="bar__link" href="#menu">Меню</a>
       <a class="bar__link" href="#club">Клуб</a>
       <a class="bar__link" href="#hours">Графік</a>
@@ -69,102 +61,98 @@
 </header>
 
 <main id="top">
-  <section class="hero" aria-labelledby="hero-h">
-    <p class="concept">Концепт Velira для Крапка.Кави. Не&nbsp;офіційний&nbsp;сайт · <a href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">@krapka.kavy<span class="vh"> (відкриється в Instagram)</span></a></p>
-
-    <h1 class="mark" id="hero-h" aria-label="Крапка.Кави"><span class="mark__w" aria-hidden="true">КРАПКА</span><span class="kdot kdot--intro" data-origin aria-hidden="true"><svg class="kdot__svg" viewBox="-60 -30 120 60" focusable="false"><rect class="kdot__bub" x="-46" y="-21" width="92" height="42" rx="21"/><g filter="url(#goo)"><circle class="kdot__d kdot__d1" cx="-20" cy="0" r="6.5"/><circle class="kdot__d kdot__d2" cx="0" cy="0" r="6.5"/><circle class="kdot__d kdot__d3" cx="20" cy="0" r="6.5"/><circle class="kdot__core" cx="0" cy="0" r="20"/></g></svg></span><br class="mark__br"><span class="mark__w" aria-hidden="true">КАВИ</span></h1>
-
-    <div class="hero__grid">
-      <div class="hero__talk">
-        <p class="bio"><span class="bio__l">Кав'ярня з харківським <svg class="heart" viewBox="0 0 24 22" role="img" aria-label="серцем"><path d="M12 21.2 10.5 19.9C5.1 15 1.6 11.8 1.6 7.9 1.6 4.7 4.1 2.2 7.2 2.2c1.8 0 3.5.8 4.8 2.2 1.3-1.4 3-2.2 4.8-2.2 3.1 0 5.6 2.5 5.6 5.7 0 3.9-3.5 7.1-8.9 12L12 21.2Z"/></svg></span> <span class="bio__l">у&nbsp;центрі Києва</span><span class="bio__src">— біо в Instagram</span></p>
-
-        <div class="talk">
-          <p class="ask"><span>Де ви і до котрої сьогодні?</span></p>
-          <p class="from"><span class="from__dot" aria-hidden="true"></span>Крапка.Кави</p>
-          <div class="reply">
-            <p class="reply__addr">Софіївська 3</p>
-            <p class="reply__src">Київ · адреса з біо Instagram</p>
-            <p class="status" data-status><span class="status__dot" aria-hidden="true"></span><span class="status__text" data-status-text>пн–пт 7:30–20:00 · сб–нд 9:00–21:00</span></p><script>window.__ks&&__ks(document.currentScript.previousElementSibling)</script>
-            <div class="actions">
-              <a class="btn btn--ink" href="https://www.google.com/maps/search/?api=1&amp;query=%D0%A1%D0%BE%D1%84%D1%96%D1%97%D0%B2%D1%81%D1%8C%D0%BA%D0%B0%203%2C%20%D0%9A%D0%B8%D1%97%D0%B2" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-3.9 0-7 3-7 6.9 0 5 7 12.1 7 12.1s7-7.1 7-12.1c0-3.9-3.1-6.9-7-6.9Zm0 9.4a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>Прокласти маршрут<span class="vh"> (Google Карти, нова вкладка)</span></a>
-              <a class="btn btn--line" href="https://ig.me/m/krapka.kavy" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.8 3 3 6.6 3 11.2c0 2.5 1.1 4.7 3 6.2V21l3.3-1.8c.9.2 1.8.3 2.7.3 5.2 0 9-3.6 9-8.3S17.2 3 12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Написати в особисті<span class="vh"> (відкриється чат в Instagram)</span></a>
-            </div>
+  <section class="hero" aria-labelledby="hero-h" data-hero>
+    <div class="stage">
+      <div class="stage__text">
+        <p class="concept intro" style="--i:0">Концепт Velira для Крапка.Кави. Не&nbsp;офіційний&nbsp;сайт · <a href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">@krapka.kavy<span class="vh"> (відкриється в Instagram)</span></a></p>
+        <h1 class="mark intro" style="--i:1" id="hero-h">Крапка<span class="mark__dot" aria-hidden="true"></span><span class="vh">.</span>Кави</h1>
+        <p class="bio intro" style="--i:2">Кав'ярня з харківським <svg class="heart" viewBox="0 0 24 22" role="img" aria-label="серцем"><path d="M12 21.2 10.5 19.9C5.1 15 1.6 11.8 1.6 7.9 1.6 4.7 4.1 2.2 7.2 2.2c1.8 0 3.5.8 4.8 2.2 1.3-1.4 3-2.2 4.8-2.2 3.1 0 5.6 2.5 5.6 5.7 0 3.9-3.5 7.1-8.9 12L12 21.2Z"/></svg> у&nbsp;центрі Києва<span class="bio__src">— біо в Instagram</span></p>
+        <div class="cap intro" style="--i:3" data-cap>
+          <span class="cap__dots" aria-hidden="true"><span class="cap__dot is-on"></span><span class="cap__dot"></span><span class="cap__dot"></span><span class="cap__dot"></span></span>
+          <p class="cap__t" data-cap-t>Кітик на полиці біля кавоварки «харків ♥» — один із дев’яти</p>
+          <a class="src" href="https://www.instagram.com/p/C-VB3g_tbez/?img_index=1" rel="noopener" target="_blank" data-cap-a>Фото з Instagram @krapka.kavy · допис<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> (відкриється в Instagram)</span></a>
+        </div>
+        <div class="here intro" style="--i:4">
+          <p class="here__line"><span class="status" data-status><span class="status__dot" aria-hidden="true"></span><span data-status-text>пн–пт 7:30–20:00 · сб–нд 9:00–21:00</span></span><script>window.__ks&&__ks(document.currentScript.parentNode.querySelector('[data-status]'))</script><span class="here__addr">Софіївська 3</span></p>
+          <div class="actions">
+            <a class="btn btn--ink" href="https://www.google.com/maps/search/?api=1&amp;query=%D0%A1%D0%BE%D1%84%D1%96%D1%97%D0%B2%D1%81%D1%8C%D0%BA%D0%B0%203%2C%20%D0%9A%D0%B8%D1%97%D0%B2" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-3.9 0-7 3-7 6.9 0 5 7 12.1 7 12.1s7-7.1 7-12.1c0-3.9-3.1-6.9-7-6.9Zm0 9.4a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>Маршрут<span class="vh"> на Софіївську 3 (Google Карти, нова вкладка)</span></a>
+            <a class="btn btn--line" href="https://ig.me/m/krapka.kavy" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.8 3 3 6.6 3 11.2c0 2.5 1.1 4.7 3 6.2V21l3.3-1.8c.9.2 1.8.3 2.7.3 5.2 0 9-3.6 9-8.3S17.2 3 12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Написати<span class="vh"> в особисті (чат в Instagram)</span></a>
           </div>
         </div>
       </div>
-
-      <figure class="photo photo--day">
-        <picture>
-          <source srcset="assets/img/book-cup.webp" type="image/webp">
-          <img src="assets/img/book-cup.jpg" width="900" height="1124" alt="Згенероване зображення: розгорнута книжка і білий паперовий стаканчик без логотипа на круглому мармуровому столику біля вікна" decoding="async">
-        </picture>
-        <figcaption>Згенероване зображення для концепту. Не фото кав'ярні — сюди стане ваше.</figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <section class="sec menu" id="menu" aria-labelledby="menu-h" data-sec>
-    <p class="ask" data-in><span>А що у вас у меню?</span></p>
-    <p class="from" data-in><span class="from__dot" aria-hidden="true"></span>Крапка.Кави</p>
-    <div class="reply reply--msg reply--menu" data-in>
-      <div class="msg__head">
-      <h2 class="h2 h2--msg" id="menu-h">Чотири розділи<span class="hdot" data-target aria-hidden="true"><svg class="kdot__svg" viewBox="-60 -30 120 60" focusable="false"><circle class="kdot__core" cx="0" cy="0" r="20"/></svg></span></h2>
-      <p class="lead">Зараз меню живе лише в хайлайтах Instagram. Тут воно стане текстом, який відкривається з&nbsp;будь-якого телефона без застосунку.</p>
-      </div>
-      <div class="msg__body">
-      <ul class="list" aria-describedby="menu-note">
-        <li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Кава</span><span class="row__slot">позиції й ціни — впишемо з хайлайта «Кава»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
-        <li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Гарячі напої</span><span class="row__slot">позиції й ціни — з хайлайта «Гарячі напої»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
-        <li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Холодні напої</span><span class="row__slot">позиції й ціни — з хайлайта «Холодні напої»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
-        <li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Смаколики</span><span class="row__slot">що є до кави — з хайлайта «Смаколики»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
-      </ul>
-      <p class="reply__note" id="menu-note">Усі чотири розділи зараз — у хайлайтах Instagram; кожен рядок відкриває профіль @krapka.kavy.</p>
+      <div class="mirror" data-mirror><span class="mirror__ledge" aria-hidden="true"></span><div class="mirror__lift">
+        <div class="glass">
+          <figure class="refl is-on" data-refl="0" data-cap="Кітик на полиці біля кавоварки «харків ♥» — один із дев’яти" data-href="https://www.instagram.com/p/C-VB3g_tbez/?img_index=1"><picture><source srcset="assets/img/ig/cat-pot.webp" type="image/webp"><img src="assets/img/ig/cat-pot.jpg" width="1080" height="1080" alt="Кітик-фігурка на полиці біля чорної гейзерної кавоварки з написом «КРАПКА КАВИ» і «харків» із серцем" decoding="async" fetchpriority="high"></picture></figure><figure class="refl" data-refl="1" data-cap="«Те саме легендарне дзеркало» — значком, на тлі самого дзеркала" data-href="https://www.instagram.com/p/DFDf_YOtgL4/?img_index=1" aria-hidden="true"><picture><source srcset="assets/img/ig/pin-mirror.webp" type="image/webp"><img src="assets/img/ig/pin-mirror.jpg" width="1080" height="1080" alt="Значок у формі чорного різьбленого дзеркала в пальцях на тлі самого дзеркала кав’ярні, розмитого" decoding="async" loading="lazy"></picture></figure><figure class="refl" data-refl="2" data-cap="«Такий знайомий багатьом із нас трамвайчик» — значок" data-href="https://www.instagram.com/p/DFDf_YOtgL4/?img_index=3" aria-hidden="true"><picture><source srcset="assets/img/ig/pin-tram.webp" type="image/webp"><img src="assets/img/ig/pin-tram.jpg" width="1080" height="1080" alt="Значок-трамвайчик біля листівки з таким самим трамваєм на вулиці" decoding="async" loading="lazy"></picture></figure><figure class="refl" data-refl="3" data-cap="«Домашній затишок із котиком у вікні» — значок" data-href="https://www.instagram.com/p/DFDf_YOtgL4/?img_index=4" aria-hidden="true"><picture><source srcset="assets/img/ig/pin-window.webp" type="image/webp"><img src="assets/img/ig/pin-window.jpg" width="1080" height="1080" alt="Значок — вікно панельки з котиком, біля листівки з будинком уночі" decoding="async" loading="lazy"></picture></figure>
+          <span class="glass__sheen" aria-hidden="true"></span>
+          <span class="glass__fog" aria-hidden="true"></span><span class="glass__veil" aria-hidden="true"></span>
+          <span class="drip drip--1" aria-hidden="true"></span><span class="drip drip--2" aria-hidden="true" style="--dd:.35s"></span><span class="drip drip--3" aria-hidden="true" style="--dd:.7s"></span>
+        </div>
+        <svg class="mirror__frame" viewBox="0 0 400 560" aria-hidden="true" focusable="false">
+<defs><linearGradient id="lac" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a282e"/><stop offset=".45" stop-color="#0e0d10"/><stop offset="1" stop-color="#050506"/></linearGradient></defs>
+<path fill="url(#lac)" fill-rule="evenodd" d="M375.1 300.0 L375.0 302.9 L374.7 305.8 L374.2 308.7 L373.7 311.6 L372.9 314.4 L372.1 317.3 L371.2 320.0 L370.2 322.8 L369.3 325.5 L368.3 328.2 L367.4 330.9 L366.6 333.6 L365.9 336.3 L365.3 339.0 L364.8 341.7 L364.4 344.5 L364.2 347.3 L364.0 350.2 L364.0 353.0 L364.0 356.0 L364.0 358.9 L364.1 361.9 L364.2 364.9 L364.2 367.9 L364.1 371.0 L363.9 373.9 L363.6 376.9 L363.1 379.8 L362.5 382.6 L361.7 385.3 L360.8 388.0 L359.6 390.5 L358.4 393.0 L356.9 395.4 L355.4 397.6 L353.8 399.8 L352.1 402.0 L350.4 404.0 L348.7 406.1 L347.0 408.1 L345.4 410.2 L343.8 412.3 L342.3 414.4 L341.0 416.6 L339.7 418.9 L338.5 421.3 L337.4 423.7 L336.5 426.3 L335.5 428.9 L334.7 431.6 L333.8 434.4 L333.0 437.2 L332.2 440.0 L331.3 442.8 L330.3 445.5 L329.2 448.2 L328.1 450.8 L326.8 453.2 L325.3 455.5 L323.8 457.7 L322.1 459.7 L320.3 461.5 L318.4 463.1 L316.4 464.6 L314.3 466.0 L312.1 467.2 L309.9 468.3 L307.7 469.4 L305.5 470.5 L303.3 471.6 L301.2 472.7 L299.1 473.8 L297.1 475.1 L295.2 476.4 L293.3 477.9 L291.5 479.6 L289.8 481.3 L288.1 483.2 L286.5 485.2 L284.9 487.3 L283.3 489.4 L281.7 491.6 L280.1 493.8 L278.4 496.0 L276.7 498.0 L274.9 500.0 L273.1 501.9 L271.1 503.5 L269.1 505.0 L267.1 506.3 L265.0 507.4 L262.8 508.3 L260.5 509.0 L258.3 509.6 L256.0 510.0 L253.7 510.3 L251.3 510.6 L249.0 510.9 L246.7 511.1 L244.5 511.5 L242.3 511.9 L240.1 512.6 L237.9 513.3 L235.8 514.3 L233.7 515.5 L231.6 516.9 L229.5 518.4 L227.4 520.2 L225.3 522.1 L223.2 524.1 L221.0 526.1 L218.8 528.2 L216.6 530.1 L214.3 532.0 L212.0 533.7 L209.7 535.2 L207.3 536.4 L204.9 537.2 L202.4 537.8 L200.0 538.0 L197.6 537.8 L195.1 537.2 L192.7 536.4 L190.3 535.2 L188.0 533.7 L185.7 532.0 L183.4 530.1 L181.2 528.2 L179.0 526.1 L176.8 524.1 L174.7 522.1 L172.6 520.2 L170.5 518.4 L168.4 516.9 L166.3 515.5 L164.2 514.3 L162.1 513.3 L159.9 512.6 L157.7 511.9 L155.5 511.5 L153.3 511.1 L151.0 510.9 L148.7 510.6 L146.3 510.3 L144.0 510.0 L141.7 509.6 L139.5 509.0 L137.2 508.3 L135.0 507.4 L132.9 506.3 L130.9 505.0 L128.9 503.5 L126.9 501.9 L125.1 500.0 L123.3 498.0 L121.6 496.0 L119.9 493.8 L118.3 491.6 L116.7 489.4 L115.1 487.3 L113.5 485.2 L111.9 483.2 L110.2 481.3 L108.5 479.6 L106.7 477.9 L104.8 476.4 L102.9 475.1 L100.9 473.8 L98.8 472.7 L96.7 471.6 L94.5 470.5 L92.3 469.4 L90.1 468.3 L87.9 467.2 L85.7 466.0 L83.6 464.6 L81.6 463.1 L79.7 461.5 L77.9 459.7 L76.2 457.7 L74.7 455.5 L73.2 453.2 L71.9 450.8 L70.8 448.2 L69.7 445.5 L68.7 442.8 L67.8 440.0 L67.0 437.2 L66.2 434.4 L65.3 431.6 L64.5 428.9 L63.5 426.3 L62.6 423.7 L61.5 421.3 L60.3 418.9 L59.0 416.6 L57.7 414.4 L56.2 412.3 L54.6 410.2 L53.0 408.1 L51.3 406.1 L49.6 404.0 L47.9 402.0 L46.2 399.8 L44.6 397.6 L43.1 395.4 L41.6 393.0 L40.4 390.5 L39.2 388.0 L38.3 385.3 L37.5 382.6 L36.9 379.8 L36.4 376.9 L36.1 373.9 L35.9 371.0 L35.8 367.9 L35.8 364.9 L35.9 361.9 L36.0 358.9 L36.0 356.0 L36.0 353.0 L36.0 350.2 L35.8 347.3 L35.6 344.5 L35.2 341.7 L34.7 339.0 L34.1 336.3 L33.4 333.6 L32.6 330.9 L31.7 328.2 L30.7 325.5 L29.8 322.8 L28.8 320.0 L27.9 317.3 L27.1 314.4 L26.3 311.6 L25.8 308.7 L25.3 305.8 L25.0 302.9 L24.9 300.0 L25.0 297.1 L25.3 294.2 L25.8 291.3 L26.3 288.4 L27.1 285.6 L27.9 282.7 L28.8 280.0 L29.8 277.2 L30.7 274.5 L31.7 271.8 L32.6 269.1 L33.4 266.4 L34.1 263.7 L34.7 261.0 L35.2 258.3 L35.6 255.5 L35.8 252.7 L36.0 249.8 L36.0 247.0 L36.0 244.0 L36.0 241.1 L35.9 238.1 L35.8 235.1 L35.8 232.1 L35.9 229.0 L36.1 226.1 L36.4 223.1 L36.9 220.2 L37.5 217.4 L38.3 214.7 L39.2 212.0 L40.4 209.5 L41.6 207.0 L43.1 204.6 L44.6 202.4 L46.2 200.2 L47.9 198.0 L49.6 196.0 L51.3 193.9 L53.0 191.9 L54.6 189.8 L56.2 187.7 L57.7 185.6 L59.0 183.4 L60.3 181.1 L61.5 178.7 L62.5 176.3 L63.5 173.7 L64.4 171.0 L65.3 168.3 L66.1 165.5 L66.9 162.7 L67.7 159.8 L68.5 157.0 L69.4 154.1 L70.3 151.3 L71.3 148.5 L72.4 145.8 L73.6 143.1 L74.8 140.5 L76.1 138.0 L77.5 135.6 L79.0 133.2 L80.5 130.9 L82.1 128.7 L83.7 126.5 L85.4 124.5 L87.2 122.5 L89.0 120.6 L90.9 118.9 L92.9 117.3 L94.9 115.7 L97.0 114.3 L99.1 113.0 L101.3 111.8 L103.4 110.6 L105.6 109.5 L107.8 108.3 L109.9 107.0 L112.0 105.8 L114.0 104.4 L116.0 102.9 L118.0 101.4 L119.9 99.8 L121.8 98.1 L123.8 96.4 L125.7 94.7 L127.7 93.1 L129.7 91.5 L131.7 90.0 L133.8 88.6 L135.9 87.3 L138.0 86.0 L140.2 84.9 L142.4 83.8 L144.6 82.8 L146.8 81.8 L149.0 80.7 L151.2 79.6 L153.4 78.4 L155.5 77.0 L157.7 75.5 L159.8 73.8 L162.0 72.0 L164.1 69.9 L166.2 67.7 L168.3 65.3 L170.5 62.8 L172.7 60.2 L174.9 57.6 L177.2 55.0 L179.6 52.4 L182.0 50.0 L184.4 47.7 L186.9 45.7 L189.5 43.9 L192.1 42.5 L194.7 41.5 L197.3 40.8 L200.0 40.6 L202.7 40.8 L205.3 41.5 L207.9 42.5 L210.5 43.9 L213.1 45.7 L215.6 47.7 L218.0 50.0 L220.4 52.4 L222.8 55.0 L225.1 57.6 L227.3 60.2 L229.5 62.8 L231.7 65.3 L233.8 67.7 L235.9 69.9 L238.0 72.0 L240.2 73.8 L242.3 75.5 L244.5 77.0 L246.6 78.4 L248.8 79.6 L251.0 80.7 L253.2 81.8 L255.4 82.8 L257.6 83.8 L259.8 84.9 L262.0 86.0 L264.1 87.3 L266.2 88.6 L268.3 90.0 L270.3 91.5 L272.3 93.1 L274.3 94.7 L276.2 96.4 L278.2 98.1 L280.1 99.8 L282.0 101.4 L284.0 102.9 L286.0 104.4 L288.0 105.8 L290.1 107.0 L292.2 108.3 L294.4 109.5 L296.6 110.6 L298.7 111.8 L300.9 113.0 L303.0 114.3 L305.1 115.7 L307.1 117.3 L309.1 118.9 L311.0 120.6 L312.8 122.5 L314.6 124.5 L316.3 126.5 L317.9 128.7 L319.5 130.9 L321.0 133.2 L322.5 135.6 L323.9 138.0 L325.2 140.5 L326.4 143.1 L327.6 145.8 L328.7 148.5 L329.7 151.3 L330.6 154.1 L331.5 157.0 L332.3 159.8 L333.1 162.7 L333.9 165.5 L334.7 168.3 L335.6 171.0 L336.5 173.7 L337.5 176.3 L338.5 178.7 L339.7 181.1 L341.0 183.4 L342.3 185.6 L343.8 187.7 L345.4 189.8 L347.0 191.9 L348.7 193.9 L350.4 196.0 L352.1 198.0 L353.8 200.2 L355.4 202.4 L356.9 204.6 L358.4 207.0 L359.6 209.5 L360.8 212.0 L361.7 214.7 L362.5 217.4 L363.1 220.2 L363.6 223.1 L363.9 226.1 L364.1 229.0 L364.2 232.1 L364.2 235.1 L364.1 238.1 L364.0 241.1 L364.0 244.0 L364.0 247.0 L364.0 249.8 L364.2 252.7 L364.4 255.5 L364.8 258.3 L365.3 261.0 L365.9 263.7 L366.6 266.4 L367.4 269.1 L368.3 271.8 L369.3 274.5 L370.2 277.2 L371.2 280.0 L372.1 282.7 L372.9 285.6 L373.7 288.4 L374.2 291.3 L374.7 294.2 L375.0 297.1Z M84 300 a116 166 0 1 0 232 0 a116 166 0 1 0 -232 0Z M357.6 329.1 Q350.2 323.8 341.6 322.0 Q332.9 320.5 332.8 326.3 Q331.6 332.0 340.4 332.4 Q349.2 332.6 357.6 329.1Z M345.3 385.0 Q339.2 378.2 331.3 374.5 Q323.2 371.0 321.8 376.6 Q319.3 381.9 327.7 384.3 Q336.3 386.5 345.3 385.0Z M321.4 434.5 Q317.3 426.4 310.5 420.8 Q303.6 415.4 300.7 420.5 Q297.1 425.0 304.6 429.5 Q312.3 433.7 321.4 434.5Z M287.5 473.6 Q285.8 464.6 280.9 457.3 Q275.8 450.2 271.7 454.3 Q266.9 457.6 272.8 464.0 Q279.0 470.2 287.5 473.6Z M245.9 498.9 Q247.2 489.8 245.0 481.3 Q242.4 473.0 237.2 475.5 Q231.6 477.0 235.1 485.0 Q239.0 492.9 245.9 498.9Z M200.0 507.6 Q204.4 499.6 205.2 490.9 Q205.8 482.1 200.0 482.6 Q194.2 482.1 194.8 490.9 Q195.6 499.6 200.0 507.6Z M154.1 498.9 Q161.0 492.9 164.9 485.0 Q168.4 477.0 162.8 475.5 Q157.6 473.0 155.0 481.3 Q152.8 489.8 154.1 498.9Z M112.5 473.6 Q121.0 470.2 127.2 464.0 Q133.1 457.6 128.3 454.3 Q124.2 450.2 119.1 457.3 Q114.2 464.6 112.5 473.6Z M78.6 434.5 Q87.7 433.7 95.4 429.5 Q102.9 425.0 99.3 420.5 Q96.4 415.4 89.5 420.8 Q82.7 426.4 78.6 434.5Z M54.7 385.0 Q63.7 386.5 72.3 384.3 Q80.7 381.9 78.2 376.6 Q76.8 371.0 68.7 374.5 Q60.8 378.2 54.7 385.0Z M42.4 329.1 Q50.8 332.6 59.6 332.4 Q68.4 332.0 67.2 326.3 Q67.1 320.5 58.4 322.0 Q49.8 323.8 42.4 329.1Z M42.4 270.9 Q49.8 276.2 58.4 278.0 Q67.1 279.5 67.2 273.7 Q68.4 268.0 59.6 267.6 Q50.8 267.4 42.4 270.9Z M54.7 215.0 Q60.8 221.8 68.7 225.5 Q76.8 229.0 78.2 223.4 Q80.7 218.1 72.3 215.7 Q63.7 213.5 54.7 215.0Z M78.6 165.5 Q82.7 173.6 89.5 179.2 Q96.4 184.6 99.3 179.5 Q102.9 175.0 95.4 170.5 Q87.7 166.3 78.6 165.5Z M112.5 126.4 Q114.2 135.4 119.1 142.7 Q124.2 149.8 128.3 145.7 Q133.1 142.4 127.2 136.0 Q121.0 129.8 112.5 126.4Z M287.5 126.4 Q279.0 129.8 272.8 136.0 Q266.9 142.4 271.7 145.7 Q275.8 149.8 280.9 142.7 Q285.8 135.4 287.5 126.4Z M321.4 165.5 Q312.3 166.3 304.6 170.5 Q297.1 175.0 300.7 179.5 Q303.6 184.6 310.5 179.2 Q317.3 173.6 321.4 165.5Z M345.3 215.0 Q336.3 213.5 327.7 215.7 Q319.3 218.1 321.8 223.4 Q323.2 229.0 331.3 225.5 Q339.2 221.8 345.3 215.0Z M357.6 270.9 Q349.2 267.4 340.4 267.6 Q331.6 268.0 332.8 273.7 Q332.9 279.5 341.6 278.0 Q350.2 276.2 357.6 270.9Z M325.0 300.0 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M319.8 350.3 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M304.6 396.5 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M280.7 434.8 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M249.9 462.3 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M214.9 476.6 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M178.3 476.6 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M143.3 462.3 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M112.5 434.8 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M88.6 396.5 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M73.4 350.3 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M68.2 300.0 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M73.4 249.7 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M88.6 203.5 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M112.5 165.2 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M143.3 137.7 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M249.9 137.7 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M280.7 165.2 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M304.6 203.5 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z M319.8 249.7 a3.4 3.4 0 1 0 6.8 0 a3.4 3.4 0 1 0 -6.8 0Z"/>
+<path fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.4" d="M375.1 300.0 L375.0 302.9 L374.7 305.8 L374.2 308.7 L373.7 311.6 L372.9 314.4 L372.1 317.3 L371.2 320.0 L370.2 322.8 L369.3 325.5 L368.3 328.2 L367.4 330.9 L366.6 333.6 L365.9 336.3 L365.3 339.0 L364.8 341.7 L364.4 344.5 L364.2 347.3 L364.0 350.2 L364.0 353.0 L364.0 356.0 L364.0 358.9 L364.1 361.9 L364.2 364.9 L364.2 367.9 L364.1 371.0 L363.9 373.9 L363.6 376.9 L363.1 379.8 L362.5 382.6 L361.7 385.3 L360.8 388.0 L359.6 390.5 L358.4 393.0 L356.9 395.4 L355.4 397.6 L353.8 399.8 L352.1 402.0 L350.4 404.0 L348.7 406.1 L347.0 408.1 L345.4 410.2 L343.8 412.3 L342.3 414.4 L341.0 416.6 L339.7 418.9 L338.5 421.3 L337.4 423.7 L336.5 426.3 L335.5 428.9 L334.7 431.6 L333.8 434.4 L333.0 437.2 L332.2 440.0 L331.3 442.8 L330.3 445.5 L329.2 448.2 L328.1 450.8 L326.8 453.2 L325.3 455.5 L323.8 457.7 L322.1 459.7 L320.3 461.5 L318.4 463.1 L316.4 464.6 L314.3 466.0 L312.1 467.2 L309.9 468.3 L307.7 469.4 L305.5 470.5 L303.3 471.6 L301.2 472.7 L299.1 473.8 L297.1 475.1 L295.2 476.4 L293.3 477.9 L291.5 479.6 L289.8 481.3 L288.1 483.2 L286.5 485.2 L284.9 487.3 L283.3 489.4 L281.7 491.6 L280.1 493.8 L278.4 496.0 L276.7 498.0 L274.9 500.0 L273.1 501.9 L271.1 503.5 L269.1 505.0 L267.1 506.3 L265.0 507.4 L262.8 508.3 L260.5 509.0 L258.3 509.6 L256.0 510.0 L253.7 510.3 L251.3 510.6 L249.0 510.9 L246.7 511.1 L244.5 511.5 L242.3 511.9 L240.1 512.6 L237.9 513.3 L235.8 514.3 L233.7 515.5 L231.6 516.9 L229.5 518.4 L227.4 520.2 L225.3 522.1 L223.2 524.1 L221.0 526.1 L218.8 528.2 L216.6 530.1 L214.3 532.0 L212.0 533.7 L209.7 535.2 L207.3 536.4 L204.9 537.2 L202.4 537.8 L200.0 538.0 L197.6 537.8 L195.1 537.2 L192.7 536.4 L190.3 535.2 L188.0 533.7 L185.7 532.0 L183.4 530.1 L181.2 528.2 L179.0 526.1 L176.8 524.1 L174.7 522.1 L172.6 520.2 L170.5 518.4 L168.4 516.9 L166.3 515.5 L164.2 514.3 L162.1 513.3 L159.9 512.6 L157.7 511.9 L155.5 511.5 L153.3 511.1 L151.0 510.9 L148.7 510.6 L146.3 510.3 L144.0 510.0 L141.7 509.6 L139.5 509.0 L137.2 508.3 L135.0 507.4 L132.9 506.3 L130.9 505.0 L128.9 503.5 L126.9 501.9 L125.1 500.0 L123.3 498.0 L121.6 496.0 L119.9 493.8 L118.3 491.6 L116.7 489.4 L115.1 487.3 L113.5 485.2 L111.9 483.2 L110.2 481.3 L108.5 479.6 L106.7 477.9 L104.8 476.4 L102.9 475.1 L100.9 473.8 L98.8 472.7 L96.7 471.6 L94.5 470.5 L92.3 469.4 L90.1 468.3 L87.9 467.2 L85.7 466.0 L83.6 464.6 L81.6 463.1 L79.7 461.5 L77.9 459.7 L76.2 457.7 L74.7 455.5 L73.2 453.2 L71.9 450.8 L70.8 448.2 L69.7 445.5 L68.7 442.8 L67.8 440.0 L67.0 437.2 L66.2 434.4 L65.3 431.6 L64.5 428.9 L63.5 426.3 L62.6 423.7 L61.5 421.3 L60.3 418.9 L59.0 416.6 L57.7 414.4 L56.2 412.3 L54.6 410.2 L53.0 408.1 L51.3 406.1 L49.6 404.0 L47.9 402.0 L46.2 399.8 L44.6 397.6 L43.1 395.4 L41.6 393.0 L40.4 390.5 L39.2 388.0 L38.3 385.3 L37.5 382.6 L36.9 379.8 L36.4 376.9 L36.1 373.9 L35.9 371.0 L35.8 367.9 L35.8 364.9 L35.9 361.9 L36.0 358.9 L36.0 356.0 L36.0 353.0 L36.0 350.2 L35.8 347.3 L35.6 344.5 L35.2 341.7 L34.7 339.0 L34.1 336.3 L33.4 333.6 L32.6 330.9 L31.7 328.2 L30.7 325.5 L29.8 322.8 L28.8 320.0 L27.9 317.3 L27.1 314.4 L26.3 311.6 L25.8 308.7 L25.3 305.8 L25.0 302.9 L24.9 300.0 L25.0 297.1 L25.3 294.2 L25.8 291.3 L26.3 288.4 L27.1 285.6 L27.9 282.7 L28.8 280.0 L29.8 277.2 L30.7 274.5 L31.7 271.8 L32.6 269.1 L33.4 266.4 L34.1 263.7 L34.7 261.0 L35.2 258.3 L35.6 255.5 L35.8 252.7 L36.0 249.8 L36.0 247.0 L36.0 244.0 L36.0 241.1 L35.9 238.1 L35.8 235.1 L35.8 232.1 L35.9 229.0 L36.1 226.1 L36.4 223.1 L36.9 220.2 L37.5 217.4 L38.3 214.7 L39.2 212.0 L40.4 209.5 L41.6 207.0 L43.1 204.6 L44.6 202.4 L46.2 200.2 L47.9 198.0 L49.6 196.0 L51.3 193.9 L53.0 191.9 L54.6 189.8 L56.2 187.7 L57.7 185.6 L59.0 183.4 L60.3 181.1 L61.5 178.7 L62.5 176.3 L63.5 173.7 L64.4 171.0 L65.3 168.3 L66.1 165.5 L66.9 162.7 L67.7 159.8 L68.5 157.0 L69.4 154.1 L70.3 151.3 L71.3 148.5 L72.4 145.8 L73.6 143.1 L74.8 140.5 L76.1 138.0 L77.5 135.6 L79.0 133.2 L80.5 130.9 L82.1 128.7 L83.7 126.5 L85.4 124.5 L87.2 122.5 L89.0 120.6 L90.9 118.9 L92.9 117.3 L94.9 115.7 L97.0 114.3 L99.1 113.0 L101.3 111.8 L103.4 110.6 L105.6 109.5 L107.8 108.3 L109.9 107.0 L112.0 105.8 L114.0 104.4 L116.0 102.9 L118.0 101.4 L119.9 99.8 L121.8 98.1 L123.8 96.4 L125.7 94.7 L127.7 93.1 L129.7 91.5 L131.7 90.0 L133.8 88.6 L135.9 87.3 L138.0 86.0 L140.2 84.9 L142.4 83.8 L144.6 82.8 L146.8 81.8 L149.0 80.7 L151.2 79.6 L153.4 78.4 L155.5 77.0 L157.7 75.5 L159.8 73.8 L162.0 72.0 L164.1 69.9 L166.2 67.7 L168.3 65.3 L170.5 62.8 L172.7 60.2 L174.9 57.6 L177.2 55.0 L179.6 52.4 L182.0 50.0 L184.4 47.7 L186.9 45.7 L189.5 43.9 L192.1 42.5 L194.7 41.5 L197.3 40.8 L200.0 40.6 L202.7 40.8 L205.3 41.5 L207.9 42.5 L210.5 43.9 L213.1 45.7 L215.6 47.7 L218.0 50.0 L220.4 52.4 L222.8 55.0 L225.1 57.6 L227.3 60.2 L229.5 62.8 L231.7 65.3 L233.8 67.7 L235.9 69.9 L238.0 72.0 L240.2 73.8 L242.3 75.5 L244.5 77.0 L246.6 78.4 L248.8 79.6 L251.0 80.7 L253.2 81.8 L255.4 82.8 L257.6 83.8 L259.8 84.9 L262.0 86.0 L264.1 87.3 L266.2 88.6 L268.3 90.0 L270.3 91.5 L272.3 93.1 L274.3 94.7 L276.2 96.4 L278.2 98.1 L280.1 99.8 L282.0 101.4 L284.0 102.9 L286.0 104.4 L288.0 105.8 L290.1 107.0 L292.2 108.3 L294.4 109.5 L296.6 110.6 L298.7 111.8 L300.9 113.0 L303.0 114.3 L305.1 115.7 L307.1 117.3 L309.1 118.9 L311.0 120.6 L312.8 122.5 L314.6 124.5 L316.3 126.5 L317.9 128.7 L319.5 130.9 L321.0 133.2 L322.5 135.6 L323.9 138.0 L325.2 140.5 L326.4 143.1 L327.6 145.8 L328.7 148.5 L329.7 151.3 L330.6 154.1 L331.5 157.0 L332.3 159.8 L333.1 162.7 L333.9 165.5 L334.7 168.3 L335.6 171.0 L336.5 173.7 L337.5 176.3 L338.5 178.7 L339.7 181.1 L341.0 183.4 L342.3 185.6 L343.8 187.7 L345.4 189.8 L347.0 191.9 L348.7 193.9 L350.4 196.0 L352.1 198.0 L353.8 200.2 L355.4 202.4 L356.9 204.6 L358.4 207.0 L359.6 209.5 L360.8 212.0 L361.7 214.7 L362.5 217.4 L363.1 220.2 L363.6 223.1 L363.9 226.1 L364.1 229.0 L364.2 232.1 L364.2 235.1 L364.1 238.1 L364.0 241.1 L364.0 244.0 L364.0 247.0 L364.0 249.8 L364.2 252.7 L364.4 255.5 L364.8 258.3 L365.3 261.0 L365.9 263.7 L366.6 266.4 L367.4 269.1 L368.3 271.8 L369.3 274.5 L370.2 277.2 L371.2 280.0 L372.1 282.7 L372.9 285.6 L373.7 288.4 L374.2 291.3 L374.7 294.2 L375.0 297.1Z" transform="translate(200 300) scale(.985) translate(-200 -300)"/>
+<path class="mirror__rim" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.2" d="M81 300 a119 169 0 1 0 238 0 a119 169 0 1 0 -238 0Z"/>
+<path class="mirror__heart" fill="#e3343d" d=" M200.0 79.4 C196.8 76.2 187.4 69.9 187.4 63.6 C187.4 58.4 192.7 55.2 196.3 56.3 C198.4 56.8 200.0 58.4 200.0 60.5 C200.0 58.4 201.6 56.8 203.7 56.3 C207.3 55.2 212.6 58.4 212.6 63.6 C212.6 69.9 203.2 76.2 200.0 79.4Z"/>
+</svg></div>
       </div>
     </div>
   </section>
 
-  <div class="night-stage">
-    <section class="club" id="club" aria-labelledby="club-h" data-sec data-night>
+  <section class="sec shelf" id="shelf" aria-labelledby="shelf-h">
+    <div class="sec__head">
+      <h2 class="h2" id="shelf-h" data-in>Дев'ять кітиків на&nbsp;поличках</h2>
+      <p class="lead" data-in>Міні-квест «Крапки»: прийти, замовити «укусность», знайти всіх кітиків на поличках і показати баристі, де вони. «Їх всього 9» — за всіх дев'ятьох у&nbsp;дописі обіцяли цукерку.</p>
+      <p class="note" data-in>Квест — з <a href="https://www.instagram.com/p/C-VB3g_tbez/" rel="noopener" target="_blank">допису 6 серпня 2024<span class="vh"> (відкриється в Instagram)</span></a>. Чи діє він зараз — уточнимо у вас.</p>
+    </div>
+    <div class="shelf__scroll" data-shelf tabindex="0" role="region" aria-label="Полиця: три кітики на фото, шість — шукати наживо">
+      <ol class="shelf__track"><li class="nest nest--cat" data-in><a class="nest__ph" href="https://www.instagram.com/p/C-VB3g_tbez/?img_index=2" rel="noopener" target="_blank"><picture><source srcset="assets/img/ig/cat-white.webp" type="image/webp"><img src="assets/img/ig/cat-white.jpg" width="900" height="900" alt="Біла фігурка кітика з рожевим бантиком іде полицею" decoding="async" loading="lazy"></picture><span class="nest__src">Фото з Instagram @krapka.kavy</span><span class="vh"> — допис про квест (відкриється в Instagram)</span></a><span class="nest__n">№1</span></li><li class="nest nest--cat" data-in><a class="nest__ph" href="https://www.instagram.com/p/C-VB3g_tbez/?img_index=3" rel="noopener" target="_blank"><picture><source srcset="assets/img/ig/cat-tabby.webp" type="image/webp"><img src="assets/img/ig/cat-tabby.jpg" width="900" height="900" alt="Смугаста фігурка кітика перед білою чашкою" decoding="async" loading="lazy"></picture><span class="nest__src">Фото з Instagram @krapka.kavy</span><span class="vh"> — допис про квест (відкриється в Instagram)</span></a><span class="nest__n">№2</span></li><li class="nest nest--cat" data-in><a class="nest__ph" href="https://www.instagram.com/p/C-VB3g_tbez/?img_index=1" rel="noopener" target="_blank"><picture><source srcset="assets/img/ig/cat-pot.webp" type="image/webp"><img src="assets/img/ig/cat-pot.jpg" width="1080" height="1080" alt="Кітик-фігурка біля кавоварки «КРАПКА КАВИ · харків»" decoding="async" loading="lazy"></picture><span class="nest__src">Фото з Instagram @krapka.kavy</span><span class="vh"> — допис про квест (відкриється в Instagram)</span></a><span class="nest__n">№3</span></li><li class="nest nest--empty" data-in><span class="nest__ph nest__ph--empty"><span class="nest__q" aria-hidden="true">?</span><span class="nest__t">шукайте на поличках наживо</span></span><span class="nest__n">№4</span></li><li class="nest nest--empty" data-in><span class="nest__ph nest__ph--empty"><span class="nest__q" aria-hidden="true">?</span><span class="nest__t">шукайте на поличках наживо</span></span><span class="nest__n">№5</span></li><li class="nest nest--empty" data-in><span class="nest__ph nest__ph--empty"><span class="nest__q" aria-hidden="true">?</span><span class="nest__t">шукайте на поличках наживо</span></span><span class="nest__n">№6</span></li><li class="nest nest--empty" data-in><span class="nest__ph nest__ph--empty"><span class="nest__q" aria-hidden="true">?</span><span class="nest__t">шукайте на поличках наживо</span></span><span class="nest__n">№7</span></li><li class="nest nest--empty" data-in><span class="nest__ph nest__ph--empty"><span class="nest__q" aria-hidden="true">?</span><span class="nest__t">шукайте на поличках наживо</span></span><span class="nest__n">№8</span></li><li class="nest nest--empty" data-in><span class="nest__ph nest__ph--empty"><span class="nest__q" aria-hidden="true">?</span><span class="nest__t">шукайте на поличках наживо</span></span><span class="nest__n">№9</span></li></ol>
+    </div>
+    <p class="shelf__hint" aria-hidden="true">гортайте полицю<svg viewBox="0 0 16 16"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
+    <p class="shelf__count" data-in><b>3 з 9</b> — на фото в Instagram. Решту шість у дописі ховали на поличках; чи вони там і зараз — уточнимо у вас.</p>
+  </section>
+
+  <section class="sec pins" id="pins" aria-labelledby="pins-h">
+    <div class="sec__head">
+      <h2 class="h2" id="pins-h" data-in>Харків у&nbsp;Києві — на&nbsp;значках</h2>
+      <p class="lead" data-in>Січень 2025: перша партія значків «Крапки». Дзеркало, трамвайчик, вікно з котиком, «Не притулятися», злий макарон і харківське печиво. Трамвайчик і вікно з&nbsp;котиком ви вже бачили в&nbsp;дзеркалі нагорі; під кожним фото — підпис із&nbsp;їхнього допису.</p>
+    </div>
+    <div class="pins__grid"><figure class="pin p--a" data-pin><picture><source srcset="assets/img/ig/pin-cookie.webp" type="image/webp"><img src="assets/img/ig/pin-cookie.jpg" width="1080" height="1080" alt="Значок «харківське печиво» поверх справжнього смугастого печива" decoding="async" loading="lazy"></picture><figcaption><q>Ми не були б собою, якби не було харківського печива</q><a class="src" href="https://www.instagram.com/p/DFDf_YOtgL4/?img_index=7" rel="noopener" target="_blank">Фото з Instagram @krapka.kavy · допис<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> (відкриється в Instagram)</span></a></figcaption></figure><figure class="pin p--b" data-pin><picture><source srcset="assets/img/ig/pin-metro.webp" type="image/webp"><img src="assets/img/ig/pin-metro.jpg" width="900" height="900" alt="Значок «Не притулятися / Do not lean» біля листівки з дверима вагона метро" decoding="async" loading="lazy"></picture><figcaption><q>Для особистих кордонів</q><a class="src" href="https://www.instagram.com/p/DFDf_YOtgL4/?img_index=5" rel="noopener" target="_blank">Фото з Instagram @krapka.kavy · допис<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> (відкриється в Instagram)</span></a></figcaption></figure><figure class="pin p--c" data-pin><picture><source srcset="assets/img/ig/pin-macaron.webp" type="image/webp"><img src="assets/img/ig/pin-macaron.jpg" width="900" height="900" alt="Рожевий значок-макарон зі злим обличчям біля листівки" decoding="async" loading="lazy"></picture><figcaption><q>Солодкий але злий макарон</q><a class="src" href="https://www.instagram.com/p/DFDf_YOtgL4/?img_index=6" rel="noopener" target="_blank">Фото з Instagram @krapka.kavy · допис<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> (відкриється в Instagram)</span></a></figcaption></figure><figure class="pin p--d" data-pin><picture><source srcset="assets/img/ig/pin-mirror-pair.webp" type="image/webp"><img src="assets/img/ig/pin-mirror-pair.jpg" width="900" height="900" alt="Два значки-дзеркальця на листівці «KRAPKA. KAVY» і біла фігурка кітика спиною" decoding="async" loading="lazy"></picture><figcaption><q>Те саме легендарне дзеркало, тепер може завжди бути з вами</q><a class="src" href="https://www.instagram.com/p/DFDf_YOtgL4/?img_index=2" rel="noopener" target="_blank">Фото з Instagram @krapka.kavy · допис<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> (відкриється в Instagram)</span></a></figcaption></figure><div class="pin pin--slot" data-pin><p class="pin__slot-t">Чи є значки зараз і скільки коштують</p><p class="slotline__v">впишемо з ваших даних</p></div></div>
+  </section>
+
+  <section class="sec menu" id="menu" aria-labelledby="menu-h">
+    <div class="menu__in">
+      <div class="sec__head">
+        <h2 class="h2" id="menu-h" data-in>Що до кави</h2>
+        <p class="lead" data-in>Зараз меню живе в чотирьох хайлайтах Instagram. Тут воно стане текстом, який відкривається з&nbsp;будь-якого телефона.</p>
+      </div>
+      <ul class="list" data-in><li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Кава</span><span class="row__slot">позиції й ціни — впишемо з хайлайта «Кава»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> (відкриється в Instagram)</span></a></li><li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Гарячі напої</span><span class="row__slot">позиції й ціни — з хайлайта «Гарячі напої»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> (відкриється в Instagram)</span></a></li><li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Холодні напої</span><span class="row__slot">позиції й ціни — з хайлайта «Холодні напої»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> (відкриється в Instagram)</span></a></li><li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Смаколики</span><span class="row__slot">що є до кави — з хайлайта «Смаколики»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> (відкриється в Instagram)</span></a></li></ul>
+    </div>
+  </section>
+
+  <div class="night-stage" data-night-stage>
+    <section class="club" id="club" aria-labelledby="club-h" data-night>
       <div class="club__in">
-        <p class="ask ask--night" data-in><span>А як записатися на клуб?</span></p>
-        <div class="club__grid">
-          <div class="club__talk">
-            <h2 class="h2 h2--night" id="club-h" data-in>Book&amp;Coffee Club<span class="hdot hdot--fuse hdot--lamp" data-origin2 aria-hidden="true"><svg class="kdot__svg" viewBox="-60 -30 120 60" focusable="false"><g filter="url(#goo)"><circle class="kdot__d kdot__d1" cx="-20" cy="0" r="6.5"/><circle class="kdot__d kdot__d2" cx="0" cy="0" r="6.5"/><circle class="kdot__d kdot__d3" cx="20" cy="0" r="6.5"/><circle class="kdot__core" cx="0" cy="0" r="20"/></g></svg></span></h2>
-            <p class="from from--night from--gap" data-in><span class="from__dot" aria-hidden="true"></span>Крапка.Кави</p>
-            <div class="reply reply--night" data-in>
-              <blockquote class="quote">
-                <p>«Бажаєте бути учасником чи учасницею — пишіть нам в особисті»</p>
-                <footer>— з <a href="https://www.instagram.com/krapka.kavy/p/DeJhUBUueXa/" rel="noopener" target="_blank">допису @krapka.kavy про клуб<span class="vh"> (відкриється в Instagram)</span></a></footer>
-              </blockquote>
-              <a class="btn btn--lamp btn--wide" href="https://ig.me/m/krapka.kavy" rel="noopener" target="_blank">Записатися в особистих<span class="vh"> (відкриється чат в Instagram)</span></a>
-            </div>
-            <dl class="next reply reply--night" data-in>
-              <div class="next__row"><dt>Наступна зустріч</dt><dd class="slot">дата й час — з наступної афіші</dd></div>
-              <div class="next__row"><dt>Книга</dt><dd class="slot">назву впишемо з афіші</dd></div>
-              <div class="next__row"><dt>Місця</dt><dd class="slot">скільки — уточнимо у вас</dd></div>
-            </dl>
-          </div>
-          <figure class="photo photo--night" data-in>
-            <picture>
-              <source srcset="assets/img/club-night.webp" type="image/webp">
-              <img src="assets/img/club-night.jpg" width="900" height="1124" alt="Згенероване зображення: стос із трьох книжок без назв і склянка чорної кави під жовтою лампою у фіолетових сутінках">
-            </picture>
-            <figcaption>Згенероване зображення. Справжні афіші клубу — у вашому Instagram.</figcaption>
-          </figure>
-        </div>
+        <h2 class="h2 h2--night" id="club-h" data-in>Book&amp;Coffee Club</h2>
+        <p class="lead lead--night" data-in>Читацький клуб у кав'ярні. Участь безкоштовна, а наступні книги учасники обирають разом у&nbsp;читацькому чаті клубу.</p>
+        <ol class="books" data-in>
+          <li><span class="books__when">Жовтень 2026 · третій клуб</span><span class="books__t">«Відьма і вампірка»</span><span class="books__a">Франческа Флорес · <a href="https://www.instagram.com/p/DeJhUBUueXa/" rel="noopener" target="_blank">допис<span class="vh"> (відкриється в Instagram)</span></a></span></li>
+          <li><span class="books__when">13 вересня 2026</span><span class="books__t">«Зимова орбіта»</span><span class="books__a">Е. Максвелл · <a href="https://www.instagram.com/p/DcvfIcmOT_A/" rel="noopener" target="_blank">допис<span class="vh"> (відкриється в Instagram)</span></a></span></li>
+          <li class="books__next"><span class="books__when">Наступна зустріч</span><span class="books__t slot">книга, дата й час — з наступної афіші</span></li>
+        </ol>
+        <blockquote class="quote" data-in>
+          <p>«Бажаєте бути учасником чи учасницею — пишіть нам в особисті»</p>
+          <footer>— з <a href="https://www.instagram.com/p/DeJhUBUueXa/" rel="noopener" target="_blank">допису @krapka.kavy про клуб<span class="vh"> (відкриється в Instagram)</span></a></footer>
+        </blockquote>
+        <a class="btn btn--lamp btn--wide" data-in href="https://ig.me/m/krapka.kavy" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.8 3 3 6.6 3 11.2c0 2.5 1.1 4.7 3 6.2V21l3.3-1.8c.9.2 1.8.3 2.7.3 5.2 0 9-3.6 9-8.3S17.2 3 12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Записатися в особистих<span class="vh"> (відкриється чат в Instagram)</span></a>
       </div>
     </section>
   </div>
 
-  <section class="sec hours" id="hours" aria-labelledby="hours-h" data-sec>
-    <p class="ask" data-in><span>Коли ви відчинені?</span></p>
-    <p class="ask__read" data-in>Прочитано</p>
-    <p class="from" data-in><span class="from__dot" aria-hidden="true"></span>Крапка.Кави</p>
-    <div class="hours__body" data-in>
-      <div class="hours__r">
-      <div class="reply reply--msg reply--hours">
-      <h2 class="h2 h2--msg" id="hours-h">Сім днів на тиждень<span class="hdot" data-target2 aria-hidden="true"><svg class="kdot__svg" viewBox="-60 -30 120 60" focusable="false"><circle class="kdot__core" cx="0" cy="0" r="20"/></svg></span></h2>
-        <ul class="ruler" aria-label="Графік роботи">
+  <section class="sec hours" id="hours" aria-labelledby="hours-h">
+    <div class="hours__grid">
+      <div class="hours__l">
+        <h2 class="h2" id="hours-h" data-in>Сім днів на&nbsp;тиждень</h2>
+        <ul class="ruler" aria-label="Графік роботи" data-in>
           <li class="ruler__row" data-days="1,2,3,4,5" style="--a:9.375%;--w:78.125%">
             <span class="ruler__days">Пн–Пт</span><span class="ruler__time">7:30–20:00</span>
             <span class="ruler__track" aria-hidden="true"><span class="ruler__open"></span><span class="ruler__now"></span></span>
@@ -175,34 +163,24 @@
           </li>
         </ul>
         <p class="ruler__scale" aria-hidden="true"><span>6:00</span><span>10:00</span><span>14:00</span><span>18:00</span><span>22:00</span></p>
-        <p class="status status--big" data-status><span class="status__dot" aria-hidden="true"></span><span class="status__text" data-status-text>пн–пт 7:30–20:00 · сб–нд 9:00–21:00</span></p><script>window.__ks&&__ks(document.currentScript.previousElementSibling)</script>
-        <p class="hours__note">Графік — з біо Instagram. Крапка на шкалі — зараз за київським часом.</p>
-      </div>
-      </div>
-      <div class="where">
-        <p class="where__addr">Софіївська 3<span>центр Києва · адреса з біо Instagram</span></p>
-        <div class="actions">
-          <a class="btn btn--ink" href="https://www.google.com/maps/search/?api=1&amp;query=%D0%A1%D0%BE%D1%84%D1%96%D1%97%D0%B2%D1%81%D1%8C%D0%BA%D0%B0%203%2C%20%D0%9A%D0%B8%D1%97%D0%B2" rel="noopener" target="_blank">Відкрити в Google Картах<span class="vh"> (нова вкладка)</span></a>
-          <a class="btn btn--line" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">Хайлайт «Як нас знайти»<span class="vh"> (відкриється в Instagram)</span></a>
-        </div>
+        <p class="hours__note" data-in>Графік — з біо Instagram. Крапка на шкалі — зараз за київським часом.</p>
+              <p class="addr" data-in><span class="addr__a">Софіївська 3</span><span class="addr__s">центр Києва · з біо Instagram</span><a class="addr__go" href="https://www.google.com/maps/search/?api=1&amp;query=%D0%A1%D0%BE%D1%84%D1%96%D1%97%D0%B2%D1%81%D1%8C%D0%BA%D0%B0%203%2C%20%D0%9A%D0%B8%D1%97%D0%B2" rel="noopener" target="_blank">Маршрут<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> (Google Карти, нова вкладка)</span></a></p>
+        <a class="btn btn--line btn--find" data-in href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">Хайлайт «Як нас знайти»<span class="vh"> (відкриється в Instagram)</span></a>
       </div>
     </div>
   </section>
 </main>
 
 <footer class="foot">
-  <p class="foot__mark" aria-hidden="true">КРАПКА<span class="foot__dot"></span>КАВИ</p>
+  <p class="foot__mark" aria-hidden="true">Крапка<span class="foot__dot"></span>Кави</p>
   <p class="foot__concept">Концепт Velira для Крапка.Кави. Не офіційний сайт. Їхній канал — <a href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">instagram.com/krapka.kavy<span class="vh"> (відкриється в Instagram)</span></a></p>
   <ul class="foot__links">
     <li><a href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">Instagram<span class="vh"> (нова вкладка)</span></a></li>
     <li><a href="https://www.threads.com/@krapka.kavy" rel="noopener" target="_blank">Threads<span class="vh"> (нова вкладка)</span></a></li>
     <li><a href="https://ig.me/m/krapka.kavy" rel="noopener" target="_blank">Особисті<span class="vh"> (чат в Instagram, нова вкладка)</span></a></li>
   </ul>
-  <p class="foot__small">Обидва фото на сторінці згенеровані для концепту. Позиції меню, ціни й дату клубу впишемо з ваших даних.<br>Зроблено <a href="https://veliraweb.com.ua/" rel="noopener" target="_blank">Velira</a> · veliraweb.com.ua</p>
+  <p class="foot__small">Усі фото — з Instagram @krapka.kavy, посилання на допис під кожним; рамка дзеркала намальована для концепту. Позиції меню, ціни й наступну зустріч клубу впишемо з ваших даних.<br>Зроблено <a href="https://veliraweb.com.ua/" rel="noopener" target="_blank">Velira</a> · veliraweb.com.ua</p>
 </footer>
-
-<div class="drop" data-drop aria-hidden="true"></div>
-<div class="drop drop--lamp" data-drop2 aria-hidden="true"></div>
 
 <script src="assets/site.js" defer></script>
 </body>
