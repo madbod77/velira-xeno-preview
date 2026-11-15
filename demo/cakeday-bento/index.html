@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(d,w){var c=d.documentElement.classList;c.add('js');try{if(!w.matchMedia('(prefers-reduced-motion: reduce)').matches)c.add('motion')}catch(e){}setTimeout(function(){if(!w.__cd)c.remove('motion')},2500)})(document,window)</script>
+<title>Cakeday — бенто з написом у Києві · концепт Velira</title>
+<meta name="description" content="Концепт сайту Velira для Cakeday: бенто-торти, торти й капкейки на замовлення в Києві. Напишіть свій напис — крем виведе його на торті, а текст ляже в повідомлення.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://veliraweb.com.ua/demo/cakeday-bento/">
+<meta name="theme-color" content="#e4b9af">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:url" content="https://veliraweb.com.ua/demo/cakeday-bento/">
+<meta property="og:title" content="Cakeday — бенто з написом · концепт Velira">
+<meta property="og:description" content="Концепт Velira для Cakeday: крем пише ваш напис на бенто, а текст складається в готове повідомлення для замовлення.">
+<meta property="og:image" content="https://veliraweb.com.ua/demo/cakeday-bento/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/MPLUSRounded1c-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/Pacifico-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/onest-var-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="assets/img/bento-top-640.webp" imagesrcset="assets/img/bento-top-640.webp 640w, assets/img/bento-top.webp 1000w" imagesizes="(min-width: 900px) 60vw, 94vw">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="cream" x="-8%" y="-30%" width="116%" height="170%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="dilate" radius=".8" result="fat"/>
+      <feGaussianBlur in="fat" stdDeviation="2.6" result="soft"/>
+      <feDiffuseLighting in="soft" surfaceScale="3.2" diffuseConstant="1.12" lighting-color="#ffffff" result="diff">
+        <feDistantLight azimuth="230" elevation="62"/>
+      </feDiffuseLighting>
+      <feFlood flood-color="#fff3f0" result="creamc"/>
+      <feComposite in="creamc" in2="fat" operator="in" result="base"/>
+      <feBlend in="base" in2="diff" mode="multiply" result="shaded0"/>
+      <feComposite in="shaded0" in2="fat" operator="in" result="shaded"/>
+      <feSpecularLighting in="soft" surfaceScale="3.2" specularConstant=".55" specularExponent="30" lighting-color="#ffffff" result="spec">
+        <feDistantLight azimuth="230" elevation="50"/>
+      </feSpecularLighting>
+      <feComposite in="spec" in2="fat" operator="in" result="specIn"/>
+      <feGaussianBlur in="fat" stdDeviation="2.4" result="sh0"/>
+      <feOffset in="sh0" dx="2" dy="3.5" result="sh1"/>
+      <feFlood flood-color="#9a4c50" flood-opacity=".26"/>
+      <feComposite in2="sh1" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="shaded"/><feMergeNode in="specIn"/></feMerge>
+    </filter>
+    <radialGradient id="steel" cx="38%" cy="34%" r="70%">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#d9d4d6"/><stop offset="1" stop-color="#8f8789"/>
+    </radialGradient>
+    <g id="nozzle-shape">
+      <circle cx="0" cy="4" r="11" fill="#fff3f0" filter="url(#cream)"/>
+      <g transform="translate(16 -40) scale(.8)">
+        <ellipse cx="10" cy="16" rx="40" ry="36" fill="#5a2f31" opacity=".18"/>
+        <circle r="36" fill="url(#steel)"/>
+        <circle r="36" fill="none" stroke="#7d7476" stroke-width="2"/>
+        <circle r="17" fill="#fff3ef"/>
+        <path d="M0-17 4-6 15-7 7 1 11 12 0 6-11 12-7 1-15-7-4-6Z" fill="#e9d9d6" stroke="#b9aaa9" stroke-width="1.5"/>
+      </g>
+    </g>
+  </defs>
+</svg>
+
+<a class="skip" href="#napys">До напису на торті</a>
+
+<p class="concept" id="concept">
+  <span>Концепт Velira для Cakeday (бенто-торти й капкейки). Не офіційний сайт</span>
+  <a href="https://www.instagram.com/cakeday.ua/" rel="noopener" target="_blank">Їхній Instagram @cakeday.ua<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+</p>
+
+<nav class="dock" id="dock" aria-label="Розділи">
+  <a class="dock-mark" href="#top" aria-label="Cakeday, на початок">Cakeday</a>
+  <a class="dock-link" href="#napys">Напис</a>
+  <a class="dock-link" href="#menu">Що печуть</a>
+  <a class="dock-link" href="#visit">Адреса</a>
+  <a class="dock-cta" href="#order">Замовити</a>
+</nav>
+
+<main id="main">
+
+<section class="hero" id="top" aria-labelledby="h1">
+  <div class="hero-copy">
+    <p class="eyebrow">Бенто · торти · капкейки · Київ</p>
+    <h1 id="h1" class="wordmark">Cakeday</h1>
+    <p class="lead">Торти та капкейки на замовлення у&nbsp;Києві. Замовляють у&nbsp;Viber або Telegram: <a class="tel" href="tel:+380504504584">050&nbsp;450&nbsp;45&nbsp;84</a>.</p>
+    <div class="actions">
+      <a class="btn btn-main" href="https://t.me/cakeday_ua" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4.5 2.8 11.4c-.9.4-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.2.7 1.1.9 1.6.4l2.6-2.4 4.7 3.5c.6.4 1.4.1 1.6-.6L22.4 5.8c.2-.9-.6-1.6-1.4-1.3z"/><path d="m7.4 14.7 10-6.6"/></svg>Написати в Telegram</a>
+      <a class="btn btn-ghost" href="viber://chat?number=%2B380504504584"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5c1-.9 2.5-.8 3.2.3l1.4 2.2c.5.8.3 1.8-.4 2.4l-1 .8c.9 2 2.6 3.7 4.6 4.6l.8-1c.6-.7 1.6-.9 2.4-.4l2.2 1.4c1.1.7 1.2 2.2.3 3.2l-1 1.1c-.8.8-2 1.1-3.1.8C9 18.6 5.4 15 4.1 9.6c-.3-1.1 0-2.3.8-3.1z"/></svg>Viber</a>
+    </div>
+    <p class="hero-note">«Для особливих свят» — рядок з&nbsp;їхнього профілю. Тут його пише крем.</p>
+  </div>
+
+  <figure class="hero-stage">
+    <div class="cake cake-hero">
+      <img src="assets/img/bento-top-640.webp" srcset="assets/img/bento-top-640.webp 640w, assets/img/bento-top.webp 1000w" sizes="(min-width: 900px) 60vw, 94vw" width="1000" height="1000" alt="Згенероване зображення: маленький пудрово-рожевий бенто-торт у відкритій білій коробці, вигляд згори, на верху кремом написано «Для особливих свят»" fetchpriority="high" decoding="async">
+      <svg class="pipe" id="pipeHero" viewBox="0 0 1254 1254" aria-hidden="true" focusable="false">
+        <defs class="pdefs"></defs>
+        <g class="lines">
+          <g filter="url(#cream)"><text class="pipe-t" x="618" y="545" font-size="92" text-anchor="middle">Для</text></g>
+          <g filter="url(#cream)"><text class="pipe-t" x="618" y="653" font-size="92" text-anchor="middle">особливих</text></g>
+          <g filter="url(#cream)"><text class="pipe-t" x="618" y="761" font-size="92" text-anchor="middle">свят</text></g>
+        </g>
+        <g class="nozzle-pos" transform="translate(-200 -200)"><g class="nozzle"><use href="#nozzle-shape"/></g></g>
+      </svg>
+    </div>
+    <figcaption class="gen">Згенероване зображення, не робота Cakeday</figcaption>
+  </figure>
+</section>
+
+<section class="napys" id="napys" aria-labelledby="napys-h">
+  <div class="napys-stage">
+    <div class="lens" aria-hidden="true">
+      <div class="lens-in">
+        <img src="assets/img/bento-top.webp" width="1000" height="1000" alt="" decoding="async">
+        <svg class="pipe" id="pipeNapys" viewBox="0 0 1254 1254" focusable="false">
+          <defs class="pdefs"></defs>
+          <g class="lines">
+            <g filter="url(#cream)"><text class="pipe-t" x="618" y="560" font-size="80" text-anchor="middle">Для</text></g>
+            <g filter="url(#cream)"><text class="pipe-t" x="618" y="654" font-size="80" text-anchor="middle">особливих</text></g>
+            <g filter="url(#cream)"><text class="pipe-t" x="618" y="748" font-size="80" text-anchor="middle">свят</text></g>
+          </g>
+          <g class="nozzle-pos" transform="translate(-200 -200)"><g class="nozzle"><use href="#nozzle-shape"/></g></g>
+        </svg>
+      </div>
+    </div>
+    <p class="gen">Згенероване зображення. Напис малює сторінка</p>
+  </div>
+
+  <div class="napys-copy">
+    <h2 id="napys-h" data-rv="1">Що написати на&nbsp;кришці?</h2>
+    <p class="body" data-rv="2">У бенто головне — напис. Наберіть свій: крем виведе його на торті, а&nbsp;текст сам ляже в&nbsp;повідомлення для Cakeday нижче.</p>
+    <div class="field" data-rv="3">
+      <label for="inscr">Ваш напис</label>
+      <input id="inscr" name="inscr" type="text" maxlength="36" placeholder="Для особливих свят" autocomplete="off" enterkeyhint="done">
+      <span class="count" id="count" aria-live="polite">поле приймає до 36 знаків; скільки влазить на бенто — спитайте Cakeday</span>
+    </div>
+    <p class="slot" data-rv="4"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 6.5v4.2M10 13.4v.1"/></svg>Скільки знаків влазить на їхнє бенто і чи коштує напис окремо — Cakeday ще не публікували текстом.</p>
+  </div>
+</section>
+
+<section class="menu" id="menu" aria-labelledby="menu-h">
+  <header class="menu-head">
+    <h2 id="menu-h" data-rv="1">Що печуть у&nbsp;Cakeday</h2>
+    <p class="body" data-rv="2">Розділи — це назви хайлайтів їхнього профілю. Ціни лежать у&nbsp;хайлайті «Ціна» й&nbsp;текстом ще не&nbsp;опубліковані, тому тут порожні місця, а&nbsp;не вигадані цифри. Хайлайти «Дзеркало» й&nbsp;«Відгуки» сайт поки не переносить.</p>
+  </header>
+
+  <ul class="rows">
+    <li class="row row-bento">
+      <div class="row-name"><h3 data-rv="1">Бенто</h3><span class="src">хайлайти «Бенто»</span></div>
+      <div class="row-text">
+        <p data-rv="2">Маленький торт у&nbsp;коробці, де головне — напис. На&nbsp;їхніх фото бенто пудрові й&nbsp;пастельні, з&nbsp;диско-кулями та фігурками.</p>
+        <dl class="slots" data-rv="3">
+          <div><dt>Ціна</dt><dd>ще не опублікована текстом</dd></div>
+          <div><dt>Смаки</dt><dd>у хайлайті «Бенто», текстом — ні</dd></div>
+        </dl>
+      </div>
+      <figure class="row-media media-bento">
+        <img src="assets/img/bento-top.webp" width="1000" height="1000" alt="Згенероване зображення: пудровий бенто-торт згори в білій коробці" decoding="async">
+        <figcaption class="gen">Згенероване зображення, не робота Cakeday</figcaption>
+      </figure>
+    </li>
+
+    <li class="row row-cakes">
+      <div class="row-name"><h3 data-rv="1">Торти</h3><span class="src">хайлайт «Торти»</span></div>
+      <div class="row-text">
+        <p data-rv="2">Більші торти на&nbsp;свято. У&nbsp;профілі серед них — торт у&nbsp;стилі авто з&nbsp;кулями.</p>
+        <dl class="slots" data-rv="3">
+          <div><dt>Ціна</dt><dd>ще не опублікована текстом</dd></div>
+          <div><dt>Вага й розміри</dt><dd>не опубліковані</dd></div>
+        </dl>
+      </div>
+      <figure class="row-media media-tall">
+        <img src="assets/img/cake-tall.webp" width="900" height="1124" alt="Згенероване зображення: високий персиковий торт з кремовими рюшами й трьома дзеркальними кульками">
+        <figcaption class="gen">Згенероване зображення, не робота Cakeday</figcaption>
+      </figure>
+    </li>
+
+    <li class="row row-cupcakes">
+      <div class="row-name"><h3 data-rv="1">Капкейки</h3><span class="src">хайлайт «Капкейки»</span></div>
+      <div class="row-text">
+        <blockquote data-rv="2"><p>«Капкейки в своїх найяскравіших проявах»</p><cite>— з допису Cakeday</cite></blockquote>
+        <p data-rv="3">На&nbsp;їхніх фото — капкейки з&nbsp;надрукованими картинками.</p>
+        <dl class="slots" data-rv="4">
+          <div><dt>Ціна</dt><dd>ще не опублікована текстом</dd></div>
+          <div><dt>Скільки в коробці</dt><dd>не опубліковано</dd></div>
+        </dl>
+      </div>
+      <figure class="row-media media-wide">
+        <img src="assets/img/cupcakes.webp" width="1100" height="825" alt="Згенероване зображення: шість капкейків з пастельним кремом у білій коробці, вигляд згори">
+        <figcaption class="gen">Згенероване зображення, не робота Cakeday</figcaption>
+      </figure>
+    </li>
+
+    <li class="row row-empty">
+      <div class="row-name"><h3 data-rv="1">Ескімо</h3><span class="src">хайлайт «Ескімо»</span></div>
+      <div class="row-text">
+        <p data-rv="2">Окремий розділ у&nbsp;профілі. Що&nbsp;в&nbsp;ньому і&nbsp;скільки коштує — ще не&nbsp;перенесено на&nbsp;сайт.</p>
+        <dl class="slots" data-rv="3"><div><dt>Ціна</dt><dd>ще не опублікована текстом</dd></div></dl>
+      </div>
+      <div class="row-media media-blank"><span>Тут буде фото з&nbsp;хайлайту «Ескімо» — після дозволу Cakeday</span></div>
+    </li>
+
+    <li class="row row-empty">
+      <div class="row-name"><h3 data-rv="1">Весільні</h3><span class="src">хайлайт «Весільні»</span></div>
+      <div class="row-text">
+        <p data-rv="2">Окремий розділ у&nbsp;профілі. Що в&nbsp;хайлайті «Весільні» — ще не&nbsp;переносили на&nbsp;сайт.</p>
+        <dl class="slots" data-rv="3"><div><dt>Ціна</dt><dd>ще не опублікована текстом</dd></div></dl>
+      </div>
+      <div class="row-media media-blank"><span>Тут буде фото з&nbsp;хайлайту «Весільні» — після дозволу Cakeday</span></div>
+    </li>
+  </ul>
+</section>
+
+<section class="order" id="order" aria-labelledby="order-h">
+  <div class="order-field">
+    <div class="order-box">
+      <div class="box-wrap">
+        <div class="box">
+          <div class="box-in">
+            <img src="assets/img/bento-top.webp" width="1000" height="1000" alt="" decoding="async">
+            <svg class="pipe" id="pipeOrder" viewBox="0 0 1254 1254" aria-hidden="true" focusable="false">
+              <defs class="pdefs"></defs>
+              <g class="lines">
+                <g filter="url(#cream)"><text class="pipe-t" x="618" y="560" font-size="80" text-anchor="middle">Для</text></g>
+                <g filter="url(#cream)"><text class="pipe-t" x="618" y="654" font-size="80" text-anchor="middle">особливих</text></g>
+                <g filter="url(#cream)"><text class="pipe-t" x="618" y="748" font-size="80" text-anchor="middle">свят</text></g>
+              </g>
+            </svg>
+          </div>
+          <div class="lid" aria-hidden="true">
+            <div class="lid-face lid-out">
+              <div class="sticker"><span class="st-brand">Cakeday</span><span class="st-text" id="stText">Для особливих свят</span></div>
+            </div>
+            <div class="lid-face lid-inside"></div>
+          </div>
+        </div>
+      </div>
+      <p class="gen gen-dark">Згенероване зображення торта. Кришка закривається, поки ви гортаєте</p>
+    </div>
+
+    <div class="chat">
+      <h2 id="order-h" data-rv="1">Замовлення одним повідомленням</h2>
+      <p class="body" data-rv="2">Так міг би питати бот замовлень Cakeday. Поки його нема: сторінка складає текст, а&nbsp;надсилаєте ви самі — у&nbsp;Telegram чи Viber. Сайт нічого нікуди не&nbsp;відправляє.</p>
+
+      <div class="thread" lang="uk">
+        <div class="q" data-rv="3"><p class="bubble" id="q-cat">Що замовляєте?</p>
+          <div class="seg" role="radiogroup" aria-labelledby="q-cat">
+            <label><input type="radio" name="cat" value="бенто-торт" checked><span>Бенто</span></label>
+            <label><input type="radio" name="cat" value="торт"><span>Торт</span></label>
+            <label><input type="radio" name="cat" value="капкейки"><span>Капкейки</span></label>
+            <label><input type="radio" name="cat" value="ескімо"><span>Ескімо</span></label>
+            <label><input type="radio" name="cat" value="весільний торт"><span>Весільний</span></label>
+          </div>
+        </div>
+        <div class="q" data-rv="4"><label class="bubble" for="inscr2">Який напис?</label>
+          <input id="inscr2" type="text" maxlength="36" placeholder="Для особливих свят" autocomplete="off">
+        </div>
+        <div class="q" data-rv="5"><label class="bubble" for="date">На яку дату? <span class="fmt">(дд.мм)</span></label>
+          <input id="date" type="text" inputmode="numeric" maxlength="10" placeholder="дд.мм" autocomplete="off">
+        </div>
+        <div class="q" data-rv="5"><p class="bubble">Смак?</p>
+          <p class="slot slot-dark"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 6.5v4.2M10 13.4v.1"/></svg>Смаки Cakeday текстом ще не опубліковані — спитаєте в&nbsp;повідомленні.</p>
+        </div>
+        <div class="out" data-rv="6">
+          <p class="out-label">Ваше повідомлення</p>
+          <p class="bubble bubble-out" id="msg">Вітаю! Хочу замовити бенто-торт.<br>Напис: «Для особливих свят».<br>Дата: …<br>Підкажіть, будь ласка, смаки й ціну.</p>
+        </div>
+      </div>
+
+      <div class="actions actions-dark">
+        <a class="btn btn-cream" id="toTg" href="https://t.me/cakeday_ua" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4.5 2.8 11.4c-.9.4-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.2.7 1.1.9 1.6.4l2.6-2.4 4.7 3.5c.6.4 1.4.1 1.6-.6L22.4 5.8c.2-.9-.6-1.6-1.4-1.3z"/><path d="m7.4 14.7 10-6.6"/></svg><span id="toTgLabel">Відкрити Telegram</span></a>
+        <a class="btn btn-line" id="toViber" href="viber://chat?number=%2B380504504584">Viber</a>
+        <a class="btn btn-line" href="tel:+380504504584">Подзвонити</a>
+      </div>
+      <p class="toast" id="toast" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<section class="visit" id="visit" aria-labelledby="visit-h">
+  <h2 id="visit-h" class="visit-h" data-rv="1">Де забрати</h2>
+  <p class="address" data-rv="2">вул. Володимира Сікевича&nbsp;11/1<span>Київ · адреса з біо профілю</span></p>
+  <dl class="facts">
+    <div data-rv="3"><dt>Графік</dt><dd class="slot-line">у біо обрізаний — уточнюйте в&nbsp;Telegram</dd></div>
+    <div data-rv="3"><dt>Доставка</dt><dd class="slot-line">не опублікована</dd></div>
+    <div data-rv="4"><dt>Телефон</dt><dd><a href="tel:+380504504584">050 450 45 84</a> · Viber / Telegram</dd></div>
+    <div data-rv="4"><dt>Instagram</dt><dd><a href="https://www.instagram.com/cakeday.ua/" target="_blank" rel="noopener">@cakeday.ua</a> · 13,5 тис. підписників, 533 публікації (15.11.2026)</dd></div>
+  </dl>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p class="foot-mark">Cakeday</p>
+  <p>Концепт Velira для Cakeday (бенто-торти й капкейки). Не офіційний сайт. <a href="https://www.instagram.com/cakeday.ua/" target="_blank" rel="noopener">Їхній Instagram @cakeday.ua</a></p>
+  <p>Усі фото на сторінці згенеровані й не є роботами Cakeday; справжні — в&nbsp;їхньому профілі. Ціни, смаки й графік не вигадані, а&nbsp;залишені порожніми.</p>
+  <p>Зробила <a href="https://veliraweb.com.ua/" target="_blank" rel="noopener">Velira</a></p>
+</footer>
+
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/js/site.js" defer></script>
+</body>
+</html>

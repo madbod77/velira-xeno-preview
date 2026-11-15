@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Крапка.Кави — кав'ярня на Софіївській 3, Київ · концепт</title>
+<meta name="description" content="Концепт сайту Velira для кав'ярні Крапка.Кави: адреса Софіївська 3, графік пн–пт 7:30–20:00, сб–нд 9:00–21:00, меню й читацький Book&amp;Coffee Club.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://veliraweb.com.ua/demo/krapka-kavy/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:url" content="https://veliraweb.com.ua/demo/krapka-kavy/">
+<meta property="og:title" content="Крапка.Кави — концепт сайту від Velira">
+<meta property="og:description" content="Софіївська 3 · пн–пт 7:30–20:00 · сб–нд 9:00–21:00. Меню, читацький клуб і маршрут — без «пишіть в особисті».">
+<meta property="og:image" content="https://veliraweb.com.ua/demo/krapka-kavy/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/unbounded-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/geologica-var-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<script>
+  (function () {
+    var d = document.documentElement;
+    d.classList.add('js');
+    try { if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('mo'); } catch (e) {}
+    /* живий статус за київським часом — ще до першого малювання картки */
+    window.__ks = function (el) {
+      try {
+        var H = { 0: [9, 21], 1: [7.5, 20], 2: [7.5, 20], 3: [7.5, 20], 4: [7.5, 20], 5: [7.5, 20], 6: [9, 21] };
+        var f = function (h) { var m = Math.round((h % 1) * 60); return Math.floor(h) + ':' + (m < 10 ? '0' : '') + m; };
+        var o = {}; new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Kyiv', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+          .formatToParts(new Date()).forEach(function (p) { o[p.type] = p.value; });
+        var wd = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[o.weekday], h = +o.hour + o.minute / 60, t = H[wd];
+        var open = h >= t[0] && h < t[1];
+        var txt = open ? 'Зараз відчинено · до ' + f(t[1]) : (h < t[0] ? 'Зараз зачинено · сьогодні з ' + f(t[0]) : 'Зараз зачинено · завтра з ' + f(H[(wd + 1) % 7][0]));
+        el.classList.add(open ? 'is-open' : 'is-closed'); el.querySelector('[data-status-text]').textContent = txt;
+      } catch (e) {}
+    };
+  })();
+</script>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="goo" filterUnits="userSpaceOnUse" x="-60" y="-30" width="120" height="60" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3.6" result="b"/>
+      <feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="g"/>
+      <feComposite in="SourceGraphic" in2="g" operator="atop"/>
+    </filter>
+  </defs>
+</svg>
+
+<a class="skip" href="#menu">До меню</a>
+
+<header class="bar" data-bar>
+  <nav class="bar__in" aria-label="Головна навігація">
+    <a class="bar__brand" href="#top" aria-label="Крапка.Кави — на початок"><span class="bar__dot" aria-hidden="true"></span><span>Крапка.Кави</span></a>
+    <span class="bar__links">
+      <a class="bar__link" href="#menu">Меню</a>
+      <a class="bar__link" href="#club">Клуб</a>
+      <a class="bar__link" href="#hours">Графік</a>
+    </span>
+    <a class="bar__cta" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">Instagram<span class="vh"> (нова вкладка)</span></a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="hero-h">
+    <p class="concept">Концепт Velira для Крапка.Кави. Не&nbsp;офіційний&nbsp;сайт · <a href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">@krapka.kavy<span class="vh"> (відкриється в Instagram)</span></a></p>
+
+    <h1 class="mark" id="hero-h" aria-label="Крапка.Кави"><span class="mark__w" aria-hidden="true">КРАПКА</span><span class="kdot kdot--intro" data-origin aria-hidden="true"><svg class="kdot__svg" viewBox="-60 -30 120 60" focusable="false"><rect class="kdot__bub" x="-46" y="-21" width="92" height="42" rx="21"/><g filter="url(#goo)"><circle class="kdot__d kdot__d1" cx="-20" cy="0" r="6.5"/><circle class="kdot__d kdot__d2" cx="0" cy="0" r="6.5"/><circle class="kdot__d kdot__d3" cx="20" cy="0" r="6.5"/><circle class="kdot__core" cx="0" cy="0" r="20"/></g></svg></span><br class="mark__br"><span class="mark__w" aria-hidden="true">КАВИ</span></h1>
+
+    <div class="hero__grid">
+      <div class="hero__talk">
+        <p class="bio"><span class="bio__l">Кав'ярня з харківським <svg class="heart" viewBox="0 0 24 22" role="img" aria-label="серцем"><path d="M12 21.2 10.5 19.9C5.1 15 1.6 11.8 1.6 7.9 1.6 4.7 4.1 2.2 7.2 2.2c1.8 0 3.5.8 4.8 2.2 1.3-1.4 3-2.2 4.8-2.2 3.1 0 5.6 2.5 5.6 5.7 0 3.9-3.5 7.1-8.9 12L12 21.2Z"/></svg></span> <span class="bio__l">у&nbsp;центрі Києва</span><span class="bio__src">— біо в Instagram</span></p>
+
+        <div class="talk">
+          <p class="ask"><span>Де ви і до котрої сьогодні?</span></p>
+          <p class="from"><span class="from__dot" aria-hidden="true"></span>Крапка.Кави</p>
+          <div class="reply">
+            <p class="reply__addr">Софіївська 3</p>
+            <p class="reply__src">Київ · адреса з біо Instagram</p>
+            <p class="status" data-status><span class="status__dot" aria-hidden="true"></span><span class="status__text" data-status-text>пн–пт 7:30–20:00 · сб–нд 9:00–21:00</span></p><script>window.__ks&&__ks(document.currentScript.previousElementSibling)</script>
+            <div class="actions">
+              <a class="btn btn--ink" href="https://www.google.com/maps/search/?api=1&amp;query=%D0%A1%D0%BE%D1%84%D1%96%D1%97%D0%B2%D1%81%D1%8C%D0%BA%D0%B0%203%2C%20%D0%9A%D0%B8%D1%97%D0%B2" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-3.9 0-7 3-7 6.9 0 5 7 12.1 7 12.1s7-7.1 7-12.1c0-3.9-3.1-6.9-7-6.9Zm0 9.4a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>Прокласти маршрут<span class="vh"> (Google Карти, нова вкладка)</span></a>
+              <a class="btn btn--line" href="https://ig.me/m/krapka.kavy" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.8 3 3 6.6 3 11.2c0 2.5 1.1 4.7 3 6.2V21l3.3-1.8c.9.2 1.8.3 2.7.3 5.2 0 9-3.6 9-8.3S17.2 3 12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Написати в особисті<span class="vh"> (відкриється чат в Instagram)</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <figure class="photo photo--day">
+        <picture>
+          <source srcset="assets/img/book-cup.webp" type="image/webp">
+          <img src="assets/img/book-cup.jpg" width="900" height="1124" alt="Згенероване зображення: розгорнута книжка і білий паперовий стаканчик без логотипа на круглому мармуровому столику біля вікна" decoding="async">
+        </picture>
+        <figcaption>Згенероване зображення для концепту. Не фото кав'ярні — сюди стане ваше.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec menu" id="menu" aria-labelledby="menu-h" data-sec>
+    <p class="ask" data-in><span>А що у вас у меню?</span></p>
+    <p class="from" data-in><span class="from__dot" aria-hidden="true"></span>Крапка.Кави</p>
+    <div class="reply reply--msg reply--menu" data-in>
+      <div class="msg__head">
+      <h2 class="h2 h2--msg" id="menu-h">Чотири розділи<span class="hdot" data-target aria-hidden="true"><svg class="kdot__svg" viewBox="-60 -30 120 60" focusable="false"><circle class="kdot__core" cx="0" cy="0" r="20"/></svg></span></h2>
+      <p class="lead">Зараз меню живе лише в хайлайтах Instagram. Тут воно стане текстом, який відкривається з&nbsp;будь-якого телефона без застосунку.</p>
+      </div>
+      <div class="msg__body">
+      <ul class="list" aria-describedby="menu-note">
+        <li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Кава</span><span class="row__slot">позиції й ціни — впишемо з хайлайта «Кава»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+        <li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Гарячі напої</span><span class="row__slot">позиції й ціни — з хайлайта «Гарячі напої»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+        <li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Холодні напої</span><span class="row__slot">позиції й ціни — з хайлайта «Холодні напої»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+        <li><a class="row" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank"><span class="row__name">Смаколики</span><span class="row__slot">що є до кави — з хайлайта «Смаколики»</span><svg class="row__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+      </ul>
+      <p class="reply__note" id="menu-note">Усі чотири розділи зараз — у хайлайтах Instagram; кожен рядок відкриває профіль @krapka.kavy.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="night-stage">
+    <section class="club" id="club" aria-labelledby="club-h" data-sec data-night>
+      <div class="club__in">
+        <p class="ask ask--night" data-in><span>А як записатися на клуб?</span></p>
+        <div class="club__grid">
+          <div class="club__talk">
+            <h2 class="h2 h2--night" id="club-h" data-in>Book&amp;Coffee Club<span class="hdot hdot--fuse hdot--lamp" data-origin2 aria-hidden="true"><svg class="kdot__svg" viewBox="-60 -30 120 60" focusable="false"><g filter="url(#goo)"><circle class="kdot__d kdot__d1" cx="-20" cy="0" r="6.5"/><circle class="kdot__d kdot__d2" cx="0" cy="0" r="6.5"/><circle class="kdot__d kdot__d3" cx="20" cy="0" r="6.5"/><circle class="kdot__core" cx="0" cy="0" r="20"/></g></svg></span></h2>
+            <p class="from from--night from--gap" data-in><span class="from__dot" aria-hidden="true"></span>Крапка.Кави</p>
+            <div class="reply reply--night" data-in>
+              <blockquote class="quote">
+                <p>«Бажаєте бути учасником чи учасницею — пишіть нам в особисті»</p>
+                <footer>— з <a href="https://www.instagram.com/krapka.kavy/p/DeJhUBUueXa/" rel="noopener" target="_blank">допису @krapka.kavy про клуб<span class="vh"> (відкриється в Instagram)</span></a></footer>
+              </blockquote>
+              <a class="btn btn--lamp btn--wide" href="https://ig.me/m/krapka.kavy" rel="noopener" target="_blank">Записатися в особистих<span class="vh"> (відкриється чат в Instagram)</span></a>
+            </div>
+            <dl class="next reply reply--night" data-in>
+              <div class="next__row"><dt>Наступна зустріч</dt><dd class="slot">дата й час — з наступної афіші</dd></div>
+              <div class="next__row"><dt>Книга</dt><dd class="slot">назву впишемо з афіші</dd></div>
+              <div class="next__row"><dt>Місця</dt><dd class="slot">скільки — уточнимо у вас</dd></div>
+            </dl>
+          </div>
+          <figure class="photo photo--night" data-in>
+            <picture>
+              <source srcset="assets/img/club-night.webp" type="image/webp">
+              <img src="assets/img/club-night.jpg" width="900" height="1124" alt="Згенероване зображення: стос із трьох книжок без назв і склянка чорної кави під жовтою лампою у фіолетових сутінках">
+            </picture>
+            <figcaption>Згенероване зображення. Справжні афіші клубу — у вашому Instagram.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="sec hours" id="hours" aria-labelledby="hours-h" data-sec>
+    <p class="ask" data-in><span>Коли ви відчинені?</span></p>
+    <p class="ask__read" data-in>Прочитано</p>
+    <p class="from" data-in><span class="from__dot" aria-hidden="true"></span>Крапка.Кави</p>
+    <div class="hours__body" data-in>
+      <div class="hours__r">
+      <div class="reply reply--msg reply--hours">
+      <h2 class="h2 h2--msg" id="hours-h">Сім днів на тиждень<span class="hdot" data-target2 aria-hidden="true"><svg class="kdot__svg" viewBox="-60 -30 120 60" focusable="false"><circle class="kdot__core" cx="0" cy="0" r="20"/></svg></span></h2>
+        <ul class="ruler" aria-label="Графік роботи">
+          <li class="ruler__row" data-days="1,2,3,4,5" style="--a:9.375%;--w:78.125%">
+            <span class="ruler__days">Пн–Пт</span><span class="ruler__time">7:30–20:00</span>
+            <span class="ruler__track" aria-hidden="true"><span class="ruler__open"></span><span class="ruler__now"></span></span>
+          </li>
+          <li class="ruler__row" data-days="6,0" style="--a:18.75%;--w:75%">
+            <span class="ruler__days">Сб–Нд</span><span class="ruler__time">9:00–21:00</span>
+            <span class="ruler__track" aria-hidden="true"><span class="ruler__open"></span><span class="ruler__now"></span></span>
+          </li>
+        </ul>
+        <p class="ruler__scale" aria-hidden="true"><span>6:00</span><span>10:00</span><span>14:00</span><span>18:00</span><span>22:00</span></p>
+        <p class="status status--big" data-status><span class="status__dot" aria-hidden="true"></span><span class="status__text" data-status-text>пн–пт 7:30–20:00 · сб–нд 9:00–21:00</span></p><script>window.__ks&&__ks(document.currentScript.previousElementSibling)</script>
+        <p class="hours__note">Графік — з біо Instagram. Крапка на шкалі — зараз за київським часом.</p>
+      </div>
+      </div>
+      <div class="where">
+        <p class="where__addr">Софіївська 3<span>центр Києва · адреса з біо Instagram</span></p>
+        <div class="actions">
+          <a class="btn btn--ink" href="https://www.google.com/maps/search/?api=1&amp;query=%D0%A1%D0%BE%D1%84%D1%96%D1%97%D0%B2%D1%81%D1%8C%D0%BA%D0%B0%203%2C%20%D0%9A%D0%B8%D1%97%D0%B2" rel="noopener" target="_blank">Відкрити в Google Картах<span class="vh"> (нова вкладка)</span></a>
+          <a class="btn btn--line" href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">Хайлайт «Як нас знайти»<span class="vh"> (відкриється в Instagram)</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p class="foot__mark" aria-hidden="true">КРАПКА<span class="foot__dot"></span>КАВИ</p>
+  <p class="foot__concept">Концепт Velira для Крапка.Кави. Не офіційний сайт. Їхній канал — <a href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">instagram.com/krapka.kavy<span class="vh"> (відкриється в Instagram)</span></a></p>
+  <ul class="foot__links">
+    <li><a href="https://www.instagram.com/krapka.kavy/" rel="noopener" target="_blank">Instagram<span class="vh"> (нова вкладка)</span></a></li>
+    <li><a href="https://www.threads.com/@krapka.kavy" rel="noopener" target="_blank">Threads<span class="vh"> (нова вкладка)</span></a></li>
+    <li><a href="https://ig.me/m/krapka.kavy" rel="noopener" target="_blank">Особисті<span class="vh"> (чат в Instagram, нова вкладка)</span></a></li>
+  </ul>
+  <p class="foot__small">Обидва фото на сторінці згенеровані для концепту. Позиції меню, ціни й дату клубу впишемо з ваших даних.<br>Зроблено <a href="https://veliraweb.com.ua/" rel="noopener" target="_blank">Velira</a> · veliraweb.com.ua</p>
+</footer>
+
+<div class="drop" data-drop aria-hidden="true"></div>
+<div class="drop drop--lamp" data-drop2 aria-hidden="true"></div>
+
+<script src="assets/site.js" defer></script>
+</body>
+</html>
