@@ -18,7 +18,7 @@
   --ease:cubic-bezier(.16,1,.3,1);
 }
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-padding-top:24px}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:24px;overflow-x:clip} /* запобіжник: власне значення html йде у вʼюпорт, тож overflow-x:clip на body справді обрізає */
 body{margin:0;background:var(--wool);color:var(--on-dark);font-family:var(--sans);font-size:17px;line-height:1.6;font-weight:420;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
 img,svg{display:block;max-width:100%}
 a{color:inherit}
@@ -82,7 +82,7 @@ h1 .ln2{font-size:.5em;line-height:1.05;margin-top:.12em;font-weight:500}
 
 /* 2. квитанція */
 .paper{position:relative;background:var(--cream);color:var(--ink);padding:var(--s6) 0 calc(var(--s6) + 10px)}
-.seam-edge{position:absolute;left:0;right:0;top:2px;height:12px;z-index:2}
+.seam-edge{position:absolute;left:0;right:0;top:2px;height:12px;z-index:2;overflow-x:clip;overflow-y:visible} /* голка заходить і виходить за край смуги — обрізаємо, щоб не розширювала сторінку */
 .seam-line{position:absolute;inset:0}
 .seam-line svg{width:100%;height:12px}
 .seam-needle{position:absolute;left:0;top:0;opacity:0}
@@ -111,7 +111,7 @@ h1 .ln2{font-size:.5em;line-height:1.05;margin-top:.12em;font-weight:500}
 .stub-big{font-family:var(--serif);font-size:clamp(30px,2.6vw,40px);line-height:1.05;font-weight:500;margin-top:var(--s1)}
 
 /* ножиці-зигзаг */
-.pinking{position:absolute;left:0;right:0;bottom:-18px;height:18px;z-index:3;pointer-events:none}
+.pinking{position:absolute;left:0;right:0;bottom:-18px;height:18px;z-index:3;pointer-events:none;overflow-x:clip;overflow-y:visible} /* ножиці виходять за правий край — обрізаємо по ширині смуги */
 .pk-teeth{position:absolute;inset:0;width:100%;height:18px}
 .pk-uncut{position:absolute;inset:0;background:var(--cream);clip-path:inset(0 0 0 100%)}
 .shears{position:absolute;left:0;top:-9px;opacity:0;transform:translateX(-60px)}
@@ -263,6 +263,14 @@ blockquote{margin:0}
 }
 @media (min-width:1024px){
   .hero-note{max-width:none;white-space:nowrap;bottom:72px}
+  .motion .hero-stage{height:calc(max(100svh,640px) + 90svh)} /* висмикування наметки триває ≈ пів екрана прокрутки */
+}
+@media (max-width:600px){
+  /* підпис про згенероване — тихо внизу, над панеллю запису, нижче за малюнок лацкана */
+  .hero-note{position:absolute;left:20px;right:20px;bottom:calc(84px + env(safe-area-inset-bottom) + var(--hero-below));max-width:none;margin:0;font-size:11px;line-height:1.35;opacity:.85} /* .85, не .7: при .7 контраст 3,9:1 на світлішій тканині — нижче AA для 11 px; при .85 ≥ 4,9:1 */
+  .lapel{bottom:calc(126px + env(safe-area-inset-bottom) + var(--hero-below));height:calc(min(330px,40svh) - var(--hero-below) - 14px)} /* верх лацкана лишається там, де був; низ звільняє місце підпису */
+  /* на низьких екранах перший екран (мін. 600 px) довший за вікно — піднімаємо підпис і лацкан на цю різницю, щоб не ховались за панеллю */
+  .hero{--hero-below:max(0px, calc(656px - 100svh))}
 }
 @media (prefers-reduced-motion:reduce){
   *{scroll-behavior:auto!important}

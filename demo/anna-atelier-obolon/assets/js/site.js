@@ -25,13 +25,13 @@
       return { open: true, day: n.day, long: 'Зараз відчинено, до ' + hm(t[1]), short: 'Відчинено до ' + hm(t[1]), d1: 'Відчинено', d2: 'сьогодні до ' + hm(t[1]) };
     }
     if (t && n.min < t[0]) {
-      return { open: false, day: n.day, long: 'Зараз зачинено. Відчинять сьогодні о ' + hm(t[0]), short: 'Зачинено до ' + hm(t[0]), d1: 'Зачинено', d2: 'відчинять о ' + hm(t[0]) };
+      return { open: false, day: n.day, long: 'Зараз зачинено. Відчинять сьогодні\u00a0о\u00a0' + hm(t[0]), short: 'Зачинено до ' + hm(t[0]), d1: 'Зачинено', d2: 'відчинять\u00a0о\u00a0' + hm(t[0]) };
     }
     for (var i = 1; i <= 7; i++) {
       var d = (n.day + i) % 7, x = HOURS[d];
       if (x) {
         var when = i === 1 ? 'завтра' : DAY_ACC[d];
-        return { open: false, day: n.day, long: 'Зараз зачинено. Відчинять ' + when + ' о ' + hm(x[0]), short: 'Зачинено до ' + (i === 1 ? 'завтра' : DAY_SHORT[d]) + ' ' + hm(x[0]), d1: 'Зачинено', d2: (i === 1 ? 'завтра' : DAY_ACC[d]) + ' з ' + hm(x[0]) };
+        return { open: false, day: n.day, long: 'Зараз зачинено. Відчинять ' + when + '\u00a0о\u00a0' + hm(x[0]), short: 'Зачинено до ' + (i === 1 ? 'завтра' : DAY_SHORT[d]) + ' ' + hm(x[0]), d1: 'Зачинено', d2: (i === 1 ? 'завтра' : DAY_ACC[d]) + ' з ' + hm(x[0]) };
       }
     }
     return null;
@@ -64,7 +64,7 @@
   function measure() {
     NK = needleScale();
     SC = lapelSvg ? lapelSvg.getBoundingClientRect().height / 900 : 1; if (!(SC > 0)) SC = 1;
-    var mob = window.innerWidth < 761, wpx = mob ? 6 : 7;
+    var mob = window.innerWidth < 761, wpx = mob ? 6 : (window.innerWidth >= 1024 ? 8.75 : 7); /* ПК: стібки в польоті ×1.25 */
     flies.forEach(function (g) {
       g.querySelector('.fc').setAttribute('stroke-width', (wpx / SC / NK).toFixed(2));
       g.querySelector('.fh').setAttribute('stroke-width', ((wpx + 2) / SC / NK).toFixed(2));
@@ -156,7 +156,9 @@
     var sw = { p: 0 }, seamLine = document.querySelector('.seam-line'), seamNeedle = document.querySelector('.seam-needle'), seamEdge = document.querySelector('.seam-edge');
     function sew() {
       seamLine.style.clipPath = 'inset(0 ' + (100 - sw.p * 100).toFixed(2) + '% 0 0)';
-      seamNeedle.style.transform = 'translateX(' + (sw.p * seamEdge.clientWidth - 72).toFixed(1) + 'px)';
+      /* вістря йде за швом; svg голки (78 px) не виходить за межі смуги — інакше розширює сторінку на телефоні */
+      var sew_w = seamEdge.clientWidth, sx = Math.min(sw.p * sew_w - 72, sew_w - 78);
+      seamNeedle.style.transform = 'translateX(' + sx.toFixed(1) + 'px)';
       seamNeedle.style.opacity = (sw.p > 0.01 && sw.p < 0.985 ? 1 : 0);
     }
     sew();
@@ -167,7 +169,7 @@
     var pk = { c: 0 }, uncut = document.querySelector('.pk-uncut'), shears = document.querySelector('.shears'), pinking = document.querySelector('.pinking');
     function cut() {
       uncut.style.clipPath = 'inset(0 0 0 ' + pk.c.toFixed(2) + '%)';
-      var w = pinking.clientWidth, x = w * pk.c / 100 - 30;
+      var w = pinking.clientWidth, x = Math.min(w * pk.c / 100 - 30, w - 56); /* ножиці (56 px) не виходять за правий край */
       var o = pk.c < 3 ? pk.c / 3 : (pk.c > 97 ? (100 - pk.c) / 3 : 1);
       shears.style.transform = 'translateX(' + x.toFixed(1) + 'px)';
       shears.style.opacity = o.toFixed(2);
