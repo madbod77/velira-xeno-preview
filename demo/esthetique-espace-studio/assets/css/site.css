@@ -2,11 +2,14 @@
 @font-face{font-family:"Cormorant";font-style:normal;font-weight:300 700;font-display:swap;src:url(../fonts/cormorant-var-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:"Onest";font-weight:100 900;font-display:swap;src:url(../fonts/onest-var-cyrillic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
 @font-face{font-family:"Onest";font-weight:100 900;font-display:swap;src:url(../fonts/onest-var-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+/* фолбеки з підігнаними метриками: поки WOFF2 вантажиться, рядки першого екрана переносяться так само (без стрибка в інтро) */
+@font-face{font-family:"Cormorant fb";src:local("Times New Roman"),local("TimesNewRomanPSMT"),local("Times");size-adjust:93.8%;ascent-override:98%;descent-override:31%;line-gap-override:0%}
+@font-face{font-family:"Onest fb";src:local("Arial"),local("ArialMT"),local("Helvetica");size-adjust:103.7%;ascent-override:93.5%;descent-override:28.9%;line-gap-override:0%}
 
 :root{
   --wall:#F3EEE6;--wall2:#EAE2D6;--sand:#D9CBB8;--wood:#5B2E22;--wood-h:#6E3A2B;--wine:#3B1C15;--dusk:#1E1A18;
   --ink:#2A211D;--mute:#665A51;--powder:#E7C5C0;--cream-t:#F6EFE5;--cream-m:#D8C7B6;
-  --serif:"Cormorant","Cormorant Garamond",Georgia,serif;--sans:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Cormorant","Cormorant fb",Georgia,serif;--sans:"Onest","Onest fb",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r-xl:32px;--r-l:28px;--r-m:18px;--gut:clamp(16px,4.4vw,56px);
   --ease:cubic-bezier(.2,.7,.2,1);--ease-ui:cubic-bezier(.4,0,.2,1);
 }
@@ -41,8 +44,11 @@ ul{padding:0;list-style:none}
 .btn:active{transform:scale(.98)}
 .btn-main{background:var(--wood);color:var(--cream-t)}
 .btn-main:hover{background:var(--wood-h)}
-.btn-ghost{background:rgba(91,46,34,.07);color:var(--wood)}
-.btn-ghost:hover{background:rgba(91,46,34,.13)}
+/* друга дія — текстове посилання, капсула лише в головної */
+.lnk{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;background:transparent;color:var(--wood);font:400 15px/1 var(--sans);
+  text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:rgba(91,46,34,.45);
+  transition:text-decoration-color .15s var(--ease-ui);-webkit-tap-highlight-color:transparent}
+.lnk:hover{text-decoration-color:var(--wood)}
 .btn-light{background:var(--cream-t);color:var(--wine)}
 .btn-light:hover{background:#fff}
 
@@ -136,9 +142,14 @@ ul{padding:0;list-style:none}
 }
 
 /* ---------- режим руху: сцена закріплена ---------- */
-.motion .stage{height:calc(var(--vh,1svh) * 820)}
-.motion .stage-pin{position:sticky;top:0;height:calc(var(--vh,1svh) * 100);overflow:hidden}
-.motion .wall{height:calc(var(--vh,1svh) * 100);min-height:0}
+/* --vh = великий екран (100lvh, панель адреси схована), --sv = малий (100svh); обидва в px з site.js, див. коментар там */
+.vhp{position:absolute;left:0;top:0;width:1px;visibility:hidden;pointer-events:none}
+.vhp-s{height:100vh;height:100svh}
+.vhp-l{height:100vh;height:100lvh}
+.motion .stage{height:calc(var(--vh,1vh) * 820)}
+.motion .stage-pin{position:sticky;top:0;height:calc(var(--vh,1vh) * 100);overflow:hidden}
+.motion .wall{height:calc(var(--sv,1svh) * 100);min-height:0}
+.motion .dim{position:absolute;inset:0;background:#120e0c;opacity:0;pointer-events:none}
 .motion .layer{position:absolute;inset:0;overflow:hidden;z-index:1;pointer-events:none}
 .motion .layer img{position:absolute;left:0;top:0;max-width:none;object-fit:cover;transform-origin:0 0;will-change:transform}
 .motion .wall>*:not(.door){position:relative;z-index:2}
@@ -148,7 +159,7 @@ ul{padding:0;list-style:none}
 .motion .rooms{position:absolute;inset:0;padding:0;display:block;z-index:3;pointer-events:none}
 .motion .room{position:absolute;inset:0;border-radius:0;background:var(--dusk);clip-path:inset(50% 50% 50% 50%);pointer-events:auto}
 .motion .room img{position:absolute;left:0;top:0;max-width:none;aspect-ratio:auto;transform-origin:0 0;will-change:transform}
-.motion .room .cap{left:var(--gut);right:auto;bottom:max(24svh,150px);max-width:min(460px,calc(100% - 2*var(--gut)))}
+.motion .room .cap{left:var(--gut);right:auto;bottom:calc((var(--vh,1vh) - var(--sv,1vh)) * 100 + max(calc(var(--sv,1svh) * 24),150px));max-width:min(460px,calc(100% - 2*var(--gut)))}
 @media (min-width:900px){.motion .room .cap{padding:14px 18px}.room .cap-what{font-size:24px}.room .cap-src{font-size:13px}}
 .motion .stage-note{position:absolute;z-index:10;left:50%;top:calc(74px + env(safe-area-inset-top));transform:translateX(-50%);width:min(calc(100% - 2*var(--gut)),680px);
   padding:14px 20px;border-radius:24px;background:rgba(243,238,230,.84);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
@@ -233,12 +244,16 @@ ul{padding:0;list-style:none}
 .mullions i{position:absolute;background:rgba(91,46,34,.07)}
 .mullions i:first-child{left:50%;top:0;bottom:0;width:1px}
 .mullions i:last-child{left:0;right:0;top:64px;height:1px}
-.f{position:relative;display:grid;gap:6px;font:500 13px/1.3 var(--sans);color:var(--mute)}
-.f input,.f textarea{font:400 17px/1.4 var(--sans);color:var(--ink);background:#fff;border:1px solid rgba(91,46,34,.18);border-radius:16px;padding:12px 14px;min-height:50px;width:100%}
+.f{position:relative;display:grid;gap:6px;align-content:start;font:500 13px/1.3 var(--sans);color:var(--mute)}
+.f input,.f textarea,.f select{font:400 17px/1.4 var(--sans);color:var(--ink);background:#fff;border:1px solid rgba(91,46,34,.18);border-radius:16px;padding:12px 14px;min-height:50px;width:100%}
+/* дата й година — власні списки українською, 24 год: не залежать від мови пристрою */
+.sel{position:relative;display:block}
+.f select{-webkit-appearance:none;appearance:none;padding-right:44px;cursor:pointer;text-overflow:ellipsis}
+.sel::after{content:"";position:absolute;right:18px;top:50%;width:8px;height:8px;margin-top:-6px;border-right:1.5px solid var(--wood);border-bottom:1.5px solid var(--wood);transform:rotate(45deg);pointer-events:none}
+.f select:invalid,.f select.empty{color:var(--mute)}
 .f textarea{resize:none;font-size:15px;background:#F6F0E7}
 .f-hint{font:400 12.5px/1.4 var(--sans);color:var(--mute)}
-.f-hint.set{color:var(--wood);font-weight:500}
-.f input:focus,.f textarea:focus{outline:2px solid var(--wood);outline-offset:1px}
+.f input:focus,.f textarea:focus,.f select:focus{outline:2px solid var(--wood);outline-offset:1px}
 .stepper{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid rgba(91,46,34,.18);border-radius:999px;padding:4px;width:max-content}
 .st{width:44px;height:44px;border-radius:50%;border:0;background:rgba(91,46,34,.08);color:var(--wood);font:400 22px/1 var(--sans);cursor:pointer;transition:background .15s var(--ease-ui)}
 .st:hover{background:rgba(91,46,34,.15)}
@@ -254,7 +269,7 @@ ul{padding:0;list-style:none}
   .vk-in{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:start}
   .vk-head{grid-column:1/6}
   .pane{grid-column:6/11;grid-row:1/3;grid-template-columns:1fr 1fr;column-gap:16px}
-  .pane .f-hours,.pane .sum,.pane .todo,.pane .f-msg,.pane .send{grid-column:1/-1}
+  .pane .f-day,.pane .sum,.pane .todo,.pane .f-msg,.pane .send{grid-column:1/-1}
   .ph-cam{grid-column:2/5;grid-row:2;justify-self:stretch;width:auto;margin-top:12px}
 }
 
@@ -262,7 +277,8 @@ ul{padding:0;list-style:none}
 .foot{position:relative;z-index:6;background:var(--dusk);color:var(--cream-t);padding:56px var(--gut) calc(40px + env(safe-area-inset-bottom))}
 .foot-in{max-width:1180px;margin:0 auto;display:grid;gap:14px}
 .foot-mark{font:400 34px/1 var(--serif);letter-spacing:.12em;text-transform:uppercase}
-.foot-mark span{font:400 12px/1 var(--sans);letter-spacing:.06em;text-transform:none;color:var(--cream-m);margin-left:8px}
+.foot-mark span{font:400 12px/1 var(--sans);letter-spacing:.06em;text-transform:none;color:var(--cream-m);margin-left:8px;white-space:nowrap}
+@media (max-width:420px){.foot-mark span{display:block;margin:8px 0 0}}
 .foot-addr{color:var(--cream-m);font-size:15px}
 .foot-links{display:flex;flex-wrap:wrap;gap:8px 18px}
 .foot-links a{display:inline-flex;align-items:center;min-height:40px;color:var(--cream-t);text-underline-offset:3px}
@@ -279,3 +295,9 @@ ul{padding:0;list-style:none}
 }
 @media (max-width:519.98px){.mark-sub{display:none}}
 .c-val{overflow-wrap:anywhere;min-width:0}
+
+/* телефон: картки над фото, що рухаються, — без живого розмиття фону (Safari перемальовує blur на кожному кадрі прокрутки) */
+@media (max-width:899.98px){
+  .motion .stage-note{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(243,238,230,.94)}
+  .motion .room .cap{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(243,238,230,.94)}
+}

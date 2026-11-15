@@ -3,11 +3,28 @@
   'use strict';
   var root = document.documentElement;
 
-  /* ---------- святковий сезон: скільки днів до ялинок (дата з допису студії 29.10.2026) ---------- */
+  /* ---------- сьогоднішня дата за київським часом (Europe/Kyiv), не за годинником пристрою ---------- */
+  function kyivToday() {
+    var y, m, d;
+    try {
+      var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+      parts.forEach(function (p) { if (p.type === 'year') y = +p.value; else if (p.type === 'month') m = +p.value; else if (p.type === 'day') d = +p.value; });
+    } catch (e) {}
+    if (!y || !m || !d) { // старий рушій без бази часових поясів: Київ = UTC+2 узимку, UTC+3 з останньої неділі березня до останньої неділі жовтня
+      var now = new Date(), yr = now.getUTCFullYear();
+      var lastSun = function (mon) { var t = new Date(Date.UTC(yr, mon + 1, 0, 1)); t.setUTCDate(t.getUTCDate() - t.getUTCDay()); return t.getTime(); };
+      var off = now.getTime() >= lastSun(2) && now.getTime() < lastSun(9) ? 3 : 2;
+      var k = new Date(now.getTime() + off * 3600e3); y = k.getUTCFullYear(); m = k.getUTCMonth() + 1; d = k.getUTCDate();
+    }
+    return { y: y, m: m, d: d };
+  }
+  var KYIV = kyivToday();
+
+  /* ---------- святковий сезон: скільки календарних днів до ялинок (дата з допису студії 29.10.2026) ---------- */
   var cnt = document.querySelector('.sv-count');
   if (cnt) {
-    var until = Date.UTC(2026, 10, 23) - 2 * 3600e3; // 23.11 00:00 за Києвом
-    var days = Math.ceil((until - Date.now()) / 864e5);
+    // різниця київських календарних дат: 15 → 23 листопада = 8 днів, незалежно від години й поясу пристрою
+    var days = Math.round((Date.UTC(2026, 10, 23) - Date.UTC(KYIV.y, KYIV.m - 1, KYIV.d)) / 864e5);
     if (days > 0) {
       var w = days % 10 === 1 && days % 100 !== 11 ? 'день' : (days % 10 >= 2 && days % 10 <= 4 && (days % 100 < 12 || days % 100 > 14) ? 'дні' : 'днів');
       cnt.textContent = 'До 23 листопада — ' + days + ' ' + w;
@@ -21,7 +38,6 @@
   var fHours = document.getElementById('f-hours'), fSum = document.getElementById('f-sum');
   var fMsg = document.getElementById('f-msg'), fSend = document.getElementById('f-send'), fNote = document.getElementById('f-note');
   var hours = 2, preset = '';
-  var fOut = document.getElementById('f-date-out');
   var MONTHS = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
   var DAYS = ['неділя','понеділок','вівторок','середа','четвер','пʼятниця','субота'];
   function fmtDate(v) {
@@ -33,17 +49,27 @@
     var sum = hours * PRICE;
     fHours.textContent = hours;
     fSum.textContent = String(sum).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    if (fOut) { fOut.textContent = fDate.value ? fmtDate(fDate.value) : 'Оберіть день — студія підтвердить у Direct'; fOut.classList.toggle('set', !!fDate.value); }
+    fDate.classList.toggle('empty', !fDate.value);
     fMsg.value = 'Добрий день! ' + (preset ? 'Хочу ' + preset + '. ' : '') + 'Чи вільне віконечко для зйомки? Дата: ' + fmtDate(fDate.value) +
       ', з ' + (fTime.value || '…') + ', ' + hours + ' год (' + fSum.textContent + ' грн за ціною з біо).';
   }
+  /* дата: список днів українською від сьогодні за Києвом на 60 днів уперед, згрупований за місяцями (не нативна маска мови пристрою) */
+  var MONTHS_N = ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+  var DAYS_S = ['нд','пн','вт','ср','чт','пт','сб'];
+  function fillDates() {
+    var z = function (n) { return (n < 10 ? '0' : '') + n; }, base = Date.UTC(KYIV.y, KYIV.m - 1, KYIV.d), grp = null, gm = -1;
+    for (var i = 0; i < 60; i++) {
+      var t = new Date(base + i * 864e5), mo = t.getUTCMonth(), dd = t.getUTCDate();
+      if (mo !== gm) { grp = document.createElement('optgroup'); grp.label = MONTHS_N[mo] + ' ' + t.getUTCFullYear(); fDate.appendChild(grp); gm = mo; }
+      var o = document.createElement('option');
+      o.value = t.getUTCFullYear() + '-' + z(mo + 1) + '-' + z(dd);
+      o.textContent = DAYS_S[t.getUTCDay()] + ', ' + dd + ' ' + MONTHS[mo] + (i === 0 ? ' · сьогодні' : i === 1 ? ' · завтра' : '');
+      grp.appendChild(o);
+    }
+  }
   if (fDate) {
-    try {
-      var d = new Date(), z = function (n) { return (n < 10 ? '0' : '') + n; };
-      fDate.min = d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate());
-    } catch (e) {}
-    fDate.addEventListener('input', compose);
-    fTime.addEventListener('input', compose);
+    fillDates();
+    ['change', 'input'].forEach(function (ev) { fDate.addEventListener(ev, compose); fTime.addEventListener(ev, compose); });
     document.querySelectorAll('.st').forEach(function (b) {
       b.addEventListener('click', function () {
         hours = Math.min(MAX_H, Math.max(MIN_H, hours + Number(b.dataset.step)));
@@ -72,15 +98,28 @@
   /* ---------- рух ---------- */
   if (!window.gsap || !window.ScrollTrigger) { root.classList.remove('motion'); return; }
   gsap.registerPlugin(ScrollTrigger);
+  /* iPhone: показ/схов панелі адреси міняє лише висоту — не перераховувати сцену посеред жесту */
+  ScrollTrigger.config({ ignoreMobileResize: true });
   var mm = gsap.matchMedia();
 
   mm.add('(prefers-reduced-motion: no-preference)', function () {
     root.classList.add('motion');
-    /* висота екрана фіксується в px і змінюється лише зі зміною ширини: панель адреси на телефоні не смикає сцену */
-    var VH = innerHeight, lastW = innerWidth;
-    var setVH = function () { root.style.setProperty('--vh', (VH / 100) + 'px'); };
+    /* Висота сцени = ВЕЛИКИЙ екран (100lvh, панель адреси схована), видима зона = МАЛИЙ (100svh, панель видно).
+       Раніше бралось innerHeight на завантаженні (панель видно) — коли Safari ховав панель, під фото кімнати
+       відкривалась кремова смуга 80–115 px (скриншот Богдана 15.11). Обидві величини в px, перераховуються лише зі
+       зміною ширини (поворот), тож панель адреси сцену не смикає. */
+    var probeS = document.createElement('div'), probeL = document.createElement('div');
+    probeS.className = 'vhp vhp-s'; probeL.className = 'vhp vhp-l';
+    probeS.setAttribute('aria-hidden', 'true'); probeL.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(probeS); document.body.appendChild(probeL);
+    var VH, SV, lastW = innerWidth;
+    var setVH = function () {
+      SV = probeS.offsetHeight || innerHeight;
+      VH = Math.max(probeL.offsetHeight || 0, SV, innerHeight);
+      root.style.setProperty('--vh', (VH / 100) + 'px'); root.style.setProperty('--sv', (SV / 100) + 'px');
+    };
     setVH();
-    var onResize = function () { if (innerWidth !== lastW) { lastW = innerWidth; VH = innerHeight; setVH(); } };
+    var onResize = function () { if (innerWidth !== lastW) { lastW = innerWidth; setVH(); ScrollTrigger.refresh(); } };
     window.addEventListener('resize', onResize);
     var pin = document.querySelector('.stage-pin');
     var stage = document.querySelector('.stage');
@@ -99,14 +138,26 @@
     inner.style.cssText = 'position:absolute;inset:0;transform-origin:50% 50%';
     var img0 = doorImg.cloneNode(true); img0.removeAttribute('id'); img0.className = ''; img0.alt = ''; img0.sizes = '100vw';
     inner.appendChild(img0); layer.appendChild(inner); pin.insertBefore(layer, pin.firstChild);
+    /* затемнення кімнати, крізь яку проходимо: шар з opacity замість filter: brightness() на повноекранному фото
+       (filter перемальовує весь шар на кожному кадрі — на iPhone це ривки) */
+    var mkDim = function () { var d = document.createElement('i'); d.className = 'dim'; d.setAttribute('aria-hidden', 'true'); return d; };
+    var dim0 = mkDim(); layer.appendChild(dim0);
 
-    var g = {}, st0 = { g: 0 }, rs = rooms.map(function () { return { a: 0, g: 0 }; });
+    var g = {}, st0 = { g: 0 }, rs = rooms.map(function () { return { a: 0, g: 0, o: 0 }; });
     var roomImgs = rooms.map(function (r) { return r.querySelector('img'); });
     var caps = rooms.map(function (r) { return r.querySelector('.cap'); });
+    var dims = rooms.map(function (r) { var d = mkDim(); r.insertBefore(d, r.querySelector('.cap')); return d; });
+    /* фото кімнат: на телефоні не чекати лінивого завантаження посеред жесту — тягнемо й декодуємо одразу після load */
+    var warm = function () {
+      roomImgs.forEach(function (im) { im.loading = 'eager'; if (im.decode) im.decode().catch(function () {}); });
+    };
+    if (document.readyState === 'complete') setTimeout(warm, 300); else window.addEventListener('load', function () { setTimeout(warm, 300); }, { once: true });
+    var capIn = rooms.map(function () { return 0.6; });
     function renderCapOnly(i) {
-      // свій підпис — коли кімната відкрита наполовину; гасне за перші 3/4 розходження стулок наступних дверей, до щілини
+      // свій підпис зʼявляється, лише коли отвір кімнати вже цілком його вміщує (не розрізається краєм дверей);
+      // гасне в паузі ДО того, як стулки наступних дверей рушать (o: 0 → 1 на таймлайні) — щілина вже не ріже картку
       var c = function (v) { return Math.max(0, Math.min(1, v)); };
-      var s = rs[i], nx = rs[i + 1] ? rs[i + 1].a : 0, vis = c((s.g - 0.5) / 0.3) * (1 - c(nx / 0.75));
+      var s = rs[i], nx = rs[i + 1] ? rs[i + 1].a : 0, vis = c((s.g - capIn[i]) / 0.12) * (1 - s.o) * (nx > 0 ? 0 : 1);
       caps[i].style.opacity = vis.toFixed(3); caps[i].style.visibility = vis > 0.01 ? 'visible' : 'hidden';
     }
     var L = function (a, b, t) { return a + (b - a) * t; };
@@ -117,12 +168,23 @@
       var W = pin.clientWidth, H = pin.clientHeight, o = offsetIn(frame, pin); // H = зафіксована висота сцени
       var s = { x: o.x, y: o.y, w: frame.offsetWidth, h: frame.offsetHeight };
       var full = cover(W, H), fx = (W - full.w) / 2, fy = (H - full.h) / 2;
-      var ow = lite ? W * 0.62 : Math.min(W * 0.3, 460), oh = Math.min(H * (lite ? 0.56 : 0.64), ow * 1.5);
-      var op = { x: (W - ow) / 2, y: H * 0.52 - oh / 2, w: ow, h: oh };
+      var Hs = Math.min(H, SV || H); // видима висота, коли панель адреси показана
+      var ow = lite ? W * 0.62 : Math.min(W * 0.3, 460), oh = Math.min(Hs * (lite ? 0.56 : 0.64), ow * 1.5);
+      var op = { x: (W - ow) / 2, y: Hs * 0.52 - oh / 2, w: ow, h: oh };
       function fit(r) { var c = cover(r.w, r.h); return { x: r.x + r.w / 2 - c.w / 2 - fx, y: r.y + r.h / 2 - c.h / 2 - fy, k: c.w / full.w }; }
       g = { W: W, H: H, slot: s, open: op, full: full, fx: fx, fy: fy, fs: fit(s), fo: fit(op) };
       [img0].concat(roomImgs).forEach(function (im) {
         im.style.width = full.w + 'px'; im.style.height = full.h + 'px'; im.style.left = fx + 'px'; im.style.top = fy + 'px';
+      });
+      // поріг появи підпису: найменше g, за якого отвір (lerp від дверей до екрана) цілком містить картку
+      caps.forEach(function (cp, i) {
+        var x = cp.offsetLeft, y = cp.offsetTop, w = cp.offsetWidth, h = cp.offsetHeight, need = 0;
+        if (op.x > 0) need = Math.max(need, 1 - x / op.x);
+        if (op.y > 0) need = Math.max(need, 1 - y / op.y);
+        var rr = op.x + op.w, bb = op.y + op.h;
+        if (W - rr > 0) need = Math.max(need, (x + w - rr) / (W - rr));
+        if (H - bb > 0) need = Math.max(need, (y + h - bb) / (H - bb));
+        capIn[i] = Math.max(0.45, Math.min(0.88, need + 0.02));
       });
     }
     function clip(r, rad) {
@@ -149,7 +211,8 @@
       if (i > 0) renderCapOnly(i - 1);
       // попередня кімната: ми проходимо крізь неї
       var prev = i === 0 ? layer : rooms[i - 1];
-      gsap.set(prev, { scale: 1 + 0.1 * s.g, filter: 'brightness(' + (1 - 0.18 * s.g).toFixed(3) + ')', transformOrigin: '50% 50%' });
+      gsap.set(prev, { scale: 1 + 0.1 * s.g, transformOrigin: '50% 50%', force3D: true });
+      (i === 0 ? dim0 : dims[i - 1]).style.opacity = (0.18 * s.g).toFixed(3);
     }
     function renderAll() { render0(); rooms.forEach(function (_, i) { renderRoom(i); }); }
 
@@ -186,6 +249,7 @@
       .fromTo(note, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.2, immediateRender: false }, t + GROW * 0.8);
     t += GROW + HOLD;
     rooms.forEach(function (r, i) {
+      if (i > 0) tl.to(rs[i - 1], { o: 1, duration: HOLD * 0.6, ease: 'power1.in', onUpdate: function () { renderCapOnly(i - 1); } }, t - HOLD * 0.6);
       tl.to(rs[i], { a: 1, duration: APPEAR, ease: 'power2.out', onUpdate: function () { renderRoom(i); } }, t)
         .to(rs[i], { g: 1, duration: GROW, ease: 'power1.inOut', onUpdate: function () { renderRoom(i); } }, t + APPEAR);
       t += APPEAR + GROW + (i < rooms.length - 1 ? HOLD : LAST);
@@ -231,7 +295,8 @@
     return function () {
       ScrollTrigger.removeEventListener('refreshInit', onRefInit);
       ScrollTrigger.removeEventListener('refresh', onRef);
-      window.removeEventListener('resize', onResize); bar.classList.remove('on'); root.style.removeProperty('--vh');
+      window.removeEventListener('resize', onResize); bar.classList.remove('on'); root.style.removeProperty('--vh'); root.style.removeProperty('--sv');
+      probeS.remove(); probeL.remove(); dims.forEach(function (d) { d.remove(); });
       layer.remove(); frame.classList.remove('has-layer'); stage.style.height = '';
       rooms.forEach(function (r) { r.style.clipPath = ''; r.removeAttribute('style'); });
       caps.forEach(function (c) { c.removeAttribute('style'); });
