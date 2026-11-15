@@ -17,7 +17,8 @@
   --display:"Rounded","Onest",system-ui,sans-serif; --text:"Onest",system-ui,-apple-system,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:84px}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:84px;overflow-x:clip}
+/* запобіжник: html не «visible», тож overflow body не переходить на вікно (де clip стає hidden і дає scrollTo вбік) — body сам обрізає */
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{margin:0;background:var(--rose);color:var(--cocoa);font:400 17px/1.55 var(--text);overflow-x:clip;-webkit-font-smoothing:antialiased}
 img{display:block;max-width:100%;height:auto}
@@ -80,7 +81,7 @@ svg{flex:none}
 
 /* перший екран */
 .hero{position:relative;padding:12px var(--pad) 40px;background:linear-gradient(135deg,#e6bcb2 0%,#e2b7ad 55%,#dfb3aa 100%);display:grid;gap:4px}
-.hero-stage{margin:0 calc(var(--pad) * -1);order:-1;position:relative}
+.hero-stage{margin:0 calc(var(--pad) * -1);order:-1;position:relative;overflow-x:clip}
 .cake-hero{width:min(100%,520px);margin:0 auto;background:url(data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADQBACdASoUABQAPu1wsFIppiSiqAgBMB2JYwC7AA9peygS17fiMUMnH17fklMvgAD+xrx1uDMnQzqYmKGbEFi16njVwH9twIpu9Ffir7rN+o5yoty5WG6RCT8AAA==) center/cover no-repeat;
   -webkit-mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%),linear-gradient(to bottom,transparent 0,#000 7%,#000 93%,transparent 100%);
   -webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%),linear-gradient(to bottom,transparent 0,#000 7%,#000 93%,transparent 100%);mask-composite:intersect}
@@ -110,9 +111,11 @@ svg{flex:none}
 }
 
 /* секція напису */
-.napys{padding:72px var(--pad) 96px;display:grid;gap:36px;align-items:center;background:var(--rose)}
+.napys{overflow-x:clip;padding:72px var(--pad) 96px;display:grid;gap:36px;align-items:center;background:var(--rose)}
 .napys-stage{justify-self:center;width:min(100%,560px)}
-.lens{--r:50%;position:relative;aspect-ratio:1/1;border-radius:50%;clip-path:circle(var(--r) at 50% 50%);background:#eaaeaf;box-shadow:0 30px 70px -40px rgba(90,40,40,.55)}
+/* лінза: фото всередині збільшене scale(2.3) — clip-path обрізає лише малюнок, а не прокручувану площу,
+   тому коло саме обрізає вміст (overflow:hidden), інакше документ розширюється вбік на ~1,7 ширини лінзи */
+.lens{--r:50%;position:relative;aspect-ratio:1/1;border-radius:50%;overflow:hidden;isolation:isolate;clip-path:circle(var(--r) at 50% 50%);background:#eaaeaf;box-shadow:0 30px 70px -40px rgba(90,40,40,.55)}
 .lens-in{position:absolute;inset:0;transform:scale(2.3);transform-origin:49.3% 48.8%}
 .lens-in img,.lens-in .pipe{position:absolute;inset:0;width:100%;height:100%}
 .napys-stage .gen{text-align:center}
@@ -163,7 +166,7 @@ svg{flex:none}
 }
 
 /* замовлення */
-.order{background:var(--blush);padding:0}
+.order{background:var(--blush);padding:0;overflow-x:clip}
 .order-field{background:var(--cocoa);color:var(--cream);padding:88px var(--pad) 96px;display:grid;gap:44px;border-radius:0}
 .order-box{justify-self:center;width:min(100%,460px)}
 @media (max-width:899px){.chat{display:contents}.order-field{gap:22px}.order-field>*{min-width:0}.chat>h2{order:1}.chat>.body{order:2}.thread{order:3}.order-box{order:4;width:min(78%,340px);margin-top:10px}.actions-dark{order:5}.toast{order:6}.actions-dark,.toast{margin-top:0}}
