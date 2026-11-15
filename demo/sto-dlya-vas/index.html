@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="uk" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сайт для вашого СТО · концепт Velira</title>
+<meta name="description" content="Шаблон сайту для СТО від Velira: одометр боксу, графік, колесо послуг і кнопки зв’язку. Пунктирні місця — під ваші назву, адресу, номер і Telegram.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#d3413f">
+<meta name="format-detection" content="telephone=no">
+<link rel="canonical" href="https://veliraweb.com.ua/demo/sto-dlya-vas/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:url" content="https://veliraweb.com.ua/demo/sto-dlya-vas/">
+<meta property="og:title" content="Сайт для вашого СТО · концепт Velira">
+<meta property="og:description" content="Шаблон сайту для СТО: одометр боксу, графік і кнопки зв’язку. Місця під ваші дані поки порожні. Приклад, не справжній бізнес.">
+<meta property="og:image" content="https://veliraweb.com.ua/demo/sto-dlya-vas/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Шаблон сайту для СТО від Velira: одометр боксу на червоному полі, місця під назву й адресу">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://veliraweb.com.ua/demo/sto-dlya-vas/og.jpg">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/unbounded-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/unbounded-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/manrope-var-cyrillic.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="preload" href="assets/vendor/gsap.min.js" as="script">
+<link rel="preload" href="assets/vendor/ScrollTrigger.min.js" as="script">
+<link rel="preload" href="assets/js/main.js" as="script">
+<script>
+/* Ворота руху: класи ставляться до першого малювання. Інтро барабанів — чисті CSS-keyframes. */
+(function () {
+  var d = document.documentElement, mx = window.__mx = { landed: 0, cbs: [] };
+  d.classList.remove('no-js'); d.classList.add('js');
+  /* зачинено за ПРИКЛАДОМ графіка (Пн–Пт 9:00–19:00, час Києва): шкала дня не малюється — клас стоїть до першого малювання.
+     Час Києва рахується арифметикою (UTC+2, літній UTC+3 з останньої неділі березня до останньої неділі жовтня, 01:00 UTC):
+     Intl з часовим поясом до першого малювання коштує на слабкому телефоні десятки мілісекунд. Точний стан потім ставить main.js. */
+  try {
+    var n = Date.now(), y = new Date(n).getUTCFullYear();
+    var sun = function (m) { var x = new Date(Date.UTC(y, m + 1, 0)); return Date.UTC(y, m, x.getUTCDate() - x.getUTCDay(), 1); };
+    var k = new Date(n + ((n >= sun(2) && n < sun(9)) ? 3 : 2) * 3600000);
+    var wd = k.getUTCDay(), t = k.getUTCHours() * 60 + k.getUTCMinutes();
+    if (wd === 0 || wd === 6 || t < 540 || t >= 1140) d.classList.add('is-closed');
+  } catch (e) {}
+  try {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    d.classList.add('motion');
+    if (location.hash) return;
+    d.classList.add('intro');
+    var land = function () {
+      if (mx.landed) return;
+      mx.landed = performance.now(); d.classList.add('intro-land');
+      for (var i = 0; i < mx.cbs.length; i++) try { mx.cbs[i](); } catch (e) {}
+    };
+    var go = function () {
+      if (mx.go) return; mx.go = performance.now(); d.classList.add('intro-go');
+      /* цифри сідають, коли шрифт барабана вже є; чекаємо щонайбільше 1,5 с */
+      try { document.fonts.load('700 40px Unbounded', '0000').then(land, land); } catch (e) { land(); }
+      setTimeout(land, 1500);
+    };
+    var types = (window.PerformanceObserver && PerformanceObserver.supportedEntryTypes) || [];
+    if (types.indexOf('paint') > -1) {
+      new PerformanceObserver(function (l, o) { o.disconnect(); go(); }).observe({ type: 'paint', buffered: true });
+      setTimeout(go, 1000);
+    } else requestAnimationFrame(function () { requestAnimationFrame(go); });
+    /* страховка, якщо main.js не прийде: keyframes доходять самі, клас знімає таймер */
+    mx.safety = setTimeout(function () { d.classList.remove('intro', 'intro-go', 'intro-land'); if (!mx.ready) d.classList.remove('motion'); }, 5200);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ПК: липка панель-«прилад» (на телефоні схована) -->
+  <aside class="meter" aria-label="Бокс: місце під вашу адресу і графік">
+    <p class="brand"><span class="brand__name slot">Назва вашого СТО</span> <span class="brand__desc">Автосервіс · <span class="slot slot--sm">ваш район</span></span></p>
+
+    <div class="meter__main">
+      <p class="addr meter__label"><span data-meter-label><span class="slot">Тут ваша адреса</span></span></p>
+      <div class="meter__winwrap">
+      <span class="odo-tag odo-tag--meter" data-meter-tag>тут номер вашого боксу</span>
+      <div class="meter__win" aria-hidden="true">
+        <div class="face face--a is-on" data-face="a" data-intro>
+          <span class="drum" style="--t:360ms;--ph:-40ms"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__smear"></span><span class="drum__spec"></span></span>
+          <span class="drum" style="--t:500ms;--ph:-130ms"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__smear"></span><span class="drum__spec"></span></span>
+          <span class="drum" style="--t:670ms;--ph:-70ms"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__smear"></span><span class="drum__spec"></span></span>
+          <span class="drum drum--last" style="--t:720ms;--ph:-200ms;--dur:520ms"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__smear"></span><span class="drum__spec"></span></span>
+        </div>
+        <div class="face face--b" data-face="b" data-clock>
+          <div class="trow" data-trow="a">
+            <span class="drum"><span class="drum__sharp"><i></i><b>9</b></span></span>
+            <span class="colon"></span>
+            <span class="drum"><span class="drum__sharp"><i></i><b>0</b></span></span>
+            <span class="drum"><span class="drum__sharp"><i></i><b>0</b></span></span>
+            <span class="drum drum--dash"><span class="dash"></span></span>
+          </div>
+          <div class="trow" data-trow="b">
+            <span class="drum"><span class="drum__sharp"><i></i><b>1</b></span></span>
+            <span class="drum"><span class="drum__sharp"><i></i><b>9</b></span></span>
+            <span class="colon"></span>
+            <span class="drum"><span class="drum__sharp"><i></i><b>0</b></span></span>
+            <span class="drum"><span class="drum__sharp"><i></i><b>0</b></span></span>
+          </div>
+          <span class="wordplate"><span class="wordplate__in">вихідні</span></span>
+        </div>
+        <div class="face face--c" data-face="c">
+          <span class="drum is-blank" data-price-drum><span class="drum__sharp"><i><span class="dash"></span></i><i></i></span></span>
+          <span class="drum is-blank" data-price-drum><span class="drum__sharp"><i><span class="dash"></span></i><i></i></span></span>
+          <span class="drum is-blank" data-price-drum><span class="drum__sharp"><i><span class="dash"></span></i><i></i></span></span>
+          <span class="drum drum--plate"><b>₴</b></span>
+        </div>
+        <div class="face face--d" data-face="d">
+          <span class="dplate"><span class="dplate__in">правила</span></span>
+        </div>
+      </div>
+      </div>
+      <div class="meter__under">
+        <p class="state" data-state data-intro-lamp><span class="lamp" aria-hidden="true"></span><span class="state__txt" data-state-text>Пн–Пт: 9:00–19:00</span><span class="state__src" data-state-src>приклад графіка</span></p>
+        <p class="meter__cap" data-meter-cap hidden></p>
+      </div>
+    </div>
+
+    <div class="day day--red" aria-hidden="true">
+      <span class="day__a">9:00</span>
+      <span class="day__track"><span class="day__mark" data-day-mark><span class="day__now">зараз</span></span></span>
+      <span class="day__b">19:00</span>
+    </div>
+
+    <div class="actions actions--meter">
+      <a class="btn btn--white btn--slot" href="#shablon">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h2.7l1.4 4-2 1.5a12 12 0 0 0 6.3 6.3l1.5-2 4 1.4v2.7a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"/></svg>
+        <span>Тут ваш номер</span>
+      </a>
+      <a class="btn btn--glass btn--slot" href="#shablon">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 4 3.5 10.8l5.4 2 2 5.7 2.9-3.8 4.2 3.1z"/><path d="m8.9 12.8 7.3-5"/></svg>
+        <span>Тут ваш Telegram</span>
+      </a>
+      <a class="btn btn--glass btn--slot" href="#shablon">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+        <span>Тут ваш маршрут</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="col" id="main">
+
+    <!-- 1. Бокс -->
+    <section id="box" class="box" aria-labelledby="h-box">
+      <div class="box__panel">
+        <div class="box__stage">
+          <div class="wrap box__in">
+            <a class="concept" href="#shablon">
+              <span class="concept__txt">Концепт Velira для&nbsp;вашого СТО. Приклад, не&nbsp;справжній бізнес <span class="concept__site">що тут стане вашим</span></span>
+              <svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13M6.5 12.5 12 18l5.5-5.5"/></svg>
+            </a>
+            <p class="brand brand--box"><span class="brand__name slot">Назва вашого СТО</span> <span class="brand__desc">Автосервіс · <span class="slot slot--sm">ваш район</span></span></p>
+            <p class="addr addr--box"><span class="slot">Тут ваша адреса</span></p>
+            <div class="odo-slot">
+              <span class="odo-nest" aria-hidden="true"></span>
+              <span class="odo-tag">тут номер вашого боксу</span>
+              <div class="odo odo--hero" aria-hidden="true" data-intro>
+                <span class="drum" style="--t:360ms;--ph:-40ms"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__smear"></span><span class="drum__spec"></span></span>
+                <span class="drum" style="--t:500ms;--ph:-130ms"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__smear"></span><span class="drum__spec"></span></span>
+                <span class="drum" style="--t:670ms;--ph:-70ms"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__smear"></span><span class="drum__spec"></span></span>
+                <span class="drum drum--last" style="--t:720ms;--ph:-200ms;--dur:520ms"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__smear"></span><span class="drum__spec"></span></span>
+              </div>
+            </div>
+            <p class="state state--box" data-state data-intro-lamp><span class="lamp" aria-hidden="true"></span><span class="state__txt" data-state-text>Пн–Пт: 9:00–19:00</span><span class="state__src" data-state-src>приклад графіка</span></p>
+            <div class="pitch">
+              <h1 id="h-box">Діагностика, ТО і&nbsp;ремонт авто.</h1>
+              <div class="free free--slot">
+                <span class="mini" aria-hidden="true"><span class="drum drum--dash"><span class="dash"></span></span><span class="drum drum--plate"><b>₴</b></span></span>
+                <p class="free__txt">Тут ваша пропозиція<span class="free__eg">&nbsp;— наприклад, ціна діагностики</span>.</p>
+              </div>
+              <p class="pitch__note"><span class="pitch__swatch" aria-hidden="true"></span>Пунктирні місця&nbsp;— під ваші дані: назва, адреса, номер боксу, графік, телефон, Telegram, маршрут, послуги й&nbsp;ціни, правила, фото боксу.</p>
+            </div>
+          </div>
+          <span class="box__shade" aria-hidden="true"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Коли -->
+    <section id="koly" class="sheet koly" aria-labelledby="h-koly">
+      <div class="wrap">
+        <span class="sheet__grab" aria-hidden="true"></span>
+        <h2 id="h-koly">Коли зручно заїхати</h2>
+        <div class="seg" role="group" aria-labelledby="h-koly">
+          <span class="seg__thumb" aria-hidden="true"></span>
+          <button type="button" class="seg__btn" data-days="wk" aria-pressed="true">Пн–Пт</button>
+          <button type="button" class="seg__btn" data-days="we" aria-pressed="false">Сб–Нд</button>
+        </div>
+        <p class="sr-only" aria-live="polite" data-hours-live></p>
+        <div class="clock" aria-hidden="true" data-clock>
+          <div class="trow" data-trow="a">
+            <span class="drum"><span class="drum__sharp"><i></i><b>9</b></span></span>
+            <span class="colon"></span>
+            <span class="drum"><span class="drum__sharp"><i></i><b>0</b></span></span>
+            <span class="drum"><span class="drum__sharp"><i></i><b>0</b></span></span>
+            <span class="drum drum--dash"><span class="dash"></span></span>
+          </div>
+          <div class="trow" data-trow="b">
+            <span class="drum"><span class="drum__sharp"><i></i><b>1</b></span></span>
+            <span class="drum"><span class="drum__sharp"><i></i><b>9</b></span></span>
+            <span class="colon"></span>
+            <span class="drum"><span class="drum__sharp"><i></i><b>0</b></span></span>
+            <span class="drum"><span class="drum__sharp"><i></i><b>0</b></span></span>
+          </div>
+          <span class="wordplate"><span class="wordplate__in">вихідні</span></span>
+        </div>
+        <p class="note koly__note">приклад графіка&nbsp;— впишете свій</p>
+        <ul class="hours">
+          <li>Пн–Пт: 9:00–19:00</li>
+          <li>Сб–Нд: вихідні</li>
+        </ul>
+        <div class="now">
+          <p class="state state--sheet" data-state><span class="lamp" aria-hidden="true"></span><span class="state__txt" data-state-text>Пн–Пт: 9:00–19:00</span><span class="state__src" data-state-src>приклад графіка</span></p>
+          <div class="day" aria-hidden="true">
+            <span class="day__a">9:00</span>
+            <span class="day__track"><span class="day__mark" data-day-mark><span class="day__now">зараз</span></span></span>
+            <span class="day__b">19:00</span>
+          </div>
+        </div>
+        <p class="lead lead--sheet">Час заїзду домовляєтесь дзвінком або в&nbsp;Telegram.</p>
+      </div>
+    </section>
+
+    <!-- 3. Що турбує -->
+    <section id="turbuie" class="ink turbuie" aria-labelledby="h-tur">
+      <div class="wrap turbuie__in">
+        <h2 id="h-tur">Що турбує</h2>
+        <p class="lead">Оберіть на&nbsp;колесі&nbsp;— під&nbsp;ним опис роботи й&nbsp;вікно ціни.</p>
+        <p class="note turbuie__note">приклад&nbsp;— ваш перелік послуг</p>
+
+        <div class="device">
+          <div class="picker" data-picker>
+            <div class="wheel" aria-hidden="true">
+              <div class="wheel__persp"><div class="wheel__cyl" data-cyl></div></div>
+              <span class="wheel__lens"></span>
+              <span class="wheel__fade"></span>
+              <span class="wheel__rim" data-rim><span class="wheel__knurl" data-knurl></span></span>
+            </div>
+            <button type="button" class="picker__zone picker__zone--prev" data-step="-1" aria-label="Попередня послуга"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m6.5 14.5 5.5-5.5 5.5 5.5"/></svg></button>
+            <button type="button" class="picker__zone picker__zone--next" data-step="1" aria-label="Наступна послуга"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"/></svg></button>
+          </div>
+          <div class="price">
+            <span class="price__drums" aria-hidden="true">
+              <span class="drum is-blank" data-price-drum><span class="drum__sharp"><i><span class="dash"></span></i><i></i></span></span>
+              <span class="drum is-blank" data-price-drum><span class="drum__sharp"><i><span class="dash"></span></i><i></i></span></span>
+              <span class="drum is-blank" data-price-drum><span class="drum__sharp"><i><span class="dash"></span></i><i></i></span></span>
+              <span class="drum drum--plate"><b>₴</b></span>
+            </span>
+            <p class="price__cap"><span class="note note--in" data-price-cap>ціну впишете&nbsp;ви</span></p>
+          </div>
+        </div>
+        <p class="sr-only" aria-live="polite" data-svc-live></p>
+
+        <ul class="services" data-services>
+          <li class="svc">
+            <h3>Комп’ютерна діагностика</h3>
+            <p>Зчитування помилок і&nbsp;перевірка датчиків.</p>
+          </li>
+          <li class="svc">
+            <h3>Планове ТО</h3>
+            <p>Олива, фільтри, рідини&nbsp;— за&nbsp;регламентом виробника.</p>
+          </li>
+          <li class="svc">
+            <h3>Ходова і&nbsp;підвіска</h3>
+            <p>Стуки, сайлентблоки, амортизатори, рульове.</p>
+          </li>
+          <li class="svc is-on" data-brakes>
+            <h3>Гальмівна система</h3>
+            <p><span class="parts-row" data-parts-row><span data-part="pads">Колодки</span>, <span data-part="disc">диски</span>, <span data-part="fluid">рідина</span>, <span data-part="caliper">супорти</span>.</span></p>
+          </li>
+          <li class="svc">
+            <h3>Двигун і&nbsp;паливна</h3>
+            <p>Свічки, форсунки, ремені, течі оливи.</p>
+          </li>
+          <li class="svc">
+            <h3>Кондиціонер</h3>
+            <p>Заправка, перевірка системи, пошук витоків.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4. Огляд гальм на прикладі -->
+    <section id="potribne" class="ink potribne" aria-labelledby="h-pot">
+      <div class="tray-stage" data-stage>
+        <div class="wrap tray-stage__in">
+          <h2 id="h-pot">Що справне, а&nbsp;що&nbsp;ні</h2>
+          <div class="tray" data-tray>
+            <span class="part__shadow part__shadow--disc" data-shadow="disc" aria-hidden="true"></span>
+            <span class="part__shadow part__shadow--caliper" data-shadow="caliper" aria-hidden="true"></span>
+            <span class="part__shadow part__shadow--fluid" data-shadow="fluid" aria-hidden="true"></span>
+            <span class="part__shadow part__shadow--pads" data-shadow="pads" aria-hidden="true"></span>
+            <img class="part part--disc" data-part-img="disc" src="assets/img/brake-disc.webp" srcset="assets/img/brake-disc-560.webp 560w, assets/img/brake-disc.webp 900w" sizes="(min-width: 1024px) 230px, 190px" width="900" height="848" decoding="async" fetchpriority="low" alt="Згенероване зображення: гальмівний диск, чистий метал">
+            <img class="part part--caliper" data-part-img="caliper" src="assets/img/brake-caliper.webp" srcset="assets/img/brake-caliper-560.webp 560w, assets/img/brake-caliper.webp 900w" sizes="(min-width: 1024px) 200px, 140px" width="900" height="822" decoding="async" fetchpriority="low" alt="Згенероване зображення: гальмівний супорт із сірого нефарбованого металу">
+            <img class="part part--fluid" data-part-img="fluid" src="assets/img/brake-fluid.webp" srcset="assets/img/brake-fluid-250.webp 250w, assets/img/brake-fluid.webp 400w" sizes="(min-width: 1024px) 80px, 60px" width="400" height="900" decoding="async" fetchpriority="low" alt="Згенероване зображення: флакон із бурштиновою гальмівною рідиною">
+            <img class="part part--pads" data-part-img="pads" src="assets/img/brake-pads.webp" srcset="assets/img/brake-pads-560.webp 560w, assets/img/brake-pads.webp 900w" sizes="(min-width: 1024px) 250px, 180px" width="900" height="670" decoding="async" fetchpriority="low" alt="Згенероване зображення: пара зношених гальмівних колодок із тонким шаром накладки">
+            <div class="tray__row" data-row>
+              <p class="part__label" data-label="pads"><span>Колодки</span><span class="sr-only">, приклад: зношене&nbsp;— під заміну</span></p>
+              <p class="part__label" data-label="disc"><span>диски</span><i class="lamp" data-ok="disc" data-open="1" aria-hidden="true"></i></p>
+              <p class="part__label" data-label="fluid"><span>рідина</span><i class="lamp" data-ok="fluid" data-open="1" aria-hidden="true"></i></p>
+              <p class="part__label" data-label="caliper"><span>супорти</span><i class="lamp" data-ok="caliper" data-open="1" aria-hidden="true"></i></p>
+            </div>
+            <span class="tray__tag" data-tag aria-hidden="true">приклад: зношене&nbsp;— під&nbsp;заміну</span>
+            <span class="note tray__note">ілюстрація</span>
+          </div>
+          <p class="lead lead--tray">Чотири деталі гальм на&nbsp;прикладі: справні повертаються на&nbsp;авто, зношене лишається на&nbsp;лотку.</p>
+          <p class="big slot slot--block">Тут ваш підхід до&nbsp;заміни деталей&nbsp;— наприклад, показуєте клієнту старі колодки.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Як ми працюємо -->
+    <section id="chomu" class="sheet chomu" aria-labelledby="h-chomu">
+      <div class="wrap">
+        <h2 id="h-chomu">Як ми працюємо</h2>
+        <p class="note chomu__note">приклад&nbsp;— впишете свої правила</p>
+        <div class="rules" data-rules>
+          <article class="rule" data-rule>
+            <h3 class="rule__win"><span class="rule__plate"><span class="rule__word">Правило&nbsp;1</span></span></h3>
+            <p><span class="slot slot--line">Тут ваше правило роботи</span> Наприклад: ціну називаєте до&nbsp;початку робіт.</p>
+          </article>
+          <article class="rule" data-rule>
+            <h3 class="rule__win"><span class="rule__plate"><span class="rule__word">Правило&nbsp;2</span></span></h3>
+            <p><span class="slot slot--line">Тут ваше правило роботи</span> Наприклад: старі деталі віддаєте клієнту.</p>
+          </article>
+        </div>
+        <p class="years slot slot--block">Тут ваш досвід&nbsp;— скільки років працюєте.</p>
+      </div>
+    </section>
+
+    <!-- 6. Як знайти -->
+    <section id="doroha" class="doroha" aria-labelledby="h-dor">
+      <div class="wrap doroha__in">
+        <h2 id="h-dor">Як нас знайти</h2>
+        <p class="lead lead--red"><span class="slot">Тут ваш район і&nbsp;як під’їхати</span></p>
+
+        <div class="doroha__odo">
+          <p class="addr addr--home"><span class="slot">Тут ваша адреса</span> <span class="slot slot--sm slot--box">тут номер вашого боксу<svg class="ico ico--xs" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13M6.5 12.5 12 18l5.5-5.5"/></svg></span></p>
+          <div class="odo-home">
+            <span class="odo-nest odo-nest--home" data-home-nest aria-hidden="true"></span>
+            <div class="odo odo--home" aria-hidden="true" data-home>
+              <span class="drum"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__spec"></span></span>
+              <span class="drum"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__spec"></span></span>
+              <span class="drum"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__spec"></span></span>
+              <span class="drum"><span class="drum__sharp"><i></i><b><span class="dash"></span></b></span><span class="drum__spec"></span></span>
+            </div>
+          </div>
+          <p class="state state--box" data-state data-home-state><span class="lamp" aria-hidden="true"></span><span class="state__txt" data-state-text>Пн–Пт: 9:00–19:00</span><span class="state__src" data-state-src>приклад графіка</span></p>
+        </div>
+
+        <div class="photo">
+          <svg class="ico ico--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5a2 2 0 0 1 2-2h1.8l1.3-2h5.8l1.3 2H18a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.6" r="3.4"/></svg>
+          <p class="note">тут буде фото вашого боксу</p>
+          <a class="btn btn--frost btn--slot photo__route" data-dock-stop href="#shablon">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+            <span>Тут ваш маршрут</span>
+          </a>
+        </div>
+
+        <div class="actions actions--final" data-final>
+          <a class="btn btn--white btn--big btn--slot" href="#shablon">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h2.7l1.4 4-2 1.5a12 12 0 0 0 6.3 6.3l1.5-2 4 1.4v2.7a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"/></svg>
+            <span>Тут ваш номер</span>
+          </a>
+          <a class="btn btn--glass btn--slot" href="#shablon">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 4 3.5 10.8l5.4 2 2 5.7 2.9-3.8 4.2 3.1z"/><path d="m8.9 12.8 7.3-5"/></svg>
+            <span>Тут ваш Telegram</span>
+          </a>
+        </div>
+        <ul class="hours hours--red">
+          <li>Пн–Пт: 9:00–19:00</li>
+          <li>Сб–Нд: вихідні</li>
+        </ul>
+        <p class="note hours__note">приклад графіка&nbsp;— впишете свій</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Плаваюча панель дій (телефон) -->
+<div class="dock" data-dock>
+  <button class="chip" type="button" data-chip aria-label="Бокс: місце під вашу адресу і графік" aria-haspopup="dialog" tabindex="-1">
+    <span class="chip__in" data-chip-in><span class="chip__pill" data-pill><i></i><i></i><i></i><i></i></span><span class="lamp chip__lamp" data-chip-lamp></span></span>
+  </button>
+  <a class="dock__call" href="#shablon" aria-label="Тут ваш номер">
+    <span class="dock__fill" data-call-fill aria-hidden="true"></span>
+    <span class="dock__lbl" data-call-lbl><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h2.7l1.4 4-2 1.5a12 12 0 0 0 6.3 6.3l1.5-2 4 1.4v2.7a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"/></svg><span class="lbl-long">Тут ваш номер</span><span class="lbl-short">Ваш номер</span></span>
+  </a>
+  <a class="dock__ico" href="#shablon" aria-label="Тут ваш Telegram">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 4 3.5 10.8l5.4 2 2 5.7 2.9-3.8 4.2 3.1z"/><path d="m8.9 12.8 7.3-5"/></svg>
+  </a>
+  <a class="dock__ico" href="#shablon" aria-label="Тут ваш маршрут">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+  </a>
+</div>
+
+<footer class="foot" id="shablon">
+  <div class="wrap foot__in">
+    <p class="foot__concept">Концепт Velira для&nbsp;вашого СТО. Приклад, не&nbsp;справжній бізнес</p>
+    <p class="foot__row foot__what">Пунктирні місця на&nbsp;сторінці&nbsp;— під ваші дані: назва, район, адреса, номер боксу, графік, телефон, Telegram, маршрут, перелік послуг і&nbsp;ціни, правила роботи, досвід, фото боксу. Поки їх не&nbsp;вписано, кнопки нікуди не&nbsp;дзвонять і&nbsp;не&nbsp;пишуть&nbsp;— ведуть сюди.</p>
+    <p class="foot__row foot__velira">Цю&nbsp;сторінку зробила Velira як&nbsp;приклад сайту для&nbsp;СТО. <a class="foot__link" href="https://veliraweb.com.ua/">veliraweb.com.ua</a></p>
+    <p class="foot__row foot__img">Зображення деталей згенеровані&nbsp;— це&nbsp;ілюстрації, не&nbsp;фото чиїхось робіт.</p>
+  </div>
+</footer>
+
+<!-- Копія вікна одометра, що летить у панель (лише рух; телефон) -->
+<div class="flyer" data-flyer aria-hidden="true">
+  <div class="odo odo--fly">
+    <span class="drum drum--dash"><span class="dash"></span></span><span class="drum drum--dash"><span class="dash"></span></span><span class="drum drum--dash"><span class="dash"></span></span><span class="drum drum--dash"><span class="dash"></span></span>
+  </div>
+</div>
+
+<!-- Аркуш знизу «Бокс» -->
+<dialog class="bsheet" id="box-sheet" aria-labelledby="bs-title">
+  <div class="bsheet__panel" data-bs-panel>
+    <span class="bsheet__grab" data-bs-grab aria-hidden="true"><i></i></span>
+    <button type="button" class="bsheet__close" data-bs-close aria-label="Закрити">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>
+    </button>
+    <h2 class="bsheet__title" id="bs-title"><span class="slot">Тут ваша адреса</span> <span class="slot slot--sm">і номер боксу</span></h2>
+    <p class="state state--sheet" data-state><span class="lamp" aria-hidden="true"></span><span class="state__txt" data-state-text>Пн–Пт: 9:00–19:00</span><span class="state__src" data-state-src>приклад графіка</span></p>
+    <ul class="hours hours--bs">
+      <li>Пн–Пт: 9:00–19:00</li>
+      <li>Сб–Нд: вихідні</li>
+    </ul>
+    <div class="actions actions--bs">
+      <a class="btn btn--ink btn--big btn--slot" href="#shablon" data-bs-go>
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h2.7l1.4 4-2 1.5a12 12 0 0 0 6.3 6.3l1.5-2 4 1.4v2.7a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"/></svg>
+        <span>Тут ваш номер</span>
+      </a>
+      <a class="btn btn--soft btn--slot" href="#shablon" data-bs-go>
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 4 3.5 10.8l5.4 2 2 5.7 2.9-3.8 4.2 3.1z"/><path d="m8.9 12.8 7.3-5"/></svg>
+        <span>Тут ваш Telegram</span>
+      </a>
+      <a class="btn btn--soft btn--slot" href="#shablon" data-bs-go>
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+        <span>Тут ваш маршрут</span>
+      </a>
+    </div>
+  </div>
+</dialog>
+
+<script>
+/* Скрипти руху підключаються по одному після першого кадру: три коротких завдання замість одного довгого,
+   перше малювання (інтро — чистий CSS) їх не чекає. Файли вже завантажені через preload. */
+(function () {
+  var list = ['assets/vendor/gsap.min.js', 'assets/vendor/ScrollTrigger.min.js', 'assets/js/main.js'], i = 0;
+  function next() {
+    if (i >= list.length) return;
+    var s = document.createElement('script');
+    s.src = list[i++]; s.async = false;
+    s.onload = function () { setTimeout(next, 0); };
+    document.body.appendChild(s);
+  }
+  requestAnimationFrame(function () { setTimeout(next, 0); });
+})();
+</script>
+</body>
+</html>
