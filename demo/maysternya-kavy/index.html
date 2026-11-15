@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Майстерня кави — кав'ярня в Lake Plaza, Оболонь · концепт</title>
+<meta name="description" content="Концепт сайту Velira для кав'ярні «Майстерня кави» в БФК Lake Plaza: вітрина десертів з хайлайтів, торт капучіно-чіз, 1 поверх, щодня 8:00–21:00.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://veliraweb.com.ua/demo/maysternya-kavy/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:url" content="https://veliraweb.com.ua/demo/maysternya-kavy/">
+<meta property="og:title" content="Майстерня кави · Lake Plaza — концепт сайту від Velira">
+<meta property="og:description" content="Вітрина з хайлайтів, торт капучіно-чіз і дорога на 1 поверх БФК Lake Plaza. Концепт Velira, не офіційний сайт.">
+<meta property="og:image" content="https://veliraweb.com.ua/demo/maysternya-kavy/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1a110b">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/playfair-normal-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/golos-text-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/img/cup-760.webp" as="image" media="(max-width: 760px)">
+<link rel="preload" href="assets/img/cup-1254.webp" as="image" media="(min-width: 761px)">
+<script>
+  (function () {
+    var d = document.documentElement; d.classList.add('js');
+    try { if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) d.classList.add('js-motion'); } catch (e) {}
+  })();
+</script>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#vitryna">До вітрини</a>
+
+<header class="bar" id="bar">
+  <a class="bar__mark" href="#top" aria-label="Майстерня кави — на початок">
+    <svg class="bar__cup" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="#c98a4b"/><path d="M16 9.5c-3 0-5 2-5 4.6 0 3.4 3.4 6.4 5 8.4 1.6-2 5-5 5-8.4 0-2.6-2-4.6-5-4.6z" fill="#f6f1ea"/></svg>
+    <span>Майстерня кави</span>
+  </a>
+  <nav class="bar__nav" aria-label="Розділи">
+    <a href="#vitryna">Вітрина</a>
+    <a href="#tort">Торт</a>
+    <a href="#de">Як знайти</a>
+    <a class="bar__ig" href="https://www.instagram.com/maysternya_kavy_kyiv/" target="_blank" rel="noopener" aria-label="Instagram кав'ярні">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" class="dot"/></svg>
+      <span class="bar__ig-text">Instagram</span>
+    </a>
+  </nav>
+</header>
+
+<main id="top">
+  <div class="dive" id="dive">
+    <div class="dive__stage">
+      <section class="hero" aria-labelledby="h1">
+        <div class="cup" id="cup">
+          <picture>
+            <source media="(max-width: 760px)" srcset="assets/img/cup-760.webp">
+            <img class="cup__photo" src="assets/img/cup-1254.webp" width="1254" height="1254" alt="Згенероване зображення: чашка еспресо з кремою згори на темному камені — не фото кав'ярні" fetchpriority="high">
+          </picture>
+          <svg class="milk" id="milk" viewBox="0 0 1254 1254" aria-hidden="true" focusable="false">
+            <defs>
+              <filter id="milkEdge" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+                <feTurbulence type="fractalNoise" baseFrequency=".016" numOctaves="2" seed="7" result="noise"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" result="wobble"/>
+                <feMorphology in="wobble" operator="dilate" radius="3" result="fat"/>
+                <feFlood flood-color="#4a210a" flood-opacity=".42"/>
+                <feComposite in2="fat" operator="in"/>
+                <feGaussianBlur stdDeviation="5" result="halo"/>
+                <feGaussianBlur in="wobble" stdDeviation="2.6" result="soft"/>
+                <feMerge><feMergeNode in="halo"/><feMergeNode in="soft"/></feMerge>
+              </filter>
+              <filter id="tintBlur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter>
+              <radialGradient id="streamGlow"><stop offset="0" stop-color="#fffaf3"/><stop offset=".45" stop-color="#fffaf3" stop-opacity=".85"/><stop offset="1" stop-color="#fffaf3" stop-opacity="0"/></radialGradient>
+              <radialGradient id="foam" cx="50%" cy="45%" r="60%">
+                <stop offset="0" stop-color="#fbf8f3"/>
+                <stop offset=".75" stop-color="#f3ebdf"/>
+                <stop offset="1" stop-color="#e2cbaf"/>
+              </radialGradient>
+              <mask id="m1" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><rect width="1254" height="1254" fill="#fff"/><path id="c1" fill="#000" d="M 606 472 C 703.2 456 782 519.6 782 598 C 782 676.4 633.2 721.7 606 760 C 578.8 721.7 430 676.4 430 598 C 430 519.6 508.8 456 606 472 Z"/></mask>
+              <mask id="m2" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><rect width="1254" height="1254" fill="#fff"/><path id="c2" fill="#000" d="M 606 542 C 687.7 530 754 581.9 754 646 C 754 710.1 628.9 746.7 606 778 C 583.1 746.7 458 710.1 458 646 C 458 581.9 524.3 530 606 542 Z"/></mask>
+              <mask id="m3" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><rect width="1254" height="1254" fill="#fff"/><path id="c3" fill="#000" d="M 606 610 C 672.3 600 726 640.3 726 690 C 726 739.7 624.6 769.7 606 794 C 587.4 769.7 486 739.7 486 690 C 486 640.3 539.7 600 606 610 Z"/></mask>
+            </defs>
+            <g class="milk__body" filter="url(#milkEdge)" fill="url(#foam)">
+              <path id="w1" mask="url(#m1)" d="M 606 424 C 710.9 390 796 457.2 796 540 C 796 622.8 635.4 669.5 606 710 C 576.6 669.5 416 622.8 416 540 C 416 457.2 501.1 390 606 424 Z"/>
+              <path id="w2" mask="url(#m2)" d="M 606 496 C 694.4 470 766 525.5 766 594 C 766 662.5 630.7 700.5 606 734 C 581.3 700.5 446 662.5 446 594 C 446 525.5 517.6 470 606 496 Z"/>
+              <path id="w3" mask="url(#m3)" d="M 606 564 C 678.9 544 738 587.9 738 642 C 738 696.1 626.4 727.5 606 754 C 585.6 727.5 474 696.1 474 642 C 474 587.9 533.1 544 606 564 Z"/>
+              <path id="w4" d="M 606 644 C 661.2 624 706 658 706 700 C 706 742 621.5 773.5 606 794 C 590.5 773.5 506 742 506 700 C 506 658 550.8 624 606 644 Z"/>
+              <g class="tint" fill="none" stroke="#7a3f14" stroke-opacity=".38" stroke-width="7" filter="url(#tintBlur)"><path id="t1" pathLength="1" stroke-dasharray=".28 .44 .28" d="M 606 472 C 703.2 456 782 519.6 782 598 C 782 676.4 633.2 721.7 606 760 C 578.8 721.7 430 676.4 430 598 C 430 519.6 508.8 456 606 472 Z"/><path id="t2" pathLength="1" stroke-dasharray=".28 .44 .28" d="M 606 542 C 687.7 530 754 581.9 754 646 C 754 710.1 628.9 746.7 606 778 C 583.1 746.7 458 710.1 458 646 C 458 581.9 524.3 530 606 542 Z"/><path id="t3" pathLength="1" stroke-dasharray=".28 .44 .28" d="M 606 610 C 672.3 600 726 640.3 726 690 C 726 739.7 624.6 769.7 606 794 C 587.4 769.7 486 739.7 486 690 C 486 640.3 539.7 600 606 610 Z"/></g>
+              <path id="stem" d="M606 818 L606 384" stroke="#f6f0e6" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+            </g>
+            <g class="pour" id="pour" opacity="0">
+              <circle id="ripple1" cx="606" cy="780" r="14" fill="none" stroke="#fff6ea" stroke-opacity=".55" stroke-width="1.5"/>
+              <circle id="ripple2" cx="606" cy="780" r="14" fill="none" stroke="#fff6ea" stroke-opacity=".4" stroke-width="1.2"/>
+              <circle id="stream" cx="606" cy="780" r="12" fill="url(#streamGlow)"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="hero__text">
+          <p class="hero__where">Кав'ярня на 1 поверсі БФК Lake Plaza · Оболонь</p>
+          <h1 id="h1" class="hero__title">Зробимо перерву на&nbsp;каву</h1>
+          <p class="hero__lead">Кава, кіші, макаронс, еклери, моті й торт капучіно-чіз — у вітрині на 1 поверсі. Щодня з 8:00 до 21:00.</p>
+          <p class="status" id="status" data-open="8" data-close="21"><span class="status__dot" aria-hidden="true"></span><span class="status__text">Щодня 8:00–21:00</span></p>
+          <div class="hero__actions">
+            <a class="btn btn--crema" href="#vitryna">Дивитися вітрину</a>
+            <a class="btn btn--glass" href="https://maps.app.goo.gl/7JnmTUazYF3kbQVt6" target="_blank" rel="noopener">Відкрити на карті</a>
+          </div>
+          <p class="stamp">Концепт Velira для Майстерня кави (Lake Plaza). Не офіційний сайт · <a href="https://www.instagram.com/maysternya_kavy_kyiv/" target="_blank" rel="noopener">@maysternya_kavy_kyiv</a></p>
+        </div>
+      </section>
+
+      <svg class="rim" id="rim" aria-hidden="true" focusable="false"><circle id="rimC" cx="0" cy="0" r="0"/></svg>
+      <div class="vit-intro" id="vitIntro" aria-labelledby="vitTitle" role="region">
+        <div class="vit-intro__in">
+          <p class="kicker">Що зараз сховано в хайлайтах Instagram</p>
+          <h2 id="vitTitle" class="vit-intro__title">Вітрина</h2>
+          <p class="vit-intro__lead">Макаронс, моті, шу, горішки, еклери, пряники, десерти, кіші й сендвічі, пироги, напої і торт — на п'яти полицях. Ціни з хайлайту «меню» ще не перенесені, тому цінники порожні.</p>
+          <p class="vit-intro__note">Малюнки — замість фото. Справжні кадри вітрини додамо з вашого Instagram.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="vitrine" id="vitryna" aria-label="Полиці вітрини">
+
+    <div class="shelf" style="--art:118px">
+      <h3 class="shelf__name">Дрібне до кави</h3>
+      <ul class="shelf__row" role="list">
+        <li class="item">
+          <svg class="art" viewBox="0 0 130 110" width="130" height="110" aria-hidden="true"><path pathLength="1" d="M20 52C22 24 108 24 110 52"/><path pathLength="1" d="M20 52c3 4 6 4 9 0c3 4 6 4 9 0c3 4 6 4 9 0c3 4 6 4 9 0c3 4 6 4 9 0c3 4 6 4 9 0c3 4 6 4 9 0c3 4 6 4 9 0c3 4 6 4 9 0c3 4 6 4 9 0"/><path pathLength="1" d="M21 59Q65 66 109 59M21 68Q65 75 109 68"/><path pathLength="1" d="M20 76c3-4 6-4 9 0c3-4 6-4 9 0c3-4 6-4 9 0c3-4 6-4 9 0c3-4 6-4 9 0c3-4 6-4 9 0c3-4 6-4 9 0c3-4 6-4 9 0c3-4 6-4 9 0c3-4 6-4 9 0"/><path pathLength="1" d="M20 76C22 104 108 104 110 76"/><path pathLength="1" d="M40 37Q54 31 68 32"/></svg>
+          <p class="item__name">Макаронс</p><p class="item__src">хайлайт «макаронс»</p>
+          <span class="tag"><span class="tag__card">ціна —</span></span>
+        </li>
+        <li class="item">
+          <svg class="art" viewBox="0 0 110 110" width="110" height="110" aria-hidden="true"><path pathLength="1" d="M14 100C8 68 24 42 55 42C86 42 102 68 96 100C80 106 30 106 14 100Z"/><path pathLength="1" d="M30 66Q38 54 52 51"/><path class="dots" pathLength="1" d="M40 78h.1M58 70h.1M70 86h.1M48 92h.1M80 74h.1M30 88h.1"/></svg>
+          <p class="item__name">Моті</p><p class="item__src">хайлайт «моті»</p>
+          <span class="tag"><span class="tag__card">ціна —</span></span>
+        </li>
+        <li class="item">
+          <svg class="art" viewBox="0 0 120 110" width="120" height="110" aria-hidden="true"><path pathLength="1" d="M12 100C6 62 28 34 60 34C92 34 114 62 108 100Z"/><path pathLength="1" d="M28 58l10 6 8-8 12 6 10-6 12 8 12-4"/><path pathLength="1" d="M20 78l12 4 10-6 14 6 12-6 14 6 14-4"/><path pathLength="1" d="M16 100Q60 108 104 100"/></svg>
+          <p class="item__name">Шу</p><p class="item__src">хайлайт «шу»</p>
+          <span class="tag"><span class="tag__card">ціна —</span></span>
+        </li>
+        <li class="item">
+          <svg class="art" viewBox="0 0 110 110" width="110" height="110" aria-hidden="true"><path pathLength="1" d="M18 76C14 48 34 32 55 32C76 32 96 48 92 76C88 96 22 96 18 76Z"/><path pathLength="1" d="M55 32C51 52 59 72 55 92"/><path pathLength="1" d="M31 52C37 60 37 68 31 78M79 52C73 60 73 68 79 78M42 42C44 50 44 54 42 60M68 42C66 50 66 54 68 60"/></svg>
+          <p class="item__name">Горішки</p><p class="item__src">хайлайт «горішки»</p>
+          <span class="tag"><span class="tag__card">ціна —</span></span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="shelf" style="--art:118px">
+      <h3 class="shelf__name">До перерви</h3>
+      <ul class="shelf__row" role="list">
+        <li class="item item--wide">
+          <svg class="art" viewBox="0 0 200 110" width="200" height="110" aria-hidden="true"><path pathLength="1" d="M18 86C18 72 26 64 42 64H160C176 64 184 72 184 86C184 98 176 104 160 104H42C26 104 18 98 18 86Z"/><path pathLength="1" d="M24 76C24 68 32 62 44 62H158C170 62 180 68 180 76C166 82 152 72 136 79C120 86 106 75 90 81C74 87 60 77 46 81C35 84 27 82 24 76Z"/><path pathLength="1" d="M48 94H152M56 99H144"/><path pathLength="1" d="M70 70q6-3 12 0M118 69q6-3 12 0"/></svg>
+          <p class="item__name">Еклери</p><p class="item__src">хайлайт «еклери»</p>
+          <span class="tag"><span class="tag__card">ціна —</span></span>
+        </li>
+        <li class="item">
+          <svg class="art" viewBox="0 0 120 110" width="120" height="110" aria-hidden="true"><path pathLength="1" d="M60 38 L60.1 37.3 L60.5 35.2 L61.5 32.1 L63.4 28.3 L66.4 24.4 L70.4 20.7 L75.3 17.9 L81 16.2 L87.1 15.9 L93.3 17.2 L99 20 L104 24 L107.9 29.1 L110.4 34.9 L111.2 41.2 L110.4 47.6 L107.9 53.9 L104 60.1 L99 66 L93.3 71.6 L87.1 77 L81 82.2 L75.3 87.2 L70.4 92 L66.4 96.4 L63.4 100.4 L61.5 103.7 L60.5 106.3 L60.1 107.9 L60 108.4 L59.9 107.9 L59.5 106.3 L58.5 103.7 L56.6 100.4 L53.6 96.4 L49.6 92 L44.7 87.2 L39 82.2 L32.9 77 L26.7 71.6 L21 66 L16 60.1 L12.1 53.9 L9.6 47.6 L8.8 41.2 L9.6 34.9 L12.1 29.1 L16 24 L21 20 L26.7 17.2 L32.9 15.9 L39 16.2 L44.7 17.9 L49.6 20.7 L53.6 24.4 L56.6 28.3 L58.5 32.1 L59.5 35.2 L59.9 37.3Z"/><path pathLength="1" d="M60 42.2 Q60.8 35.1 61.1 37.9 Q65.4 28.9 67.6 29.6 Q76.1 23.4 79.9 26 Q89.7 25.6 92.3 32 Q99.5 36.2 97.6 44.6 Q100 51.2 92.3 58.5 Q90.8 66.6 79.9 70.9 Q76.4 80.7 67.6 81.9 Q65 91.2 61.1 90.5 Q60.6 97.2 60 94 Q59.4 97.2 58.9 90.5 Q55 91.2 52.4 81.9 Q43.6 80.7 40.1 70.9 Q29.2 66.6 27.7 58.5 Q20 51.2 22.4 44.6 Q20.5 36.2 27.7 32 Q30.3 25.6 40.1 26 Q43.9 23.4 52.4 29.6 Q54.6 28.9 58.9 37.9 Q59.2 35.1 60 42.2"/><path class="dots" pathLength="1" d="M48 48h.1M72 48h.1M60 64h.1"/></svg>
+          <p class="item__name">Пряники</p><p class="item__src">хайлайт «пряники»</p>
+          <span class="tag"><span class="tag__card">ціна —</span></span>
+        </li>
+        <li class="item">
+          <svg class="art" viewBox="0 0 120 110" width="120" height="110" aria-hidden="true"><path pathLength="1" d="M16 40C16 82 30 102 56 102S96 82 96 40"/><path pathLength="1" d="M16 40C16 34 96 34 96 40S16 46 16 40Z"/><path pathLength="1" d="M20 60C30 55 38 65 48 60S66 55 76 60 88 64 93 60M24 78C34 73 42 83 52 78S68 73 78 78 86 81 89 78"/><path pathLength="1" d="M34 38C36 24 52 18 60 24C66 18 80 24 78 38"/><path pathLength="1" d="M58 16a6 6 0 1 0 .1 0"/><path pathLength="1" d="M74 44L101 12C104 8 110 12 107 16L80 47"/></svg>
+          <p class="item__name">Десерти</p><p class="item__src">хайлайт «десерти»</p>
+          <span class="tag"><span class="tag__card">ціна —</span></span>
+        </li>
+      </ul>
+      <p class="shelf__quote">«Кожний десерт — це неймовірна насолода» <span>— з їхнього допису</span></p>
+    </div>
+
+    <div class="shelf" style="--art:118px">
+      <h3 class="shelf__name">Кухня</h3>
+      <ul class="shelf__row" role="list">
+        <li class="item item--wide">
+          <svg class="art" viewBox="0 0 150 110" width="150" height="110" aria-hidden="true"><path pathLength="1" d="M20 72L112 38Q128 52 134 72Z"/><path pathLength="1" d="M107 45Q120 56 125 72"/><path pathLength="1" d="M20 72V92H134V72"/><path pathLength="1" d="M20 82C50 86 100 78 134 82"/><path pathLength="1" d="M56 62q4-4 8 0M80 54q4-4 8 0M78 66q4-4 8 0M98 60q4-4 8 0"/></svg>
+          <p class="item__name">Кіш</p><p class="item__src">«Наші найсмачніші кіши»</p>
+          <span class="tag"><span class="tag__card">ціна —</span></span>
+        </li>
+        <li class="item">
+          <svg class="art" viewBox="0 0 150 110" width="150" height="110" aria-hidden="true"><path pathLength="1" d="M18 44C18 32 132 28 134 40V48C100 52 52 56 20 56Z"/><path pathLength="1" d="M20 60q6-6 12 0t12 0 12 0 12 0 12 0 12 0 12 0 12 0 12 0"/><path pathLength="1" d="M20 64H134V72H20Z"/><path pathLength="1" d="M20 76H134V88C134 96 20 96 20 88Z"/><path pathLength="1" d="M44 68h.1M78 68h.1M110 68h.1"/></svg>
+          <p class="item__name">Сендвіч</p><p class="item__src">хайлайт «кіш/сендвіч»</p>
+          <span class="tag"><span class="tag__card">ціна —</span></span>
+        </li>
+        <li class="item item--wide">
+          <svg class="art" viewBox="0 0 160 110" width="160" height="110" aria-hidden="true"><path pathLength="1" d="M14 66C14 50 146 50 146 66S14 82 14 66Z"/><path pathLength="1" d="M14 66V82C14 98 146 98 146 82V66"/><path pathLength="1" d="M42 56L58 78M72 53L90 80M102 53L120 78M38 72L56 55M68 79L96 53M106 79L128 58"/></svg>
+          <p class="item__name">Пироги</p><p class="item__src">«Смачнющі пироги завжди в наявності»</p>
+          <span class="tag tag--have"><span class="tag__card">в наявності · ціна —</span></span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="shelf shelf--split">
+      <div class="shelf__half" style="--art:118px">
+        <h3 class="shelf__name">Напої</h3>
+        <ul class="shelf__row" role="list">
+          <li class="item">
+            <svg class="art" viewBox="0 0 130 110" width="130" height="110" aria-hidden="true"><path pathLength="1" d="M28 50H96V78C96 94 84 102 62 102S28 94 28 78Z"/><path pathLength="1" d="M96 58C112 58 112 80 96 80"/><path pathLength="1" d="M50 40C44 32 56 26 50 16M66 40C60 32 72 26 66 16"/></svg>
+            <p class="item__name">Кава й напої</p><p class="item__src">список — у хайлайті «напої»</p>
+            <ul class="blank-list" aria-label="Список напоїв ще не перенесено"><li></li><li></li><li></li></ul>
+          </li>
+        </ul>
+      </div>
+      <div class="shelf__half shelf__half--cake" style="--art:150px">
+        <h3 class="shelf__name">Торти</h3>
+        <ul class="shelf__row" role="list">
+          <li class="item item--cake">
+            <div class="item__meta">
+              <p class="item__name">Торт капучіно-чіз</p><p class="item__src">назва з їхнього Instagram</p>
+              <span class="tag"><span class="tag__card">ціна —</span></span>
+            </div>
+            <div class="cake-slot" id="cakeSlot">
+              <svg class="art art--cake" id="cakeSrc" viewBox="0 0 240 200" aria-hidden="true"><use href="#cakeDraw"/></svg>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="cake" id="tort" aria-labelledby="cakeTitle">
+    <div class="cake__plate">
+      <svg class="art art--big" id="cakeBig" viewBox="0 0 240 200" role="img" aria-label="Лінійний малюнок торта — не фото">
+        <defs>
+          <g id="cakeDraw">
+            <path pathLength="1" d="M30 72C30 52 210 52 210 72S30 92 30 72Z"/>
+            <path pathLength="1" d="M30 72V150C30 170 210 170 210 150V72"/>
+            <path pathLength="1" d="M30 100C30 120 210 120 210 100M30 126C30 146 210 146 210 126"/>
+            <path pathLength="1" d="M48 76q8-8 16 0q8-8 16 0q8-8 16 0q8-8 16 0q8-8 16 0q8-8 16 0q8-8 16 0q8-8 16 0q8-8 16 0"/>
+            <path pathLength="1" d="M14 180H226M120 166V180"/>
+          </g>
+        </defs>
+        <use href="#cakeDraw"/>
+      </svg>
+    </div>
+    <div class="cake__text">
+      <p class="kicker kicker--ink">З хайлайту «торт»</p>
+      <h2 id="cakeTitle" class="cake__title">Торт <span class="nw">капучіно-чіз</span></h2>
+      <dl class="facts">
+        <div><dt>Склад</dt><dd class="blank">допишемо з вашого опису</dd></div>
+        <div><dt>Вага й ціна</dt><dd class="blank">з хайлайту «меню»</dd></div>
+        <div><dt>За скільки замовляти</dt><dd class="blank">як скажете ви</dd></div>
+      </dl>
+
+      <form class="note" id="note" aria-labelledby="noteTitle">
+        <h3 id="noteTitle" class="note__title">Запитати про торт</h3>
+        <fieldset class="note__choice">
+          <legend>Який торт</legend>
+          <label class="chip"><input type="radio" name="cake" value="торт капучіно-чіз" checked><span>Капучіно-чіз</span></label>
+          <label class="chip"><input type="radio" name="cake" value="торт з хайлайту «торт»"><span>Інший з хайлайту</span></label>
+        </fieldset>
+        <div class="note__row">
+          <label class="field"><span>На яку дату</span><input type="text" name="date" inputmode="numeric" autocomplete="off" placeholder="напр. 22.11" maxlength="10"></label>
+          <label class="field"><span>Скільки гостей</span><input type="number" name="guests" min="1" max="200" inputmode="numeric" placeholder="напр. 8"></label>
+        </div>
+        <p class="note__preview" id="notePreview" aria-live="polite">Добрий день! Хочу запитати про торт капучіно-чіз. Чи можна замовити?</p>
+        <button class="btn btn--ink" type="submit">Скопіювати й написати в Direct</button>
+        <p class="note__hint" id="noteHint">Instagram не вставляє текст сам — ми скопіюємо його, вам лишиться вставити.</p>
+        <p class="slot">Telegram для замовлень тортів — з'явиться тут, коли кав'ярня його відкриє</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="find" id="de" aria-labelledby="findTitle">
+    <div class="find__lip" aria-hidden="true"></div>
+    <div class="find__in">
+      <div class="lift" id="lift" aria-hidden="true">
+        <span class="lift__ring"></span>
+        <span class="lift__btn">1</span>
+        <span class="lift__cap">поверх</span>
+      </div>
+      <div class="find__text">
+        <p class="kicker">Як знайти</p>
+        <h2 id="findTitle" class="find__title">БФК Lake Plaza, 1&nbsp;поверх</h2>
+        <p class="find__addr">вул. Героїв полку «Азов», 12 (колишня Маршала Малиновського) · м. Оболонь</p>
+      </div>
+      <div class="find__side">
+        <dl class="hours">
+          <div><dt>Щодня</dt><dd>8:00–21:00</dd></div>
+          <div><dt>Зараз</dt><dd class="status status--plain" id="status2"><span class="status__dot" aria-hidden="true"></span><span class="status__text">за графіком з Instagram</span></dd></div>
+        </dl>
+        <div class="find__actions">
+          <a class="btn btn--crema" href="https://maps.app.goo.gl/7JnmTUazYF3kbQVt6" target="_blank" rel="noopener">Відкрити на карті</a>
+          <a class="btn btn--glass" href="https://ig.me/m/maysternya_kavy_kyiv" target="_blank" rel="noopener">Написати в Direct</a>
+        </div>
+        <ul class="gaps" aria-label="Ще не опубліковано">
+          <li><span>Телефон</span><em>ще не опубліковано</em></li>
+          <li><span>Вхід з вулиці</span><em>допишемо вашими словами</em></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p class="foot__stamp">Концепт Velira для Майстерня кави (Lake Plaza). Не офіційний сайт · <a href="https://www.instagram.com/maysternya_kavy_kyiv/" target="_blank" rel="noopener">Instagram @maysternya_kavy_kyiv</a></p>
+  <p class="foot__small">Факти — з Instagram кав'ярні (15.11.2026). Фото чашки згенероване, десерти — лінійні малюнки, не фото закладу. Цін, відгуків і телефону тут нема, бо вони ще не опубліковані.</p>
+  <p class="foot__small">Сторінку зробила студія <a href="https://veliraweb.com.ua/" target="_blank" rel="noopener">Velira</a> як пропозицію.</p>
+</footer>
+
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>
