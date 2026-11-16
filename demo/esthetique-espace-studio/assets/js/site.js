@@ -266,7 +266,9 @@
       onToggle: function (self) { bar.classList.toggle('on', self.isActive); } });
 
     /* --- святковий сезон: вечірнє поле розходиться на всю ширину --- */
-    gsap.fromTo('.field', { clipPath: 'inset(0% 7% 0% 7% round 44px)' }, {
+    /* ПК ≥ 1024: поле ширше за сітку контенту лише на 3 % — так край не ріже фото ялинки; телефон як був (7 %) */
+    var fieldIn = window.matchMedia('(min-width: 1024px)').matches ? 3 : 7;
+    gsap.fromTo('.field', { clipPath: 'inset(0% ' + fieldIn + '% 0% ' + fieldIn + '% round 44px)' }, {
       clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none',
       scrollTrigger: { trigger: '.svyata', start: 'top 92%', end: 'top 30%', scrub: true }
     });
@@ -303,6 +305,14 @@
       [img0].concat(roomImgs).forEach(function (im) { im.removeAttribute('style'); });
       root.classList.remove('motion');
     };
+  });
+
+  /* ПК ≥ 1024 (цикл pc): вечірнє поле на виході знову сходиться в заокруглену панель — дзеркало входу; телефон без змін */
+  mm.add('(prefers-reduced-motion: no-preference) and (min-width: 1024px)', function () {
+    gsap.fromTo('.field', { clipPath: 'inset(0% 0% 0% 0% round 0px)' }, {
+      clipPath: 'inset(0% 3% 0% 3% round 44px)', ease: 'none', immediateRender: false,
+      scrollTrigger: { trigger: '.svyata', start: 'bottom 70%', end: 'bottom 20%', scrub: true }
+    });
   });
 
   mm.add('(prefers-reduced-motion: reduce)', function () { root.classList.remove('motion'); });
